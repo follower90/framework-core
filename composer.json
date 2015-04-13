@@ -1,6 +1,7 @@
 {
   "name": "follower/core",
   "description": "Core of my framework",
+  "minimum-stability": "dev",
   "authors": [
     {
       "name": "follower",
