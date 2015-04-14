@@ -13,7 +13,7 @@
   },
   "autoload": {
     "psr-0": {
-      "follower/core": "src/"
+      "Сore": "src/"
     }
   }
 }
