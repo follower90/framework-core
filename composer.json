@@ -15,10 +15,5 @@
     "psr-0": {
       "Сore": "src/"
     }
-  },
-  "autoload-dev": {
-    "psr-0": {
-      "Сore": "src/"
-    }
   }
 }
