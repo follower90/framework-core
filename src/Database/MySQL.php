@@ -2,8 +2,8 @@
 
 namespace Core\Database;
 
-class MySQL implements IDatabase {
-
+class MySQL
+{
 	private static $_db;
 
 	public static function update($table, $params = [], $conditions = [])
@@ -62,6 +62,12 @@ class MySQL implements IDatabase {
 		}
 
 		$query = 'DELETE FROM `' . $table . ' WHERE ' . implode(',', $where);
+		self::$_db->query($query);
+	}
+
+	public static function query($query)
+	{
+		self::_connect();
 		self::$_db->query($query);
 	}
 

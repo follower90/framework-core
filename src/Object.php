@@ -17,6 +17,19 @@ class Object
 
 	}
 
+	public function config()
+	{
+		$fields = [
+			'id' => [
+				'type' => 'int',
+				'default' => null,
+				'null' => false,
+			]
+		];
+
+		return $fields;
+	}
+
 	public function save()
 	{
 		if (!$this->_hasChanges) {
@@ -67,12 +80,6 @@ class Object
 	public function delete()
 	{
 		Orm::delete($this);
-	}
-
-	public function config()
-	{
-		$fields = [];
-		return $fields;
 	}
 
 	public function table()

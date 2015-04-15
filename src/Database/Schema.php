@@ -16,17 +16,26 @@ class Schema
 		$this->_fields = $object->config();
 	}
 
+	public static function createObjects($path = [], $clearDb)
+	{
+		if ($clearDb) {
+			self::_dropTables();
+		}
+
+		foreach($path as $root) {
+			self::_createObjects($root);
+		}
+	}
+
 	public function create($rebuild = false)
 	{
-		$db = PDO::getInstance();
-
 		if ($rebuild) {
-			$db->query('DROP TABLE `' . $this->_table . '`');
-			$db->query('DROP TABLE `' . $this->_table . '_Lang`');
+			MySQL::query('DROP TABLE `' . $this->_table . '`');
+			MySQL::query('DROP TABLE `' . $this->_table . '_Lang`');
 		}
 
 		if (isset($this->_fields['languageTable'])) {
-			$db->query('CREATE TABLE IF NOT EXISTS `' . $this->_table . '_Lang` (
+			MySQL::query('CREATE TABLE IF NOT EXISTS `' . $this->_table . '_Lang` (
 				`id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				`' . strtolower($this->_table) . '_id` int NOT NULL,
 				`lang` char(2) NOT NULL,
@@ -35,7 +44,29 @@ class Schema
 			)');
 		}
 
-		$db->query('CREATE TABLE IF NOT EXISTS `' . $this->_table . '` (' . $this->_convertFields() . ')');
+		MySQL::query('CREATE TABLE IF NOT EXISTS `' . $this->_table . '` (' . $this->_convertFields() . ')');
+	}
+
+	private static function _createObjects($rootPath)
+	{
+		$dir = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator($rootPath)
+		);
+
+		foreach ($dir as $path => $fileInfo) {
+			if ($fileInfo->isFile()) {
+				$path = explode('/', $fileInfo->getPath());
+				$parentDir = $path[sizeof($path) - 1];
+
+				if ($parentDir == 'Object') {
+					$className = str_replace('.php', '', $fileInfo->getFilename());
+					$className = OrmRelation::detectClass($className);
+
+					$schema = new Schema(new $className());
+					$schema->create(true);
+				}
+			}
+		}
 	}
 
 	private function _convertFields()
@@ -69,27 +100,22 @@ class Schema
 		return implode(',', $result);
 	}
 
-	public static function createObjects()
+	private static function _dropTables()
 	{
-		$rootPath = 'vendor';
+		MySQL::query("
+			SET FOREIGN_KEY_CHECKS = 0;
+			SET GROUP_CONCAT_MAX_LEN=32768;
+			SET @views = NULL;
+			SELECT GROUP_CONCAT('`', TABLE_NAME, '`') INTO @views
+			  FROM information_schema.views
+			  WHERE table_schema = (SELECT DATABASE());
+			SELECT IFNULL(@views,'dummy') INTO @views;
 
-		$dir = new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator($rootPath)
-		);
-
-		foreach ($dir as $path => $fileInfo) {
-			if ($fileInfo->isFile()) {
-				$path = explode('/', $fileInfo->getPath());
-				$parentDir = $path[sizeof($path) - 1];
-
-				if ($parentDir == 'Object') {
-					$className = str_replace('.php', '', $fileInfo->getFilename());
-					$className = OrmRelation::detectClass($className);
-
-					$schema = new Schema(new $className());
-					$schema->create(true);
-				}
-			}
-		}
+			SET @views = CONCAT('DROP VIEW IF EXISTS ', @views);
+			PREPARE stmt FROM @views;
+			EXECUTE stmt;
+			DEALLOCATE PREPARE stmt;
+			SET FOREIGN_KEY_CHECKS = 1;
+		");
 	}
 }
