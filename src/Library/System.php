@@ -13,7 +13,7 @@ class System
 			$debug = Debug::getInstance();
 
 			$data = [];
-			$data['instanceHash'] = rand(0,100);
+			$data['instanceHash'] = hash('crc32', rand(0,100));
 			$data['phpErrors'] = $debug->getPhpErrors();
 			$data['cmsErrors'] = $debug->getCmsErrors();
 			$data['cmsDumps'] = $debug->getCmsDumps();
@@ -21,7 +21,7 @@ class System
 			$data['files'] = $debug->getFilesLog();
 
 			$view = new View();
-			echo $view->Render('public/templates/debug.phtml', $data);
+			echo $view->render('vendor/follower/core/tpl/debug.phtml', $data);
 		}
 	}
 

@@ -1,0 +1,166 @@
+<?php
+
+use Core\Library\System;
+
+?>
+<style>
+	.debug-console {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		z-index: 99999;
+		background: #e8e8e8;
+	}
+	.debug-options {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 5px 0;
+		height: 24px;
+		background: #c6c6c6;
+	}
+	.debug-options div {
+		float: left;
+		margin: 0 20px;
+		cursor: pointer;
+		font-size: 12px;
+	}
+	.debug-options div span {
+		font-weight: bold;
+	}
+	.debug-tabs div {
+		display: none;
+		height: 160px;
+		padding: 10px 30px;
+		overflow-y: scroll;
+		font-family: 'Arial', sans-serif;
+		font-size: 12px;
+	}
+	.red { color: #ff0000; }
+	.green { color: #009300; }
+</style>
+
+<div class="debug-console">
+	<div class="debug-tabs debug-tabs-<?php echo $vars['instanceHash'];?>">
+		<div class="tab tab-1">
+			<?php
+			foreach($vars['queries']['data'] as $query) {
+				$params = (!empty($query['params'])) ? '<b>Params:</b> ' . implode(',', $query['params']) : '';
+				$status = ($query['success']) ? '<span class="green">success</span>' : '<span class="red">failed</span>';
+				if ($query['time'] > 0.5) {
+					$query['time'] = '<span class="red">' . $query['time'] . '</span>';
+				}
+
+				echo '<i>' . $query['query']. '</i><br/><b>Results:</b> ' . $query['results'] . ' ' . $params . ' ' .
+					'<b>Execution time:</b> ' . $query['time'] . ' sec. <b>Status:</b> ' . $status . '<hr/>';
+			}
+			?>
+		</div>
+		<div class="tab tab-2">
+			<?php
+			foreach ($vars['files']['data'] as $file) {
+				echo $file . '</br>';
+			}
+			?>
+		</div>
+		<div class="tab tab-3">
+			<?php
+			foreach($vars['phpErrors']['data'] as $phpError) {
+				echo \Core\Debug::$phpErrorCode[$phpError['num']] . ': ' . $phpError['error'] . ' in ' . $phpError['file'] . ' at line: ' . $phpError['line'] . '</br>';
+			}
+			?>
+		</div>
+		<div class="tab tab-4">
+			<?php
+			foreach($vars['cmsErrors']['data'] as $cmsError) {
+				echo $cmsError;
+			}
+			?>
+		</div>
+		<div class="tab tab-5">
+			<?php
+			echo '<b>GET:</b><br/>';
+			System::vardump($_GET);
+
+			echo '<br/><b>POST:</b><br/>';
+			System::vardump($_POST);
+
+			echo '<br/><b>COOKIES:</b><br/>';
+			System::vardump($_COOKIE);
+
+			echo '<br/><b>FILES:</b><br/>';
+			System::vardump($_FILES);
+
+			echo '<br/><b>REQUEST:</b><br/>';
+			System::vardump($_REQUEST);
+
+			echo '<br/><b>SESSION:</b><br/>';
+			System::vardump($_SESSION);
+
+			echo '<br/><b>SERVER:</b><br/>';
+			System::vardump($_SERVER);
+			?>
+		</div>
+		<div class="tab tab-6">
+			<?php
+			foreach($vars['cmsDumps']['data'] as $dump) {
+				echo '<b>Dump in <i>' . $dump['file'] . '</i> at line <i>' . $dump['line'] . '</i>:</b><br/>';
+				System::vardump($dump['dump']);
+				echo '<br/>';
+			}
+			?>
+		</div>
+	</div>
+	<div class="debug-options debug-options-<?php echo $vars['instanceHash'];?>">
+		<div class="debug-option" data-option="1">
+			DB Queries: <span><?php echo $vars['queries']['count']; ?></span>
+		</div>
+		<div class="debug-option" data-option="2">
+			Files: <span>
+			<?php echo $vars['files']['count']; ?></span>
+		</div>
+		<div class="debug-option" data-option="3">
+			PHP Errors: <span><?php echo $vars['phpErrors']['count']; ?></span>
+		</div>
+		<div class="debug-option" data-option="4">
+			CMS Errors: <span><?php echo $vars['cmsErrors']['count']; ?></span>
+		</div>
+		<div class="debug-option" data-option="5">
+			GPCFRSS: <span>7</span>
+		</div>
+		<div class="debug-option" data-option="6">
+			Dump: <span><?php echo $vars['cmsDumps']['count']; ?></span>
+		</div>
+	</div>
+</div>
+
+<script>
+	(function() {
+		var instanceHash = '<?php echo $vars['instanceHash'];?>';
+		var options = document.querySelectorAll('.debug-options-' + instanceHash +  ' div');
+
+		for (var i = 0; i < options.length; i++) {
+			options[i].addEventListener('click', showError.bind(options[i]));
+		}
+
+		function showError () {
+			var isActive = false;
+			var tabNum = this.getAttribute('data-option');
+			var instanceHash = '<?php echo $vars['instanceHash'];?>';
+			var currentTab = document.querySelector('.debug-tabs-' + instanceHash + ' .tab-' + tabNum);
+
+			if (currentTab.style.display == 'block') {
+				isActive = true;
+			}
+
+			var tabs = document.querySelectorAll('.debug-tabs-' + instanceHash + ' .tab');
+			for (var i = 0; i < tabs.length; i++) {
+				tabs[i].style.display = 'none';
+			}
+
+			if (!isActive) {
+				currentTab.style.display = 'block';
+			}
+		}
+	})();
+</script>
