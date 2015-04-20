@@ -14,52 +14,84 @@ class Template
 		$this->_vars = $vars;
 	}
 
-	public function render()
+	public function render($fragment = false)
 	{
-		return $this->findcycle($this->_template);
-	}
-
-	private function findCycle($fragment)
-	{
-		preg_match('/\{{2}each(.*)\s{1,2}as\s{1,2}(.*)\}{2}([\w\W]*)\{{2}\/each\}{2}$/m', $fragment, $matches);
-
-		if (!empty($matches)) {
-			$fragment = str_replace($matches[0], $this->renderCycle($matches), $fragment);
-			return $this->findCycle($fragment);
-		} else {
-			return $this->renderVars($fragment, $this->_vars);
+		if (!$fragment) {
+			$fragment = $this->_template;
 		}
+
+		$dom = new \DOMDocument();
+		$dom->loadHTML($fragment);
+
+		$xpath = new \DOMXPath($dom);
+		$foreach = $xpath->query('//foreach');
+
+		if ($node = $foreach->item(0)) {
+			return $this->render(
+				str_replace($this->getInnerHtml($node), $this->renderCycle($node), $fragment)
+			);
+		}
+
+		return $this->renderVars($fragment, $this->_vars);
 	}
 
-	private function renderCycle($match)
+	private function renderCycle(\DOMElement $foreach)
 	{
-		$key = trim($match[1]);
-		$replacement = trim($match[2]);
-		$fragment = $match[3];
+		$key = $foreach->getAttribute('from');
+		$replacement = $foreach->getAttribute('item');
+		$fragment = $this->getInnerHtml($foreach);
 
 		$rendered = '';
-
 		$data = array_merge($this->_vars, $this->_internal);
 
 		foreach ($data[$key] as $item) {
 			if (is_array($item)) {
 				$this->_internal[$replacement] = $item;
+				$item = implode(',', $item);
 			}
 
 			$node = $this->renderVars($fragment, [$replacement => $item]);
-			$rendered .= $this->findCycle($node);
+			$rendered .= $this->render($node);
 			$this->_internal = [];
 		}
 
 		return $rendered;
 	}
 
-	private function renderVars($fragment, $vars)
+	private function renderVars($fragment, $vars = [])
 	{
+		$this->removeNestedCycles($fragment);
 		foreach ($vars as $key => $value) {
 			$fragment = str_replace("{{{$key}}}", $value, $fragment);
 		}
 
 		return $fragment;
+	}
+
+	private function removeNestedCycles($fragment)
+	{
+		$dom = new \DOMDocument();
+		$dom->loadHTML($fragment);
+
+		$document = $dom->documentElement;
+
+		if ($tag = $document->getElementsByTagName('foreach')->item(0)) {
+			$tag->parentNode->removeChild($tag);
+			return $this->removeNestedCycles($dom->saveHTML());
+		}
+
+		return $fragment;
+	}
+
+	private function getInnerHtml($node)
+	{
+		$innerHTML = '';
+		$children = $node->childNodes;
+
+		foreach ($children as $child) {
+			$innerHTML .= $child->ownerDocument->saveXML($child);
+		}
+
+		return $innerHTML;
 	}
 }

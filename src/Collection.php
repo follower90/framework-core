@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Collection\Stream;
+
 class Collection {
 
 	protected $_objects = [];
@@ -55,5 +57,10 @@ class Collection {
 	public function isEmpty()
 	{
 		return empty($this->_objects);
+	}
+
+	public function stream()
+	{
+		return new Stream($this->_objects);
 	}
 }
