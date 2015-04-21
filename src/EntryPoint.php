@@ -2,8 +2,13 @@
 
 namespace Core;
 
-class EntryPoint
+abstract class EntryPoint
 {
+	public function getType()
+	{
+
+	}
+
 	public function init()
 	{
 

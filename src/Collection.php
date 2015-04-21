@@ -54,6 +54,15 @@ class Collection {
 		return count($this->_objects);
 	}
 
+	public function getFirst()
+	{
+		if (!$this->isEmpty()) {
+			return $this->_objects[0];
+		}
+
+		return false;
+	}
+
 	public function isEmpty()
 	{
 		return empty($this->_objects);

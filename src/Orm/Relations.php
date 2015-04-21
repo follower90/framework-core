@@ -2,8 +2,8 @@
 
 namespace Core;
 
-abstract class OrmRelation {
-
+trait Relations
+{
 	protected static $_table = '';
 	protected static $_fields = [];
 	protected static $_joins = [];

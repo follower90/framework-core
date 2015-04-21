@@ -34,7 +34,7 @@ class Object
 
 	public function save()
 	{
-		if (!$this->_hasChanges) {
+		if (!$this->isModified()) {
 			return false;
 		}
 
@@ -77,11 +77,6 @@ class Object
 		}
 
 		$this->setValue('id', $id);
-	}
-
-	public function delete()
-	{
-		Orm::delete($this);
 	}
 
 	public function table()
@@ -160,5 +155,10 @@ class Object
 	public function isActive()
 	{
 		return (bool)$this->getValue('active');
+	}
+
+	public function isModified()
+	{
+		return $this->_hasChanges;
 	}
 }

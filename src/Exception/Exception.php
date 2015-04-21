@@ -2,10 +2,10 @@
 
 namespace Core\Exception;
 
-class Exception extends \Exception {
-
-	public function logError()
+class Api extends \Exception
+{
+	public function __construct(\Exception $e)
 	{
-		//todo
+		var_dump($e);
 	}
 }

@@ -2,10 +2,13 @@
 
 namespace Core;
 
+use Core\Database\MySQL;
 use Core\Database\PDO;
 
-abstract class Orm extends OrmRelation
+abstract class Orm
 {
+	use Relations;
+
 	private static $_db;
 
 	private static function _connect()
@@ -28,19 +31,13 @@ abstract class Orm extends OrmRelation
 			}
 		}
 
-		if (!$rows) {
-			return new Collection([]);
-		}
-
 		return self::fillCollection($class, $rows);
 	}
 
 	public static function findOne($class, $filters = [], $values = [])
 	{
-		$result = self::find($class, $filters, $values, ['limit' => 1]);
-		$objects = $result->getCollection();
-
-		return isset($objects[0]) ? $objects[0] : false;
+		$collection = self::find($class, $filters, $values, ['limit' => 1]);
+		return $collection->getFirst();
 	}
 
 	public static function load($class, $id)
@@ -48,16 +45,13 @@ abstract class Orm extends OrmRelation
 		return self::findOne($class, ['id'], [$id]);
 	}
 
-	public static function delete($object)
+	public static function delete(Object $object)
 	{
-		$table = $object->table();
-		$id = $object->getId();
-
-		if (!$table || !$id) {
-			return false;
+		if (!$id = $object->getId()) {
+			throw new \Exception('Cannot delete object');
 		}
 
-		self::$_db->query(self::_removeQuery($table, $id));
+		MySQL::delete($object->table(), ['id' => $id]);
 		return true;
 	}
 }
