@@ -5,7 +5,7 @@ namespace Core\Object;
 class Currency extends \Core\Object
 {
 	protected $_table = 'Currency';
-	public function config()
+	public function fields()
 	{
 		$fields = [
 			'id' => [
@@ -20,6 +20,6 @@ class Currency extends \Core\Object
 			],
 		];
 
-		return array_merge($fields, parent::config());
+		return array_merge($fields, parent::fields());
 	}
 }

@@ -13,7 +13,7 @@ class Schema
 	public function __construct(Object $object)
 	{
 		$this->_table = $object->table();
-		$this->_fields = $object->config();
+		$this->_fields = $object->fields();
 	}
 
 	public static function createObjects($path = [], $clearDb)

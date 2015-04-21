@@ -6,7 +6,7 @@ class Translate extends \Core\Object
 {
 	protected $_table = 'Translate';
 
-	public function config()
+	public function fields()
 	{
 		$fields = [
 			'id' => [
@@ -39,6 +39,6 @@ class Translate extends \Core\Object
 			],
 		];
 
-		return array_merge($fields, parent::config());
+		return array_merge($fields, parent::fields());
 	}
 }

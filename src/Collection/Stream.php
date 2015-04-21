@@ -17,7 +17,7 @@ class Stream
 	{
 		$this->_purgeSteam();
 
-		foreach($this->_objects as $value) {
+		foreach ($this->_objects as $value) {
 			if ($callback($value)) {
 				$this->_stream[] = $value;
 			}
@@ -42,5 +42,15 @@ class Stream
 	public function find()
 	{
 		return $this->_stream;
+	}
+
+	public function isEmpty()
+	{
+		return ($this->size() == 0);
+	}
+
+	public function size()
+	{
+		return count($this->_stream);
 	}
 }

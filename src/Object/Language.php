@@ -5,7 +5,7 @@ namespace Core\Object;
 class Language extends \Core\Object
 {
 	protected $_table = 'Language';
-	public function config()
+	public function fields()
 	{
 		$fields = [
 			'id' => [
@@ -31,6 +31,6 @@ class Language extends \Core\Object
 			],
 		];
 
-		return array_merge($fields, parent::config());
+		return array_merge($fields, parent::fields());
 	}
 }

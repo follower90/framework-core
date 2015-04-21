@@ -14,7 +14,7 @@ abstract class OrmRelation {
 		$object = new $className();
 
 		self::$_table = $object->table();
-		self::$_fields = $object->config();
+		self::$_fields = $object->fields();
 
 		return $object;
 	}

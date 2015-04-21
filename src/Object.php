@@ -12,12 +12,14 @@ class Object
 
 	private $_hasChanges = false;
 
-	public function __construct()
+	public function __construct($values = [])
 	{
-
+		if (!empty($values)) {
+			$this->setValues($values);
+		}
 	}
 
-	public function config()
+	public function fields()
 	{
 		$fields = [
 			'id' => [
@@ -123,7 +125,7 @@ class Object
 	private function _checkFields()
 	{
 		$allowedFields = [];
-		$fields = $this->config();
+		$fields = $this->fields();
 		foreach ($fields as $field => $properties) {
 			$allowedFields[] = $field;
 		}
