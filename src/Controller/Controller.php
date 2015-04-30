@@ -12,13 +12,10 @@ class Controller
 	protected $view;
 	protected $settings;
 
-	function  __construct()
+	function __construct()
 	{
 		$this->db = PDO::getInstance();
 		$this->view = new View();
-
-		$const = Orm::find('Config')->getHashMap('name', 'value');
-		Config::set('user_settings', $const);
 	}
 
 	function params($key = false)

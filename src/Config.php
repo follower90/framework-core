@@ -42,9 +42,10 @@ class Config {
 		static::set('project', $name);
 	}
 
-	public static function setDb($name, $config)
+	public static function setDb($config)
 	{
-		static::set('db_settings', $config);
+		//TODO make multiple db support
+		static::set('db_settings', $config['default']);
 	}
 
 	public static function set($item, $value)

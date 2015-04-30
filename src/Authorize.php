@@ -25,6 +25,16 @@ class Authorize
 
 	}
 
+	public function checkLoginState($entity)
+	{
+		$oauthHash = Cookie::get('oauth_hash');
+		if ($session = Orm::findOne('User_Session', ['hash', 'entity'], [$oauthHash, $entity])) {
+			return Orm::load($entity, $session->getValue('userId'));
+		}
+
+		return false;
+	}
+
 	public function isAuthorized()
 	{
 		return $this->_authorized;

@@ -3,7 +3,7 @@
 namespace Core\Database;
 
 use Core\Object;
-use Core\OrmRelation;
+use Core\Orm;
 
 class Schema
 {
@@ -16,7 +16,7 @@ class Schema
 		$this->_fields = $object->fields();
 	}
 
-	public static function createObjects($path = [], $clearDb)
+	public static function createObjects($path = [], $clearDb = false)
 	{
 		if ($clearDb) {
 			self::_dropTables();
@@ -60,10 +60,10 @@ class Schema
 
 				if ($parentDir == 'Object') {
 					$className = str_replace('.php', '', $fileInfo->getFilename());
-					$className = OrmRelation::detectClass($className);
+					$className = Orm::detectClass($className);
 
 					$schema = new Schema(new $className());
-					$schema->create(true);
+					$schema->create(false);
 				}
 			}
 		}
