@@ -26,9 +26,14 @@ class Api
 		return self::output($response);
 	}
 
-	public static function output($data)
+	public function output($data)
 	{
-		return json_encode($data);
+		$debugMode = Cookie::get('cmsDebug') || $this->request['cmsDebug'] == 'on';
+		if (!$debugMode) {
+			header('Content-Type: application/json');
+		}
+		
+		echo json_encode($data);
 	}
 
 	public function _request()

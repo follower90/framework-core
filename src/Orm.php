@@ -10,7 +10,8 @@ abstract class Orm
 	use Query;
 	use Objects;
 
-	private static $_db;
+	protected static $_db;
+	protected static $_object;
 
 	private static function _connect()
 	{
@@ -21,8 +22,16 @@ abstract class Orm
 	{
 		self::_connect();
 
+		$className = self::detectClass($class);
+		static::$_object = new $className();
+		static::$_object->fields();
+
 		$query = self::_makeQuery($class, $filters, $values, $params);
 		$rows = self::$_db->rows($query);
+
+		if (!isset($fields['languageTable'])) {
+			return self::fillCollection($class, $rows);
+		}
 
 		foreach ($rows as $key => $row) {
 			$query = self::_makeLanguageQuery($class, $row['id']);

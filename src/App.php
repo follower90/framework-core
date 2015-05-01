@@ -16,7 +16,7 @@ class App
 
 	public function __destruct()
 	{
-		System::showDebugConsole($this->_debugParam);
+		$this->showDebugConsole($this->_debugParam);
 	}
 
 	public function run()
@@ -58,6 +58,24 @@ class App
 		}
 	}
 
+	public function showDebugConsole($debug = 'on')
+	{
+		if ($debug == 'on' || Cookie::get('cmsDebug') && $debug != 'off') {
+			$debug = Debug::getInstance();
+
+			$data = [];
+			$data['instanceHash'] = hash('crc32', rand(0,100));
+			$data['phpErrors'] = $debug->getPhpErrors();
+			$data['cmsErrors'] = $debug->getCmsErrors();
+			$data['cmsDumps'] = $debug->getCmsDumps();
+			$data['queries'] = $debug->getQueriesLog();
+			$data['files'] = $debug->getFilesLog();
+
+			$view = new View();
+			echo $view->render('vendor/follower/core/tpl/debug.phtml', $data);
+		}
+	}
+
 	private function _setErrorHandlers()
 	{
 		set_error_handler(function($number, $string, $file, $line) {
@@ -81,7 +99,7 @@ class App
 					'line' => $error['line'],
 				]);
 
-				System::showDebugConsole();
+				$this->showDebugConsole();
 			}
 		});
 	}

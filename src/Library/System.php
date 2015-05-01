@@ -3,28 +3,11 @@
 namespace Core\Library;
 
 use Core\Debug;
+use Core\Cookie;
 use Core\View;
 
 class System
 {
-	public static function showDebugConsole($debug = 'on')
-	{
-		if ($debug == 'on' || isset($_COOKIE['cmsDebug']) && $debug != 'off') {
-			$debug = Debug::getInstance();
-
-			$data = [];
-			$data['instanceHash'] = hash('crc32', rand(0,100));
-			$data['phpErrors'] = $debug->getPhpErrors();
-			$data['cmsErrors'] = $debug->getCmsErrors();
-			$data['cmsDumps'] = $debug->getCmsDumps();
-			$data['queries'] = $debug->getQueriesLog();
-			$data['files'] = $debug->getFilesLog();
-
-			$view = new View();
-			echo $view->render('vendor/follower/core/tpl/debug.phtml', $data);
-		}
-	}
-
 	public static function vardump($array, $level = 0)
 	{
 		if (empty($array)) {

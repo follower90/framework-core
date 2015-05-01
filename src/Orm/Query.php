@@ -4,15 +4,12 @@ namespace Core;
 
 trait Query
 {
-	protected static $_table = '';
-	protected static $_fields = [];
-	protected static $_joins = [];
-
 	public static function detectClass($class)
 	{
-		$className = '\\Core\\Object\\' . ucfirst($class);
+		$className = '\\' . Config::get('project') . '\\Object\\' . ucfirst($class);
+
 		if (!class_exists($className)) {
-			$className = '\\' . Config::get('project') . '\\Object\\' . ucfirst($class);
+			$className = '\\Core\\Object\\' . ucfirst($class);
 		}
 
 		return $className;
@@ -32,17 +29,21 @@ trait Query
 
 	protected static function _makeQuery($class, $filters, $values, $params)
 	{
-		$queryBuilder = new \Core\Database\QueryBuilder($class);
-
-		foreach (self::$_joins as $join) {
-			$queryBuilder->join('inner', $join['table'], $join['alias'], [ $join['externalKey'], $join['key'] ]);
-		}
+		$queryBuilder = new \Core\Database\QueryBuilder(static::$_object->table());
 
 		self::buildConditions($queryBuilder, $filters, $values);
 
-		$queryBuilder->offset($params['offset']);
-		$queryBuilder->limit($params['limit']);
-		$queryBuilder->orderBy($params['sort'][0], $params['sort'][1]);
+		if (isset($params['limit'])) {
+			$queryBuilder->limit($params['limit']);
+		}
+
+		if (isset($params['offset'])) {
+			$queryBuilder->offset($params['offset']);
+		}
+
+		if (isset($params['sort'])) {
+			$queryBuilder->orderBy($params['sort'][0], $params['sort'][1]);
+		}
 
 		return $queryBuilder->composeSelectQuery();
 	}
@@ -56,19 +57,20 @@ trait Query
 			$field = explode('.', $param);
 
 			if (!empty($field[1])) {
-				$relation = self::$_fields[$field[0]]['relation'];
+				$relations = static::$_object->relations();
 
-				if (empty($relation['field'])) {
-					$relation['field'] = 'id';
-				}
-
-				$class = self::_detectClass($relation['class']);
+				$relation = $relations[$field[0]];
+				$class = self::detectClass($relation['class']);
 				$relatedObject = new $class();
 
-				$alias = 'tb' . (count(self::$_joins) + 1);
+				$alias = 'tb' . $count;
 				$param = $field[1];
 
-				$queryBuilder->join('inner', $relatedObject->table(), $alias, [ $field[0], $relation['field'] ]);
+				if (isset($relation['multiple'])) {
+					$queryBuilder->join('inner', $relation['table'], $alias, [ static::$_object->table(), 'id' ]);
+				} else {
+					$queryBuilder->join('inner', $relatedObject->table(), $alias, [ $field[0], $relation['field'] ]);
+				}
 			}
 
 			$condition = $values[$count];

@@ -4,6 +4,9 @@ namespace Core;
 
 trait Objects
 {
+	protected static $_table;
+	protected static $_fields;
+
 	protected static function _getObject($class)
 	{
 		$className = self::detectClass($class);
