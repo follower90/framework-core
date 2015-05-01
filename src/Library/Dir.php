@@ -4,7 +4,6 @@ namespace Core\Library;
 
 class Dir
 {
-
 	static function remove($dir)
 	{
 		if ($objs = glob($dir . "/*")) {

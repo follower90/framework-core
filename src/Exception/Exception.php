@@ -2,10 +2,11 @@
 
 namespace Core\Exception;
 
-class Api extends \Exception
+class Exception extends \Exception
 {
 	public function __construct(\Exception $e)
 	{
+		//TODO
 		var_dump($e);
 	}
 }
