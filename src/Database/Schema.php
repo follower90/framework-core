@@ -16,14 +16,14 @@ class Schema
 		$this->_fields = $object->fields();
 	}
 
-	public static function createObjects($path = [], $clearDb = false)
+	public static function createObjects($path = [], $params = [])
 	{
-		if ($clearDb) {
+		if ($params['clearDb']) {
 			self::_dropTables();
 		}
 
 		foreach($path as $root) {
-			self::_createObjects($root);
+			self::_createObjects($root, $params);
 		}
 	}
 
@@ -47,7 +47,7 @@ class Schema
 		MySQL::query('CREATE TABLE IF NOT EXISTS `' . $this->_table . '` (' . $this->_convertFields() . ')');
 	}
 
-	private static function _createObjects($rootPath)
+	private static function _createObjects($rootPath, $params = [])
 	{
 		$dir = new \RecursiveIteratorIterator(
 			new \RecursiveDirectoryIterator($rootPath)
@@ -63,7 +63,9 @@ class Schema
 					$className = Orm::detectClass($className);
 
 					$schema = new Schema(new $className());
-					$schema->create(false);
+
+					$dropTable = isset($params['dropTable']) ? true : false;
+					$schema->create($dropTable);
 				}
 			}
 		}

@@ -126,24 +126,26 @@ class QueryBuilder {
 	{
 		$fields = [];
 
-		if (!empty($this->_config['fields'])) {
-			foreach ($this->_config['fields'] as $raw) {
-				$field = '';
+		if (empty($this->_config['fields'])) {
+			$this->select('*');
+		}
 
-				if ($raw['table']) {
-					$field .= $raw['table'] . '.';
-				} else if (isset($this->_config['alias'])) {
-					$field .=  $this->_config['alias'] . '.';
-				}
+		foreach ($this->_config['fields'] as $raw) {
+			$field = '';
 
-				$field .= $raw['field'];
-
-				if ($raw['alias']) {
-					$field .= ' as ' . $raw['alias'];
-				}
-
-				$fields[] = $field;
+			if ($raw['table']) {
+				$field .= $raw['table'] . '.';
+			} else if (isset($this->_config['alias'])) {
+				$field .=  $this->_config['alias'] . '.';
 			}
+
+			$field .= $raw['field'];
+
+			if ($raw['alias']) {
+				$field .= ' as ' . $raw['alias'];
+			}
+
+			$fields[] = $field;
 		}
 
 		return $fields;

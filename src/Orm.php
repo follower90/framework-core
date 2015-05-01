@@ -7,7 +7,8 @@ use Core\Database\PDO;
 
 abstract class Orm
 {
-	use Relations;
+	use Query;
+	use Objects;
 
 	private static $_db;
 
@@ -19,11 +20,12 @@ abstract class Orm
 	public static function find($class, $filters = [], $values = [], $params = [])
 	{
 		self::_connect();
-		$data = self::_prepareQuery($class, $filters, $values, $params);
-		$rows = self::$_db->rows($data['query'], $data['params']);
+
+		$query = self::_makeQuery($class, $filters, $values, $params);
+		$rows = self::$_db->rows($query);
 
 		foreach ($rows as $key => $row) {
-			$query = self::_prepareLanguageQuery($class, $row['id']);
+			$query = self::_makeLanguageQuery($class, $row['id']);
 			$langRows = self::$_db->rows($query);
 
 			foreach ($langRows as $langRow) {
