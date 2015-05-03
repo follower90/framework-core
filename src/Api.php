@@ -2,7 +2,7 @@
 
 namespace Core;
 
-class Api extends Controller;
+class Api extends Controller
 {
 	protected $request;
 
@@ -34,10 +34,11 @@ class Api extends Controller;
 		}
 		
 		echo json_encode($data);
+		exit;
 	}
 
 	public function _request()
 	{
-		return array_merge($_POST, $_GET, $_REQUEST);
+		return array_merge($_POST, $_GET);
 	}
 }
