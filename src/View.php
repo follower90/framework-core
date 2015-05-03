@@ -3,6 +3,8 @@ namespace Core;
 
 class View {
 
+	use Html;
+	
 	private $_templateOptions = [];
 
 	public function setOptions($data)
@@ -23,6 +25,6 @@ class View {
 		$contents = ob_get_contents();
 		ob_end_clean();
 
-		echo $contents;
+		return $contents;
 	}
 }
