@@ -17,4 +17,9 @@ class Cookie {
 
 		setcookie($name, $value, time() + (int)$expire, $path, $domain);
 	}
+
+	public static function remove($name)
+	{
+		setcookie($name, '', time() - 60 * 60 * 24 * 365);
+	}
 }

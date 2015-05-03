@@ -2,41 +2,61 @@
 
 namespace Core;
 
-use Core\Database\PDO;
+use Core\Database\MySQL;
 
 class Authorize
 {
-	private $_db;
-	private $_authorized;
+	const PASSWORD_SALT = '$WEujdgsju90w4j90';
+	const HASH_SALT = 'KP(4yppeP(WY$il9-y';
 
-	public function __construct()
+	private $_entity;
+	private $_hash;
+	private $_user;
+
+	public function __construct($entity)
 	{
-		$this->_db = PDO::getInstance();
-		$this->_authorized = false;
+		$this->_entity = $entity;
 	}
 
-	public function login()
+	public function login($login, $password)
 	{
+		if ($user = Orm::fineOne($this->_entity, ['login', 'password'], [$login, static::passwordHash($password)])) {
+			
+			$this->_hash = $this->hash($login, $password);
+			$this->_user = $user;
 
+			MySQL::insert('User_Session', ['entity' => $this->_entity, 'hash' => $this->_hash]);
+			Cookie::set('oauth_hash', $this->_hash);
+		}
 	}
 
 	public function logout()
 	{
-
+		MySQL::delete('User_Session', ['entity' => $this->_entity, 'hash' => $hash]);
+		Cookie::remove('oauth_hash');
+		$this->_user = null;
 	}
 
-	public function checkLoginState($entity)
+	public function getUser()
 	{
-		$oauthHash = Cookie::get('oauth_hash');
-		if ($session = Orm::findOne('User_Session', ['hash', 'entity'], [$oauthHash, $entity])) {
-			return Orm::load($entity, $session->getValue('userId'));
+		if (!$this->_user) {
+			$oauthHash = Cookie::get('oauth_hash');
+
+			if ($session = Orm::findOne('User_Session', ['hash', 'entity'], [$oauthHash, $this->_entity])) {
+				$this->_user = Orm::load($this->_entity, $session->getValue('userId'));
+			}
 		}
 
-		return false;
+		return $this->_user;
 	}
 
-	public function isAuthorized()
+	public static function passwordHash($password)
 	{
-		return $this->_authorized;
+		return md5($password . static::PASSWORD_SALT);
+	}
+
+	protected function hash($login, $password)
+	{
+		return md5($this->_entity . $login . $password . static::HASH_SALT);
 	}
 }

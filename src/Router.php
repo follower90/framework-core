@@ -16,7 +16,7 @@ class Router
 		}
 
 		foreach (static::$_routes as $route) {
-			if (static::_matches($route['url'], $url)) {
+			if (static::_matches($route['url'], $url) && mb_strtolower($_SERVER['REQUEST_METHOD']) == $route['method']) {
 				return [
 					'controller' => $route['controller'],
 					'action' => $route['action'],
@@ -36,6 +36,7 @@ class Router
 	{
 		static::$_routes[] = [
 			'url' => $request[0],
+			'method' => $request[1],
 			'controller' => $controller,
 			'action' => $action,
 			'args' => $params,

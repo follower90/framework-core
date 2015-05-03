@@ -9,6 +9,10 @@ class App
 	private $_entryPoint;
 	private $_debugParam;
 
+	private static $_user = false;
+
+	public static $authorizer;
+
 	public function __construct($entryPoint)
 	{
 		$this->_entryPoint = $entryPoint;
@@ -42,17 +46,27 @@ class App
 		}
 	}
 
+	public static function setUser()
+	{
+		static::$_user = $user;
+	}
+
+	public static function getUser()
+	{
+		return static::$_user;
+	}
+
 	private function _setupDebugMode()
 	{
 		if (isset($_GET['cmsDebug'])) {
 			$this->_debugParam = $_GET['cmsDebug'];
 			switch ($this->_debugParam) {
 				case 'on':
-					Cookie::set('cmsDebug', 'on', 31566000);
+					Cookie::set('cmsDebug', 'on');
 					break;
 
 				case 'off':
-					Cookie::set('cmsDebug', 'on', -31566000);
+					Cookie::remove('cmsDebug');
 					break;
 			}
 		}
