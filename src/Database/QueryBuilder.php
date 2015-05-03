@@ -187,7 +187,11 @@ class QueryBuilder {
 				}
 
 				if (count($raw['args']) > 1) {
-					$where .= 'in (' . implode(',', $raw['args']) . ')';
+					if ($raw['action'] == 'between') {
+						$where .= $raw['args'][0] . ' and ' . $raw['args'][1];
+					} else {
+						$where .= ' in (' . implode(',', $raw['args']) . ')';
+					}
 				} else {
 					$value = reset($raw['args']);
 

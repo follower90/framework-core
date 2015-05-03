@@ -22,7 +22,7 @@ class Collection {
 	{
 		$data = [];
 		foreach ($this->_objects as $object) {
-			$data[] = $object->getValues();
+			$data[$object->getId()] = $object->getValues();
 		}
 
 		return $data;

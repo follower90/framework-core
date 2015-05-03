@@ -15,6 +15,7 @@ class Authorize
 	public function __construct($entity)
 	{
 		$this->_entity = $entity;
+		$this->getUser();
 	}
 
 	public function login($login, $password, $hashfunction)
@@ -30,9 +31,11 @@ class Authorize
 
 	public function logout()
 	{
-		MySQL::delete('User_Session', ['entity' => $this->_entity, 'userId' => $this->_user->getId()]);
-		Cookie::remove('oauth_hash');
-		$this->_user = null;
+		if ($this->_user = $this->getUser()) {
+			MySQL::delete('User_Session', ['entity' => $this->_entity, 'userId' => $this->_user->getId()]);
+			Cookie::remove('oauth_hash');
+			$this->_user = null;
+		}
 	}
 
 	public function getUser()

@@ -74,7 +74,23 @@ trait Query
 			}
 
 			$condition = $values[$count];
-			$queryBuilder->where($alias. '.' .$param, $condition);
+			$action = '=';
+
+			$firstChar = $param[0];
+			$lastChar = $param[strlen($param) - 1];
+
+			if ($firstChar == '>' && $lastChar == '<') {
+				$param = substr($param, 1, -1);
+				$action = 'between';
+			} else if ($lastChar == '>') {
+				$param = substr($param, 0, -1);
+				$action = '>';
+			} else if ($lastChar == '<') {
+				$param = substr($param, 0, -1);
+				$action = '>';
+			}
+
+			$queryBuilder->where($alias. '.' .$param, $condition, $action);
 			$count++;
 		}
 	}

@@ -2,7 +2,7 @@
 
 namespace Core;
 
-class Api
+class Api extends Controller;
 {
 	protected $request;
 
