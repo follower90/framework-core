@@ -43,6 +43,11 @@ class Router
 		];
 	}
 
+	public static function redirect($url, $headers = [])
+	{
+		header('Location: ' . $url);
+	}
+
 	private static function _matches($route, $url)
 	{
 		$routeChunks = explode('/', $route);

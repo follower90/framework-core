@@ -34,4 +34,10 @@ class Controller
 
 		return $params;
 	}
+
+	public function request($key)
+	{
+		$request = array_merge($_POST, $_GET, $_REQUEST);
+		return isset($request[$key]) ? $request[$key] : false;
+	}
 }
