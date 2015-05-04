@@ -86,7 +86,7 @@ class App
 			$data['files'] = $debug->getFilesLog();
 
 			$view = new View();
-			echo $view->render('vendor/follower/core/tpl/debug.phtml', $data);
+			echo $view->render(Config::get('rootPath') . '/vendor/follower/core/tpl/debug.phtml', $data);
 		}
 	}
 
