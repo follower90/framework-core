@@ -15,7 +15,6 @@ class Authorize
 	public function __construct($entity)
 	{
 		$this->_entity = $entity;
-		$this->getUser();
 	}
 
 	public function login($login, $password, $hashfunction)
@@ -40,11 +39,16 @@ class Authorize
 
 	public function getUser()
 	{
+		if ($user = App::getUser()) {
+			$this->_user = $user;
+		}
+
 		if (!$this->_user) {
 			$oauthHash = Cookie::get('oauth_hash');
 
 			if ($session = Orm::findOne('User_Session', ['hash', 'entity'], [$oauthHash, $this->_entity])) {
 				$this->_user = Orm::load($this->_entity, $session->getValue('userId'));
+				App::setUser($this->_user);
 			}
 		}
 

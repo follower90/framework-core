@@ -11,8 +11,6 @@ class App
 
 	private static $_user = false;
 
-	public static $authorizer;
-
 	public function __construct($entryPoint)
 	{
 		$this->_entryPoint = $entryPoint;
@@ -37,16 +35,19 @@ class App
 		$class = '\\' . $project . '\\' . $this->_entryPoint->getType() . '\\' . $action['controller'];
 		$method = 'method' . ucfirst($action['action']);
 
-		$controller = new $class();
-
-		if (method_exists($class, $method)) {
-			return call_user_func([$controller, $method]);
-		} else {
-			throw new \Exception('Error');
+		if (!class_exists($class)) {
+			throw new \Exception('Controller was not found');
 		}
+
+		if (!method_exists($class, $method)) {
+			throw new \Exception('Method was not found');
+		}
+
+		$controller = new $class();
+		return call_user_func([$controller, $method]);
 	}
 
-	public static function setUser()
+	public static function setUser($user)
 	{
 		static::$_user = $user;
 	}
