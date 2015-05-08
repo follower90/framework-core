@@ -18,7 +18,9 @@ class App
 
 	public function __destruct()
 	{
-		$this->showDebugConsole($this->_debugParam);
+		if ($this->_entryPoint->debug()) {
+			$this->showDebugConsole($this->_debugParam);
+		}
 	}
 
 	public function run()
@@ -32,7 +34,7 @@ class App
 		$project = Config::get('project');
 		$action = Router::getAction();
 
-		$class = '\\' . $project . '\\' . $this->_entryPoint->getType() . '\\' . $action['controller'];
+		$class = $this->_entryPoint->getLib() . '\\' . $action['controller'];
 		$method = 'method' . ucfirst($action['action']);
 
 		if (!class_exists($class)) {
@@ -44,7 +46,10 @@ class App
 		}
 
 		$controller = new $class();
-		return call_user_func([$controller, $method]);
+
+		echo $this->_entryPoint->output(
+			call_user_func([$controller, $method])
+		);
 	}
 
 	public static function setUser($user)

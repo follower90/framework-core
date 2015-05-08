@@ -26,17 +26,6 @@ class Api extends Controller
 		return self::output($response);
 	}
 
-	public function output($data)
-	{
-		$debugMode = Cookie::get('cmsDebug') || $this->request['cmsDebug'] == 'on';
-		if (!$debugMode) {
-			header('Content-Type: application/json');
-		}
-		
-		echo json_encode($data);
-		exit;
-	}
-
 	public function _request()
 	{
 		return array_merge($_POST, $_GET);
