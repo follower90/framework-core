@@ -155,7 +155,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals(
 			$this->q->composeSelectQuery(),
-			'select tb.id, tb.title as name from Product tb left join product_catalog pc on pc.catalog = tb.id where tb.somevalue = in (124,125) and max(tb.count) < 20 order by tb.id asc limit 20'
+			'select tb.id, tb.title as name from Product tb left join product_catalog pc on pc.catalog = tb.id where tb.somevalue in (124,125) and max(tb.count) < 20 order by tb.id asc limit 20'
 		);
 	}
 }

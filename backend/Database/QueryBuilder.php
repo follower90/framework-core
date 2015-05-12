@@ -172,8 +172,6 @@ class QueryBuilder {
 		$conditions = [];
 		if (!empty($this->_config['where'])) {
 			foreach ($this->_config['where'] as $raw) {
-				$where = $raw['value'] . ' ' . $raw['action'] . ' ';
-
 				if (!is_array($raw['args'])) {
 					$raw['args'] = [$raw['args']];
 				}
@@ -188,17 +186,17 @@ class QueryBuilder {
 
 				if (count($raw['args']) > 1) {
 					if ($raw['action'] == 'between') {
-						$where .= $raw['args'][0] . ' and ' . $raw['args'][1];
+						$where = $raw['value'] . ' between '. $raw['args'][0] . ' and ' . $raw['args'][1];
 					} else {
-						$where .= ' in (' . implode(',', $raw['args']) . ')';
+						$where = $raw['value'] . ' in (' . implode(',', $raw['args']) . ')';
 					}
 				} else {
 					$value = reset($raw['args']);
 
 					if ($value == 'null') {
-						$where .= 'is null';
+						$where = $raw['value'] . ' is null';
 					} else {
-						$where .= $value;
+						$where = $raw['value'] . ' ' .$raw['action'] . ' ' . $value;
 					}
 				}
 

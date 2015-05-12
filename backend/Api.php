@@ -23,7 +23,7 @@ class Api extends Controller
 			];
 		}
 
-		return self::output($response);
+		return $response;
 	}
 
 	public function _request()

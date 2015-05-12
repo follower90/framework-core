@@ -34,7 +34,7 @@ class Object
 
 	public function relations()
 	{
-
+		return [];
 	}
 
 	public function save()
@@ -97,7 +97,7 @@ class Object
 			$relation = $relations[$alias];
 
 			if (!isset($relation['multiple']) || $relation['multiple'] == false) {
-				return Orm::load($relation['class'], $relation['field']);
+				return Orm::load($relation['class'], $this->getValue($relation['field']));
 			}
 		}
 

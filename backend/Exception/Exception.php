@@ -6,7 +6,6 @@ class Exception extends \Exception
 {
 	public function __construct(\Exception $e)
 	{
-		//TODO
-		var_dump($e);
+		echo json_encode([$e->getCode(), $e->getMessage()]);
 	}
 }

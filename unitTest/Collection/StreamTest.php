@@ -20,7 +20,7 @@
  * @it should return empty collection if filter doesn't match
  */
 
-use Core\Object\Translate;
+use Core\Object\User;
 use Core\Collection;
 
 class StreamTest extends \PHPUnit_Framework_TestCase
@@ -33,25 +33,22 @@ class StreamTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		$this->obj1 = new Translate();
+		$this->obj1 = new User();
 		$this->obj1->setValues([
-			'key' => 'test1',
-			'value' => 'value1',
-			'comment' => 'test object 1',
+			'name' => 'test1',
+			'password' => 'value1',
 		]);
 
-		$this->obj2 = new Translate();
+		$this->obj2 = new User();
 		$this->obj2->setValues([
-			'key' => 'test2',
-			'value' => 'value2',
-			'comment' => 'test object 2',
+			'name' => 'test2',
+			'password' => 'value2',
 		]);
 
-		$this->obj3 = new Translate();
+		$this->obj3 = new User();
 		$this->obj3->setValues([
-			'key' => 'test3',
-			'value' => 'value3',
-			'comment' => 'test object 3',
+			'name' => 'test3',
+			'password' => 'value3',
 		]);
 
 		$this->collection = new Collection([$this->obj1, $this->obj2, $this->obj3]);
@@ -100,7 +97,7 @@ class StreamTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testReturnFilteredCollection()
 	{
-		$filter = function(&$obj) { return in_array($obj->getValue('value'), ['value1', 'value3']); };
+		$filter = function(&$obj) { return in_array($obj->getValue('password'), ['value1', 'value3']); };
 
 		$stream = $this->collection
 			->stream()
@@ -118,8 +115,8 @@ class StreamTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testReturnMultiFilteredCollection()
 	{
-		$filter1 = function(&$obj) { return isset($obj->getValues()['key']); };
-		$filter2 = function(&$obj) { return $obj->getValue('value') == 'value2'; };
+		$filter1 = function(&$obj) { return isset($obj->getValues()['name']); };
+		$filter2 = function(&$obj) { return $obj->getValue('password') == 'value2'; };
 
 		$stream = $this->collection
 			->stream()
@@ -138,7 +135,7 @@ class StreamTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testReturnEmptyCollection()
 	{
-		$filter = function(&$obj) { return $obj->getValue('value') == 1000; };
+		$filter = function(&$obj) { return $obj->getValue('password') == 1000; };
 
 		$stream = $this->collection
 			->stream()

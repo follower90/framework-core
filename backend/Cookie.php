@@ -2,19 +2,15 @@
 
 namespace Core;
 
-class Cookie {
-	
+class Cookie
+{
 	public static function get($key)
 	{
 		return isset($_COOKIE[$key]) ? $_COOKIE[$key] : false;
 	}
 
-	public static function set($name, $value, $expire = false, $path = "/", $domain = null)
+	public static function set($name, $value, $expire = 31536000, $path = "/", $domain = null)
 	{
-		if (!$expire) {
-			$expire = 60 * 60 * 24 * 365;
-		}
-
 		setcookie($name, $value, time() + (int)$expire, $path, $domain);
 	}
 

@@ -34,7 +34,6 @@ class App
 		$this->_setErrorHandlers();
 		$this->_setFileIncludeHandler();
 
-		$project = Config::get('project');
 		$action = Router::getAction();
 
 		$class = $this->_entryPoint->getLib() . '\\' . $action['controller'];
@@ -51,7 +50,7 @@ class App
 		$controller = new $class();
 
 		echo $this->_entryPoint->output(
-			call_user_func([$controller, $method])
+			call_user_func([$controller, $method], $controller->request())
 		);
 	}
 

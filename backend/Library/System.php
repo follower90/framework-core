@@ -3,8 +3,6 @@
 namespace Core\Library;
 
 use Core\Debug;
-use Core\Cookie;
-use Core\View;
 
 class System
 {

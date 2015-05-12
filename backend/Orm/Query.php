@@ -4,17 +4,6 @@ namespace Core;
 
 trait Query
 {
-	public static function detectClass($class)
-	{
-		$className = '\\' . Config::get('project') . '\\Object\\' . ucfirst($class);
-
-		if (!class_exists($className)) {
-			$className = '\\Core\\Object\\' . ucfirst($class);
-		}
-
-		return $className;
-	}
-
 	protected static function _makeLanguageQuery($class, $id)
 	{
 		$language = Config::get('site.language');
@@ -29,7 +18,7 @@ trait Query
 
 	protected static function _makeQuery($class, $filters, $values, $params)
 	{
-		$queryBuilder = new \Core\Database\QueryBuilder(static::$_object->table());
+		$queryBuilder = new \Core\Database\QueryBuilder($class);
 
 		self::buildConditions($queryBuilder, $filters, $values);
 

@@ -6,8 +6,7 @@ use Core\Config;
 
 class Mail
 {
-
-	static function send($name_from, $email_from, $name_to, $email_to, $subject, $body)
+	public static function send($name_from, $email_from, $name_to, $email_to, $subject, $body)
 	{
 		$data_charset = 'utf-8';
 		$send_charset = 'windows-1251';
@@ -36,16 +35,7 @@ class Mail
 		return mail($to, $subject, $body, $headers, "-f info@" . $_SERVER['HTTP_HOST']);
 	}
 
-	static function mime_header_encode($str, $data_charset, $send_charset)
-	{
-		if ($data_charset != $send_charset) {
-			$str = iconv($data_charset, $send_charset, $str);
-		}
-
-		return '=?' . $send_charset . '?B?' . base64_encode($str) . '?=';
-	}
-
-	static function errorMail($text)
+	public static function errorMail($text)
 	{
 		$contact_mail = Config::get('email_error');
 		$url = $_SERVER['REQUEST_URI'];
@@ -73,4 +63,15 @@ class Mail
 
 		mail($contact_mail, $subject, $body, $header);
 	}
+
+	private static function mime_header_encode($str, $data_charset, $send_charset)
+	{
+		if ($data_charset != $send_charset) {
+			$str = iconv($data_charset, $send_charset, $str);
+		}
+
+		return '=?' . $send_charset . '?B?' . base64_encode($str) . '?=';
+	}
+
+
 }

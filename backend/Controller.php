@@ -15,35 +15,18 @@ class Controller
 		$this->view = new View();
 	}
 
-	function params($key = false)
-	{
-		$uri = explode('/', $_SERVER['REQUEST_URI']);
-		$params = [];
-
-		for ($i = 1; $i < count($uri); ) {
-			$params[$uri[$i]] = $uri[++$i];
-			++$i;
-		}
-
-		if ($key) {
-			return $params[$key];
-		}
-
-		return $params;
-	}
-
 	public function request($key = false)
 	{
 		$request = array_merge($_POST, $_GET);
 
 		if ($key) {
 			return isset($request[$key]) ? $request[$key] : false;
-		} else {
-			return $request;
 		}
+
+		return $request;
 	}
 
-	protected function callApi($apiPath, $arguments)
+	protected function execute($apiPath, $arguments)
 	{
 		$apiPath = explode(':', $apiPath);
 

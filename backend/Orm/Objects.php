@@ -7,6 +7,23 @@ trait Objects
 	protected static $_table;
 	protected static $_fields;
 
+	public static function detectClass($class)
+	{
+		$className = '\\' . Config::get('project') . '\\Object\\' . ucfirst($class);
+
+		if (!class_exists($className)) {
+			$className = '\\Core\\Object\\' . ucfirst($class);
+		}
+
+		return $className;
+	}
+
+	public static function checkRelation($object, $alias)
+	{
+		//todo check if relation and field of related object is exists, and return true/false. try to support nested relations
+		return false;
+	}
+
 	protected static function _getObject($class)
 	{
 		$className = self::detectClass($class);
