@@ -75,8 +75,6 @@ class Debug
 		$trace = debug_backtrace();
 		$source = $trace[1];
 
-		echo $dump;
-
 		$this->_cms_dumps[] = [
 			'file' => $source['file'],
 			'line' => $source['line'],
