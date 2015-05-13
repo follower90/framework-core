@@ -15,7 +15,10 @@
 		render: function () {
 			var container = vf.dom.find1(this.container);
 			if (container) {
-				container.innerHTML = vf.utils.render(vf.templates[this.template], this.templateOptions);
+				var template = vf.utils.loadTemplate(this.template),
+					rendered = vf.utils.render(template, this.templateOptions);
+
+				container.innerHTML = rendered;
 			}
 
 			this._renderInlineWidgets();

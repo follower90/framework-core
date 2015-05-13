@@ -25,6 +25,7 @@
 			console.error('vfDebugger: ' + text);
 		},
 
+
 		utils: {
 			extend: function (obj1, obj2) {
 				for (var p in obj2) {
@@ -42,10 +43,22 @@
 				return obj1;
 			},
 
+			loadTemplate: function(template) {
+				var html = vf.modules.Api.get('public/test/js/templates/' + template + '.tpl'),
+					stringContainingXMLSource = html.responseText;
+
+				var parser = new DOMParser();
+				dom = parser.parseFromString(stringContainingXMLSource, "application/xml");
+				console.log(dom.documentElement.innerHTML);
+				return dom.documentElement.innerHTML;
+
+			},
+
 			render: function (template, vars) {
 				for (var i in vars) {
 					template = template.replace('{{' + i + '}}', vars[i]);
 				}
+
 
 				return template;
 			}
