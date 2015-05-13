@@ -41,7 +41,7 @@ trait Objects
 		return $object;
 	}
 
-	protected static function fillCollection($class, $data)
+	protected static function fillCollection($class, $data, $params)
 	{
 		$objects = [];
 
@@ -52,6 +52,8 @@ trait Objects
 
 		});
 
-		return new Collection($objects);
+		$collection = new Collection($objects);
+		self::$_cache->insert($params, $collection);
+		return $collection;
 	}
 }

@@ -5,13 +5,14 @@ namespace Core;
 use Core\Database\MySQL;
 use Core\Database\PDO;
 
-abstract class Orm
+class Orm
 {
 	use Query;
 	use Objects;
 
 	protected static $_db;
 	protected static $_object;
+	protected static $_cache;
 
 	private static function _connect()
 	{
@@ -21,10 +22,14 @@ abstract class Orm
 	public static function find($class, $filters = [], $values = [], $params = [])
 	{
 		self::_connect();
+		self::_initCache();
 
 		$className = self::detectClass($class);
 		static::$_object = new $className();
-		static::$_object->fields();
+
+		if ($result = self::$_cache->get($argv)) {
+			return $result;
+		}
 
 		$query = self::_makeQuery($class, $filters, $values, $params);
 		$rows = self::$_db->rows($query);
@@ -42,7 +47,7 @@ abstract class Orm
 			}
 		}
 
-		return self::fillCollection($class, $rows);
+		return self::fillCollection($class, $rows, $argv);
 	}
 
 	public static function findOne($class, $filters = [], $values = [])
@@ -65,4 +70,12 @@ abstract class Orm
 		MySQL::delete($object->table(), ['id' => $id]);
 		return true;
 	}
+
+	private static function _initCache()
+	{
+		if (!self::$_cache) {
+			self::$_cache = new OrmCache();
+		}
+	}
+
 }
