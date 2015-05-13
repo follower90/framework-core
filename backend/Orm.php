@@ -24,10 +24,14 @@ class Orm
 		self::_connect();
 		self::_initCache();
 
+		$cacheParams = [$class, $filters, $values, $params];
+
 		$className = self::detectClass($class);
 		static::$_object = new $className();
 
-		if ($result = self::$_cache->get($argv)) {
+
+		\Core\Library\System::dump($class);
+		if ($result = self::$_cache->get($cacheParams)) {
 			return $result;
 		}
 
@@ -35,7 +39,7 @@ class Orm
 		$rows = self::$_db->rows($query);
 
 		if (!isset($fields['languageTable'])) {
-			return self::fillCollection($class, $rows);
+			return self::fillCollection($class, $rows, $cacheParams);
 		}
 
 		foreach ($rows as $key => $row) {
@@ -47,7 +51,7 @@ class Orm
 			}
 		}
 
-		return self::fillCollection($class, $rows, $argv);
+		return self::fillCollection($class, $rows, $cacheParams);
 	}
 
 	public static function findOne($class, $filters = [], $values = [])

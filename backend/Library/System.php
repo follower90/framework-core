@@ -6,14 +6,18 @@ use Core\Debug;
 
 class System
 {
-	public static function vardump($array, $level = 0)
+	public static function vardump($data, $level = 0)
 	{
-		if (empty($array)) {
+		if (empty($data)) {
 			echo '<i>(empty)</i><br/>';
 			return;
 		}
 
-		foreach ($array as $key => $sub) {
+		if (!is_array($data)) {
+			echo $data;
+		}
+
+		foreach ($data as $key => $sub) {
 			echo str_repeat('.', $level) . ' <i>[' . $key . ']</i> -> ';
 			if (!is_array($sub)) {
 				echo '\'' . htmlspecialchars($sub) . '\'<br/>';

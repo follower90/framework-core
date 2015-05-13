@@ -73,7 +73,9 @@ class Debug
 	public function logDump($dump)
 	{
 		$trace = debug_backtrace();
-		$source = array_shift($trace);
+		$source = $trace[1];
+
+		echo $dump;
 
 		$this->_cms_dumps[] = [
 			'file' => $source['file'],

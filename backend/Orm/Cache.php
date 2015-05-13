@@ -14,7 +14,6 @@ class OrmCache
 
 	public function get($params)
 	{
-		\Core\Library\System::vardump('geting data' . implode(',', $params));
 		$hash = $this->_hashParams($params);
 		return isset($this->_data[$hash]) ? $this->_data[$hash] : false;
 	}
