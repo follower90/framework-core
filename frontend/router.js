@@ -23,6 +23,8 @@
 					if (widget) {
 						widget.load(params);
 						widget.render();
+					} else {
+						vf.error('Widget: ' + route.page + ' not found');
 					}
 				}
 			}

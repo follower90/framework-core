@@ -21,6 +21,10 @@
 			}
 		},
 
+		error: function(text) {
+			console.error('vfDebugger: ' + text);
+		},
+
 		utils: {
 			extend: function (obj1, obj2) {
 				for (var p in obj2) {
