@@ -25,7 +25,7 @@ vf.module('Widget', {
 	},
 
 	renderInlineWidgets: function() {
-		for (var alias in this.inlineWidgets) {
+		for (var alias in this.inlineWidgets) {
 			var widget = this.inlineWidgets[alias];
 
 			if (widget) {
