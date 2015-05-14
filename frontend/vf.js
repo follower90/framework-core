@@ -3,14 +3,13 @@
 
 		widgets: {},
 		modules: {},
-		templates: {},
+		options: {},
 
 		module: function (name, component) {
 			this.modules[name] = component;
 		},
 
 		widget: function (name, widget) {
-
 			this.widgets[name] = vf.utils.extend(vf.utils.extend({}, vf.modules.Widget), widget);
 			this.widgets[name].inlineWidgets = {};
 
@@ -24,7 +23,6 @@
 		error: function(text) {
 			console.error('vfDebugger: ' + text);
 		},
-
 
 		utils: {
 			extend: function (obj1, obj2) {
@@ -43,22 +41,17 @@
 				return obj1;
 			},
 
-			loadTemplate: function(template) {
-				var html = vf.modules.Api.get('public/test/js/templates/' + template + '.tpl'),
-					stringContainingXMLSource = html.responseText;
-
-				var parser = new DOMParser();
-				dom = parser.parseFromString(stringContainingXMLSource, "application/xml");
-				console.log(dom.documentElement.innerHTML);
-				return dom.documentElement.innerHTML;
-
+			loadTemplate: function(template, callback) {
+				vf.modules.Api.get(vf.options.templates + template + '.tpl', 'text/html')
+					.response(function(html) {
+						callback(html);
+					});
 			},
 
 			render: function (template, vars) {
 				for (var i in vars) {
 					template = template.replace('{{' + i + '}}', vars[i]);
 				}
-
 
 				return template;
 			}
