@@ -5,6 +5,8 @@
 		modules: {},
 		options: {},
 
+		user: false,
+
 		module: function (name, component) {
 			this.modules[name] = component;
 		},

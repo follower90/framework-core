@@ -19,7 +19,8 @@ vf.module('Widget', {
 	},
 
 	load: function() {
-		this.beforeRender(this.params);
+		this.includeInlineWidgets();
+		this.beforeRender();
 		this.render();
 		this.afterRender();
 	},
@@ -28,17 +29,23 @@ vf.module('Widget', {
 
 	},
 
+	beforeActivate: function(params) {
+
+	},
+
 	activate: function(params) {
 		this.params = params;
+
 		if (this.dom) {
 			this.load();
 			this.renderInlineWidgets();
 		} else {
+			this.beforeActivate(this.params);
 			this.loadTemplate();
 		}
 	},
 
-	loadTemplate: function (params) {
+	loadTemplate: function () {
 		vf.utils.loadTemplate(this.template, function(template) {
 			this.dom = template;
 			this.load(this.params);
@@ -46,20 +53,22 @@ vf.module('Widget', {
 		}.bind(this));
 	},
 
-	renderInlineWidgets: function() {
-
+	includeInlineWidgets: function() {
 		this.inlineWidgets = {};
 
 		for (var alias in this.widgets) {
 			var inlineWidget = this.widgets[alias];
 
 			if (inlineWidget.widget) {
-				widget = vf.widgets[inlineWidget.widget];
-				this.inlineWidgets[alias] = widget;
+				this.inlineWidgets[alias] = vf.widgets[inlineWidget.widget];
 			} else {
 				this.inlineWidgets[alias] = vf.utils.extend(vf.utils.extend({}, vf.modules.Widget), inlineWidget);
 			}
 		}
+
+	},
+
+	renderInlineWidgets: function() {
 
 		for (var w in this.inlineWidgets) {
 			var widget = this.inlineWidgets[w];

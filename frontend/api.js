@@ -2,26 +2,28 @@ vf.module('Api', {
 	get: function (url, type, callback) {
 		this._api().get(url, type, callback);
 	},
-	post:  function (url, type, params, callback) {
+	post: function (url, type, params, callback) {
 		this._api().post(url, type, params, callback);
 	},
 
-	_api: function() {
+	_api: function () {
 		var Api = function () {
-
 			return {
+				_contentType: '',
+				_callback: function () {
+				},
 
-				get: function (url, type, callback) {
+				get: function (url, contentType, callback) {
 					this._request(url, 'GET');
 					this._callback = callback;
-					this._type = type;
+					this._contentType = contentType;
 					return this;
 				},
 
-				post: function (url, type, params, callback) {
+				post: function (url, contentType, params, callback) {
 					this._request(url, 'POST', params);
 					this._callback = callback;
-					this._type = type;
+					this._contentType = contentType;
 					return this;
 				},
 
@@ -44,14 +46,17 @@ vf.module('Api', {
 					xmlHttp.onreadystatechange = function () {
 						if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
 							if (api._callback) {
-								switch (api._type) {
+								switch (api._contentType) {
 									case 'text/html':
 										var parser = new DOMParser(),
 											dom = parser.parseFromString(xmlHttp.responseText, "text/html"),
 											result = dom.body.innerHTML;
 										break;
+									case 'json':
+											result = JSON.parse(xmlHttp.responseText);
+										break;
 									default:
-										result = xmlHttp;
+										result = xmlHttp.responseText;
 										break;
 								}
 
