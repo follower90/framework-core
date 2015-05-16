@@ -11,13 +11,6 @@
 
 		widget: function (name, widget) {
 			this.widgets[name] = vf.utils.extend(vf.utils.extend({}, vf.modules.Widget), widget);
-			this.widgets[name].inlineWidgets = {};
-
-			var current = this.widgets[name];
-
-			for (var alias in current.widgets) {
-				current.inlineWidgets[alias] = vf.utils.extend(vf.utils.extend({}, current), current.widgets[alias]);
-			}
 		},
 
 		error: function(text) {
@@ -42,10 +35,7 @@
 			},
 
 			loadTemplate: function(template, callback) {
-				vf.modules.Api.get(vf.options.templates + template + '.tpl', 'text/html')
-					.response(function(html) {
-						callback(html);
-					});
+				return vf.modules.Api.get(vf.options.templates + template + '.tpl', 'text/html', callback);
 			},
 
 			render: function (template, vars) {

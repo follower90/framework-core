@@ -19,8 +19,7 @@ vf.module('Router', {
 				params = vf.utils.extend(args, params);
 
 				if (widget) {
-					widget.load(params);
-					widget.render();
+					widget.activate(params);
 				} else {
 					vf.error('Widget: ' + route.page + ' not found');
 				}
@@ -56,5 +55,9 @@ vf.module('Router', {
 
 
 window.onload = function () {
+	vf.modules.Router.run();
+};
+
+window.onhashchange = function() {
 	vf.modules.Router.run();
 };
