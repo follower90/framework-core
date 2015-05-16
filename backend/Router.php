@@ -15,6 +15,10 @@ class Router
 			$url = str_replace('/api/', '', $url);
 		}
 
+		if ($url == '/api.php') {
+			$url = $_GET['method'];
+		}
+
 		foreach (static::$_routes as $route) {
 			if (static::_matches($route['url'], $url) /*&& mb_strtolower($_SERVER['REQUEST_METHOD']) == $route['method']*/) {
 				return [
