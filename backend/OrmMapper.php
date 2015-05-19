@@ -12,6 +12,7 @@ class OrmMapper
 	private $_offset;
 	private $_limit;
 
+	private $_map;
 	private $_allowedFields = [];
 
 	private function __construct($class)
@@ -37,7 +38,7 @@ class OrmMapper
 
 		$allowedFields = $this->_allowedFields;
 		$fields = array_filter($fields, function ($item) use ($allowedFields) {
-			if (in_array($item, $allowedFields)) {
+			if (in_array($item, $allowedFields) || strpos($item, '.') > 0) {
 				return true;
 			}
 
@@ -55,9 +56,9 @@ class OrmMapper
 		$allowedFilters = $this->_allowedFields;
 		$num = 0;
 
-		foreach ($keys as $key => $filter) {
-			if (in_array($filter, $allowedFilters) && !empty($values[$num])) {
-				$this->_filters[] = [$filter => $values[$num]];
+		foreach ($keys as $key) {
+			if (in_array($key, $allowedFilters) && !empty($values[$num])) {
+				$this->_filters[$key] = $values[$num];
 			}
 
 			$num++;
@@ -81,7 +82,40 @@ class OrmMapper
 
 	public function load()
 	{
-		//todo - apply fields, filters, limit, offset, etc. and fill collection using Orm
+		//todo - rewrite this stinky shit
+
+		$objects = Orm::find($this->_object->table(), array_keys($this->_filters), array_values($this->_filters))->getCollection();
+		$this->_map = [];
+
+		foreach ($objects as $object) {
+			$item = [];
+
+			foreach ($this->_fields as $field) {
+
+				if (strpos($field, '.') > 0) {
+					$relation = explode('.', $field)[0];
+					$field = explode('.', $field)[1];
+
+					$related = $object->getRelated($relation);
+					$item[$relation][$field] = $related->getValue($field);
+				} else {
+					$item[$field] = $object->getValue($field);
+				}
+			}
+
+			$this->_map[] = $item;
+		}
+	}
+
+	public function getDataMap()
+	{
+		$this->load();
+
+		if ($this->_limit == 1) {
+			return $this->_map[0];
+		}
+
+		return $this->_map;
 	}
 
 	public function getRelatedMapper($alias)

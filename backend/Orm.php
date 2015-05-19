@@ -19,6 +19,62 @@ class Orm
 		self::$_db = PDO::getInstance();
 	}
 
+	public static function create($class)
+	{
+		$class = self::detectClass($class);
+		return new $class();
+	}
+
+	public static function save(Object $object)
+	{
+		if (!$object->isModified()) {
+			return false;
+		}
+
+		$data = [];
+		$langData = [];
+
+		foreach ($object->getValues() as $field => $value) {
+			if ($field != 'languageTable') {
+				$data[$field] = $value;
+			}
+		}
+
+		$table = $object->table();
+		$langTable = $object->getValue('languageTable');
+		if (isset($langTable)) {
+			foreach ($langTable as $field => $value) {
+				$langData[] = ['field' => $field, 'value'=> $value];
+			}
+		}
+
+		try {
+			if ($id = $object->getId()) {
+				MySQL::update($table, $data, ['id' => $id]);
+			} else {
+				$id = MySQL::insert($table, $data);
+			}
+
+		} catch (\Exception $e) {
+			throw new \Exception('Error inserting data to ' . $table, 1);
+		}
+
+		if ($langData) {
+			$language = Config::get('site.language');
+
+			foreach ($langData as $values) {
+				if ($id = $object->getId()) {
+					MySQL::update($table . '_Lang', $values, [strtolower($table) . '_id' => $id, 'lang' => $language, 'field' => $values['field']]);
+				} else {
+					MySQL::insert($table . '_Lang', array_merge([strtolower($table) . '_id' => $id, 'lang' =>$language], $values));
+				}
+			}
+		}
+
+		$object->setValue('id', $id);
+		return true;
+	}
+
 	public static function find($class, $filters = [], $values = [], $params = [])
 	{
 		self::_connect();

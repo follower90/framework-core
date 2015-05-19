@@ -39,49 +39,7 @@ class Object
 
 	public function save()
 	{
-		if (!$this->isModified()) {
-			return false;
-		}
-
-		$data = [];
-		$langData = [];
-
-		foreach ($this->_values as $field => $value) {
-			if ($field != 'languageTable') {
-				$data[$field] = $value;
-			}
-		}
-
-		if (isset($this->_values['languageTable'])) {
-			foreach ($this->_values['languageTable'] as $field => $value) {
-				$langData[] = ['field' => $field, 'value'=> $value];
-			}
-		}
-
-		try {
-			if ($id = $this->getId()) {
-				MySQL::update($this->_table, $data, ['id' => $id]);
-			} else {
-				$id = MySQL::insert($this->_table, $data);
-			}
-
-		} catch (\Exception $e) {
-			throw new \Exception('Error inserting data to ' . $this->_table, 1);
-		}
-
-		if ($langData) {
-			$language = Config::get('site.language');
-
-			foreach ($langData as $values) {
-				if ($id = $this->getId()) {
-					MySQL::update($this->_table . '_Lang', $values, [strtolower($this->_table) . '_id' => $id, 'lang' => $language, 'field' => $values['field']]);
-				} else {
-					MySQL::insert($this->_table . '_Lang', array_merge([strtolower($this->_table) . '_id' => $id, 'lang' =>$language], $values));
-				}
-			}
-		}
-
-		$this->setValue('id', $id);
+		Orm::save($this);
 	}
 
 	public function table()
