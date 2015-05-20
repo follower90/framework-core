@@ -85,8 +85,6 @@ class Orm
 		$className = self::detectClass($class);
 		static::$_object = new $className();
 
-
-		\Core\Library\System::dump($class);
 		if ($result = self::$_cache->get($cacheParams)) {
 			return $result;
 		}

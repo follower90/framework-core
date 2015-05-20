@@ -57,10 +57,7 @@ class OrmMapper
 
 	public function setFilter($keys, $values)
 	{
-		//todo - fix for relations
-
 		$num = 0;
-
 		foreach ($keys as $key) {
 			$this->_filters[$key] = $values[$num];
 			$num++;
@@ -84,9 +81,11 @@ class OrmMapper
 
 	public function load()
 	{
-		//todo - rewrite this stinky shit
+		//todo - rewrite this stinky SLOW shit
 
-		$objects = Orm::find($this->_object->table(), array_keys($this->_filters), array_values($this->_filters), ['sort' => $this->_sorting])->getCollection();
+		$objects = Orm::find($this->_object->table(), array_keys($this->_filters), array_values($this->_filters),
+			['sort' => $this->_sorting, 'limit' => $this->_limit, 'offset' => $this->_offset])->getCollection();
+
 		$this->_map = [];
 
 		foreach ($objects as $object) {
@@ -128,8 +127,6 @@ class OrmMapper
 
 		$relation = $this->_object->relations()[$alias];
 		$ids = [];
-
-		//todo - fix for multiple relations
 
 		foreach ($this->getCollection() as $object) {
 			$ids[] = $object->getValue($relation['field']);
