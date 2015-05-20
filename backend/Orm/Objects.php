@@ -9,18 +9,28 @@ trait Objects
 
 	public static function detectClass($class)
 	{
-		$className = '\\' . Config::get('project') . '\\Object\\' . ucfirst($class);
+		$projects = Config::get('projects');
 
-		if (!class_exists($className)) {
-			$className = '\\Core\\Object\\' . ucfirst($class);
+		foreach ($projects as $project) {
+
+			$className = '\\' . $project . '\\Object\\' . ucfirst($class);
+			if (class_exists($className)) {
+				return $className;
+			}
 		}
 
-		return $className;
+		$className = '\\Core\\Object\\' . ucfirst($class);
+		if (class_exists($className)) {
+			return $className;
+		}
+
+		throw new \Exception('Object not found');
 	}
 
 	public static function checkRelation($object, $alias)
 	{
 		//todo check if relation and field of related object is exists, and return true/false. try to support nested relations
+		//not used now
 		return false;
 	}
 

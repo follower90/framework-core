@@ -2,8 +2,6 @@
 
 namespace Core;
 
-use Core\Database\MySQL;
-
 class Object
 {
 	protected $_table;
@@ -117,6 +115,8 @@ class Object
 		if (in_array($field, $allowedFields)) {
 			return isset($this->_values[$field]) ? $this->_values[$field] : $this->_values['languageTable'][$field];
 		}
+
+		return false;
 	}
 
 	public function getId()

@@ -8,7 +8,7 @@ class Config {
 
 	public static function dbConnection()
 	{
-		return self::$config['db_settings'];
+		return self::$config['default'];
 	}
 
 	public static function tplSettings()
@@ -37,15 +37,17 @@ class Config {
 		return $result;
 	}
 
-	public static function setProject($name)
+	public static function registerProject($project, $connection)
 	{
-		static::set('project', $name);
+		static::set('projects', array_merge(
+			static::get('projects'),
+			['project' => $project, 'connection' => $connection]
+		));
 	}
 
-	public static function setDb($config)
+	public static function setDb($alias, $config)
 	{
-		//TODO make multiple db support
-		static::set('db_settings', $config['default']);
+		static::set($alias, $config);
 	}
 
 	public static function set($item, $value)
