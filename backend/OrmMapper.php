@@ -10,6 +10,7 @@ class OrmMapper
 	private $_fields = [];
 	private $_filters = [];
 	private $_offset;
+	private $_sorting;
 	private $_limit;
 
 	private $_map;
@@ -49,18 +50,19 @@ class OrmMapper
 		return $this;
 	}
 
+	public function setSorting($field, $sort = 'asc')
+	{
+		$this->_sorting = [$field, $sort];
+	}
+
 	public function setFilter($keys, $values)
 	{
 		//todo - fix for relations
 
-		$allowedFilters = $this->_allowedFields;
 		$num = 0;
 
 		foreach ($keys as $key) {
-			if (in_array($key, $allowedFilters) && !empty($values[$num])) {
-				$this->_filters[$key] = $values[$num];
-			}
-
+			$this->_filters[$key] = $values[$num];
 			$num++;
 		}
 
@@ -84,7 +86,7 @@ class OrmMapper
 	{
 		//todo - rewrite this stinky shit
 
-		$objects = Orm::find($this->_object->table(), array_keys($this->_filters), array_values($this->_filters))->getCollection();
+		$objects = Orm::find($this->_object->table(), array_keys($this->_filters), array_values($this->_filters), ['sort' => $this->_sorting])->getCollection();
 		$this->_map = [];
 
 		foreach ($objects as $object) {
