@@ -34,15 +34,15 @@ class Config {
 			}
 		}
 
-		return $result;
+		return empty($result) ? [] : $result;
 	}
 
 	public static function registerProject($project, $connection)
 	{
-		static::set('projects', array_merge(
-			static::get('projects'),
-			['project' => $project, 'connection' => $connection]
-		));
+		$registered = static::get('projects');
+		array_push($registered, ['project' => $project, 'connection' => $connection]);
+
+		static::set('projects', $registered);
 	}
 
 	public static function setDb($alias, $config)

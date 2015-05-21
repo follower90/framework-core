@@ -17,7 +17,8 @@ class Controller
 
 	public function request($key = false)
 	{
-		$request = array_merge($_POST, $_GET);
+		$payload = file_get_contents('php://input');
+		$request = array_merge($_POST, $_GET, json_decode($payload));
 
 		if ($key) {
 			return isset($request[$key]) ? $request[$key] : false;

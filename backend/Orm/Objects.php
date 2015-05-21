@@ -10,10 +10,9 @@ trait Objects
 	public static function detectClass($class)
 	{
 		$projects = Config::get('projects');
+		foreach ($projects as $config) {
 
-		foreach ($projects as $project) {
-
-			$className = '\\' . $project . '\\Object\\' . ucfirst($class);
+			$className = '\\' . $config['project'] . '\\Object\\' . ucfirst($class);
 			if (class_exists($className)) {
 				return $className;
 			}

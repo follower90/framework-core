@@ -1,4 +1,4 @@
-vf.module('Widget', {
+vf.module('Page', {
 
 	container: '',
 	template: '',
@@ -14,7 +14,7 @@ vf.module('Widget', {
 
 		if (this.dom) {
 			this.load();
-			this.renderWidgets();
+			this.renderInlineWidgets();
 		} else {
 			this.loadTemplate();
 		}
@@ -24,16 +24,15 @@ vf.module('Widget', {
 		vf.utils.loadTemplate(this.template, function(template) {
 			this.dom = template;
 			this.load(this.params);
-			this.renderWidgets();
+			this.renderInlineWidgets();
 		}.bind(this));
 	},
 
 	load: function() {
-		this.includeWidgets();
+		this.includeInlineWidgets();
 		this.beforeRender();
 		this.render();
 		this.afterRender();
-		this.registerDOMHandlers();
 	},
 
 	setTemplateOptions: function(obj) {
@@ -52,7 +51,7 @@ vf.module('Widget', {
 	afterRender: function() {
 	},
 
-	includeWidgets: function() {
+	includeInlineWidgets: function() {
 		this.inlineWidgets = {};
 
 		for (var alias in this.widgets) {
@@ -71,7 +70,7 @@ vf.module('Widget', {
 
 	},
 
-	renderWidgets: function() {
+	renderInlineWidgets: function() {
 		for (var w in this.inlineWidgets) {
 			var widget = this.inlineWidgets[w];
 
@@ -79,31 +78,5 @@ vf.module('Widget', {
 				widget.activate();
 			}
 		}
-	},
-
-	registerDOMHandlers: function() {
-		if (!!this.domHandlers) {
-			for (var i in this.domHandlers) {
-				var handler = this.domHandlers[i],
-					callback = handler.callback,
-					target = vf.dom.find1(this.container + ' ' + handler.element),
-					_ = this;
-
-				if (!!target) {
-					target.addEventListener(handler.event, function () {
-						_[callback].call(_, target, handler);
-					});
-				}
-			}
-		}
-	},
-
-	find1: function(query) {
-		return vf.dom.find1(this.container + ' ' + query);
-	},
-
-	find: function(query) {
-		return vf.dom.find(this.container + ' ' + query);
 	}
-
 });

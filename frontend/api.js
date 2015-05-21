@@ -21,7 +21,7 @@ vf.module('Api', {
 				},
 
 				post: function (url, contentType, params, callback) {
-					this._request(url, 'POST', params);
+					this._request(url, 'POST', callback, params);
 					this._callback = callback;
 					this._contentType = contentType;
 					return this;
@@ -38,8 +38,14 @@ vf.module('Api', {
 							break;
 
 						case 'POST':
+							var dataString = '';
+							for (var key in params) {
+								dataString += key + '=' + params[key] + '&';
+							}
+
 							xmlHttp.open('POST', url, true);
-							xmlHttp.send(new FormData(params));
+							xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+							xmlHttp.send(dataString.slice(0,-1));
 							break;
 					}
 
