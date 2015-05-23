@@ -1,20 +1,25 @@
 vf.module('Router', {
-	routesMap: {},
+	routes: {},
 
-	routes: function (map) {
-		this.routesMap = vf.utils.extend(this.routesMap, map);
+	run: function() {
+		var _ = this;
+
+		this.update();
+		window.onhashchange = function() {
+			_.update();
+		};
 	},
 
-	run: function () {
-		for (var url in this.routesMap) {
+	update: function () {
+		for (var url in this.routes) {
 
 			var args = this._matches(url, window.location.hash);
 
 			if (args) {
-				var route = this.routesMap[url];
+				var route = this.routes[url];
 
 				var params = route.params || {},
-					widget = vf.widgets[route.page];
+					widget = route.page;
 
 				params = vf.utils.extend(args, params);
 
@@ -53,11 +58,3 @@ vf.module('Router', {
 	}
 });
 
-
-window.onload = function () {
-	vf.modules.Router.run();
-};
-
-window.onhashchange = function() {
-	vf.modules.Router.run();
-};

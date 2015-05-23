@@ -2,17 +2,24 @@
 	var vf = {
 
 		widgets: {},
-		modules: {},
-		options: {},
+		_options: {},
 
 		user: false,
 
 		module: function (name, component) {
-			this.modules[name] = component;
+			this[name] = component;
+
+			component.extend = function (userComponent) {
+				return vf.utils.extend(vf.utils.extend({}, component), userComponent);
+			};
+		},
+
+		registerOption: function(alias, value) {
+			this._options[alias] = value;
 		},
 
 		widget: function (name, widget) {
-			this.widgets[name] = vf.utils.extend(vf.utils.extend({}, vf.modules.Widget), widget);
+			this.widgets[name] = vf.Widget.extend(widget);
 		},
 
 		error: function(text) {
@@ -37,7 +44,7 @@
 			},
 
 			loadTemplate: function(template, callback) {
-				return vf.modules.Api.get(vf.options.templates + template + '.tpl', 'text/html', callback);
+				return vf.Api.get(vf._options.templates + template + '.tpl', 'text/html', callback);
 			},
 
 			render: function (template, vars) {

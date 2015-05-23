@@ -45,8 +45,10 @@ vf.module('Widget', {
 	},
 
 	render: function() {
+		$(this.container).fadeOut(0);
 		var container = vf.dom.find1(this.container);
 		container.innerHTML = vf.utils.render(this.dom, this.templateOptions);
+		$(this.container).fadeIn(500);
 	},
 
 	afterRender: function() {
@@ -65,7 +67,7 @@ vf.module('Widget', {
 					this.inlineWidgets[alias][opt] = inlineWidget[opt];
 				}
 			} else {
-				this.inlineWidgets[alias] = vf.utils.extend(vf.utils.extend({}, vf.modules.Widget), inlineWidget);
+				this.inlineWidgets[alias] = inlineWidget;
 			}
 		}
 
