@@ -45,10 +45,15 @@ vf.module('Widget', {
 	},
 
 	render: function() {
-		$(this.container).fadeOut(0);
 		var container = vf.dom.find1(this.container);
-		container.innerHTML = vf.utils.render(this.dom, this.templateOptions);
-		$(this.container).fadeIn(500);
+
+		if (container) {
+			//$(this.container).fadeOut(0);
+			container.innerHTML = vf.utils.render(this.dom, this.templateOptions);
+		//	$(this.container).fadeIn(500);
+		} else {
+			throw 'Container error';
+		}
 	},
 
 	afterRender: function() {
@@ -61,7 +66,7 @@ vf.module('Widget', {
 			var inlineWidget = this.widgets[alias];
 
 			if (inlineWidget.widget) {
-				this.inlineWidgets[alias] = vf.widgets[inlineWidget.widget];
+				this.inlineWidgets[alias] = inlineWidget.widget;
 
 				for (var opt in inlineWidget) {
 					this.inlineWidgets[alias][opt] = inlineWidget[opt];
@@ -78,7 +83,7 @@ vf.module('Widget', {
 			var widget = this.inlineWidgets[w];
 
 			if (widget) {
-				widget.activate();
+				widget.activate(this.params);
 			}
 		}
 	},

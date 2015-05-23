@@ -1,4 +1,4 @@
-vf.widget('Select_Box', {
+vf.widgets.Select_Box = vf.Widget.extend('Select_Box', {
 
 	dom: '<select></select>',
 

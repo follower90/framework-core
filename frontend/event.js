@@ -1,5 +1,5 @@
 vf.module('Event', {
-	events: {},
+	events: [],
 	register: function (event, callback) {
 		this.events.push({
 			alias: event,
@@ -7,10 +7,10 @@ vf.module('Event', {
 		});
 	},
 
-	trigger: function(event) {
+	trigger: function(event, args) {
 		for (var i in this.events) {
-			if (event == events[i].alias) {
-				events[i].callback();
+			if (event == this.events[i].alias) {
+				this.events[i].callback(args);
 				return;
 			}
 		}
