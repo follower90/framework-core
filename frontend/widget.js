@@ -18,6 +18,7 @@ vf.module('Widget', {
 		} else {
 			this.loadTemplate();
 		}
+
 	},
 
 	loadTemplate: function () {
@@ -29,11 +30,12 @@ vf.module('Widget', {
 	},
 
 	load: function() {
-		this.includeWidgets();
-		this.beforeRender();
-		this.render();
-		this.afterRender();
-		this.registerDOMHandlers();
+		if (this.autoRender != false) {
+			this.includeWidgets();
+			this.beforeRender();
+			this.render();
+			this.afterRender();
+		}
 	},
 
 	setTemplateOptions: function(obj) {
@@ -54,6 +56,8 @@ vf.module('Widget', {
 		} else {
 			throw 'Container error';
 		}
+
+		this.registerDOMHandlers();
 	},
 
 	afterRender: function() {
