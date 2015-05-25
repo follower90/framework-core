@@ -12,13 +12,14 @@ vf.module('Widget', {
 		this.params = params;
 		this.beforeActivate(this.params);
 
-		if (this.dom) {
-			this.load();
-			this.renderWidgets();
-		} else {
-			this.loadTemplate();
+		if (this.autoRender != false || !params) {
+			if (this.dom) {
+				this.load();
+				this.renderWidgets();
+			} else {
+				this.loadTemplate();
+			}
 		}
-
 	},
 
 	loadTemplate: function () {
@@ -30,12 +31,10 @@ vf.module('Widget', {
 	},
 
 	load: function() {
-		if (this.autoRender != false) {
-			this.includeWidgets();
-			this.beforeRender();
-			this.render();
-			this.afterRender();
-		}
+		this.includeWidgets();
+		this.beforeRender();
+		this.render();
+		this.afterRender();
 	},
 
 	setTemplateOptions: function(obj) {
