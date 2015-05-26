@@ -1,6 +1,4 @@
-vf.module('Router', {
-	routes: {},
-
+vf.registerModule('Router', {
 	run: function() {
 		var _ = this;
 
@@ -11,15 +9,15 @@ vf.module('Router', {
 	},
 
 	update: function () {
-		for (var url in this.routes) {
+		for (var url in vf._registry.routes) {
 
 			var args = this._matches(url, window.location.hash);
 
 			if (args) {
-				var route = this.routes[url];
+				var route = vf._registry.routes[url];
 
 				var params = route.params || {},
-					widget = route.page;
+					widget = vf._registry.components[route.page];
 
 				params = vf.utils.extend(args, params);
 

@@ -1,4 +1,4 @@
-vf.module('Api', {
+vf.registerModule('Api', {
 	get: function (url, type, callback) {
 		this._api().get(url, type, callback);
 	},

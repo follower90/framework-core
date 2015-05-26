@@ -1,4 +1,4 @@
-vf.widgets.Select_Box = vf.Widget.extend('Select_Box', {
+vf.registerComponent('Select_Box', {
 
 	dom: '<select></select>',
 

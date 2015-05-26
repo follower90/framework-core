@@ -1,4 +1,0 @@
-vf.module('Page', {
-
-
-});

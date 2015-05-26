@@ -1,4 +1,4 @@
-vf.module('Event', {
+vf.registerModule('Event', {
 	events: [],
 	register: function (event, callback) {
 		this.events.push({

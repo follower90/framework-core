@@ -1,9 +1,11 @@
-vf.module('Widget', {
+vf.registerModule('Component', {
 
 	container: '',
 	template: '',
 	dom: false,
 	templateOptions: {},
+
+	//
 
 	beforeActivate: function(params) {
 	},
@@ -31,7 +33,7 @@ vf.module('Widget', {
 	},
 
 	load: function() {
-		this.includeWidgets();
+		this.loadComponents();
 		this.beforeRender();
 		this.render();
 		this.afterRender();
@@ -62,28 +64,36 @@ vf.module('Widget', {
 	afterRender: function() {
 	},
 
-	includeWidgets: function() {
-		this.inlineWidgets = {};
+	loadComponents: function() {
+		this.inlineComponents = {};
 
-		for (var alias in this.widgets) {
-			var inlineWidget = this.widgets[alias];
+		for (var alias in this.components) {
+			var component = this.components[alias];
 
-			if (inlineWidget.widget) {
-				this.inlineWidgets[alias] = inlineWidget.widget;
+			if (component.use) {
+				this.inlineComponents[alias] = vf.utils.extend(
+					vf.utils.extend({}, this.getComponent(component.use)), component);
 
-				for (var opt in inlineWidget) {
-					this.inlineWidgets[alias][opt] = inlineWidget[opt];
+				for (var opt in component) {
+					this.inlineComponents[alias][opt] = component[opt];
 				}
 			} else {
-				this.inlineWidgets[alias] = inlineWidget;
+				this.inlineComponents[alias] = this.getComponent(component);
 			}
 		}
+	},
 
+	getComponent: function(alias) {
+		return vf._registry.components[alias];
+	},
+
+	getInlineComponent: function(alias) {
+		return this.inlineComponents[alias];
 	},
 
 	renderWidgets: function() {
-		for (var w in this.inlineWidgets) {
-			var widget = this.inlineWidgets[w];
+		for (var w in this.inlineComponents) {
+			var widget = this.inlineComponents[w];
 
 			if (widget) {
 				widget.activate(this.params);

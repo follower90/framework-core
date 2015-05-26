@@ -1,35 +1,69 @@
 (function () {
-	var vf = {
 
-		widgets: {},
-		_options: {},
+	/*
+	Core global framework object
+	Everything is registered there
+	 */
 
-		user: false,
+	vf = {
 
-		module: function (name, module) {
-			this[name] = module;
+		/*
+		Main registry object
+		contains: controllers, components, models, routes, templates and environment variables
+		 */
+		_registry: {
+			modules: {},
+			components: {},
+			controllers: {},
+			models: {},
+			routes: {},
+			templates: {},
+			options: {},
+			environment: {}
+		},
 
-			module.extend = function (alias, userComponent) {
-				var component = vf.utils.extend(vf.utils.extend({}, module), userComponent);
-				component.alias = alias;
-				vf.Event.trigger(alias + '_Loaded', component);
-				return component;
-			};
+		/*
+		Site environment objects
+		and methods
+		 */
+		site: {
+			user: false,
+			gotoPage: function(page) {
+				window.location.hash = page;
+			}
+		},
+
+		module: function (alias) {
+			return this._registry.modules[alias];
+		},
+
+		registerModule: function(alias, object) {
+			this._registry.modules[alias] = object;
+		},
+
+		registerRoutes: function(object) {
+			this._registry.routes = vf.utils.extend(vf.utils.extend({}, this._registry.routes), object);
 		},
 
 		registerOption: function(alias, value) {
-			this._options[alias] = value;
+			this._registry.options[alias] = value;
 		},
 
-		widget: function (name, widget) {
-			this.widgets[name] = vf.Widget.extend(widget);
+		registerComponent: function(alias, object, parent) {
+			if (!parent) {
+				parent = vf.module('Component');
+			}
+
+			this._registry.components[alias] = vf.utils.extend(vf.utils.extend({}, parent), object);
 		},
 
 		error: function(text) {
+			//todo implement backtrace
 			console.error('vfDebugger: ' + text);
 		},
 
 		require: function(forInjection, callback, loaded) {
+			//todo apply somewhere or remove
 			var _ = this;
 
 			if (!loaded) {
@@ -82,7 +116,7 @@
 			},
 
 			loadTemplate: function(template, callback) {
-				return vf.Api.get(vf._options.templates + template + '.tpl', 'text/html', callback);
+				return vf.module('Api').get(vf._registry.options.templates + template + '.tpl', 'text/html', callback);
 			},
 
 			render: function (template, vars) {
@@ -91,12 +125,6 @@
 				}
 
 				return template;
-			}
-		},
-
-		site: {
-			gotoPage: function(page) {
-				window.location.hash = page;
 			}
 		},
 
