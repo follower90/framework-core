@@ -6,16 +6,30 @@ class Config {
 
 	private static $config;
 
+	/**
+	 * Get default database connection
+	 * @todo refactor for use different connections with different projects and objects
+	 * @return mixed
+	 */
 	public static function dbConnection()
 	{
 		return self::$config['default'];
 	}
 
+	/**
+	 * Set path to templates folder
+	 * @return mixed
+	 */
 	public static function tplSettings()
 	{
 		return self::$config['tpl_settings'];
 	}
 
+	/**
+	 * Get config param by key, or get whole config array
+	 * @param $item
+	 * @return array
+	 */
 	public static function get($item)
 	{
 		if (!$item) {
@@ -37,6 +51,11 @@ class Config {
 		return empty($result) ? [] : $result;
 	}
 
+	/**
+	 * Register project with its namespace
+	 * @param $project
+	 * @param $connection
+	 */
 	public static function registerProject($project, $connection)
 	{
 		$registered = static::get('projects');
@@ -45,11 +64,21 @@ class Config {
 		static::set('projects', $registered);
 	}
 
+	/**
+	 * Set database connection params
+	 * @param $alias
+	 * @param $config
+	 */
 	public static function setDb($alias, $config)
 	{
 		static::set($alias, $config);
 	}
 
+	/**
+	 * Set custom property to Config
+	 * @param $item
+	 * @param $value
+	 */
 	public static function set($item, $value)
 	{
 		$query = explode('.', strtolower($item));

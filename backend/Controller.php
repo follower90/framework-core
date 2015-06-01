@@ -15,6 +15,11 @@ class Controller
 		$this->view = new View();
 	}
 
+	public function run($method, $args)
+	{
+		return call_user_func([$this, $method], $args);
+	}
+
 	public function request($key = false)
 	{
 		$request = array_merge($_POST, $_GET);

@@ -226,7 +226,6 @@ class Orm
 			return $className;
 		}
 
-		echo $class.' ..';
 		throw new \Exception('Object ' . $class . ' was not found');
 	}
 

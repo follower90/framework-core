@@ -2,8 +2,6 @@
 
 namespace Core;
 
-use Core\Library\System;
-
 class App
 {
 	private $_entryPoint;
@@ -12,7 +10,7 @@ class App
 
 	private static $_user = false;
 
-	public function __construct($entryPoint)
+	public function __construct(EntryPoint $entryPoint)
 	{
 		$this->_appPath = \getcwd();
 		$this->_entryPoint = $entryPoint;
@@ -34,7 +32,7 @@ class App
 		$this->_setErrorHandlers();
 		$this->_setFileIncludeHandler();
 
-		$action = Router::getAction();
+		$action = Router::getAction($this->_entryPoint->getLib());
 
 		$class = $this->_entryPoint->getLib() . '\\' . $action['controller'];
 		$method = 'method' . ucfirst($action['action']);
@@ -50,7 +48,7 @@ class App
 		$controller = new $class();
 
 		echo $this->_entryPoint->output(
-			call_user_func([$controller, $method], $controller->request())
+			call_user_func_array([$controller, 'run'], [$method, $controller->request()])
 		);
 	}
 

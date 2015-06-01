@@ -6,28 +6,25 @@ class Api extends Controller
 {
 	protected $request;
 
-	public function __construct()
-	{
-		$this->request = $this->_request();
-	}
-
-	public static function run($section, $method, $params)
+	public function run($method, $args)
 	{
 		try {
-			$response = self::_request($section, $method, $params);
-		} catch (\Exception $e) {
+			$data = call_user_func([$this, $method], $args);
+			$response = [
+				'status' => true,
+				'response' => $data
+			];
 
+		} catch (\Exception $e) {
 			$response = [
 				'status' => false,
-				'response' => $e->getMessage(),
+				'error' => [
+					'code' => $e->getCode(),
+					'message' => $e->getMessage(),
+				]
 			];
 		}
 
 		return $response;
-	}
-
-	public function _request()
-	{
-		return array_merge($_POST, $_GET);
 	}
 }

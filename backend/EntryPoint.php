@@ -2,7 +2,7 @@
 
 namespace Core;
 
-abstract class EntryPoint extends Controller
+abstract class EntryPoint
 {
 	private $_lib;
 
@@ -26,6 +26,17 @@ abstract class EntryPoint extends Controller
 	public function detectMethod()
 	{
 
+	}
+
+	public function request($key = false)
+	{
+		$request = array_merge($_POST, $_GET);
+
+		if ($key) {
+			return isset($request[$key]) ? $request[$key] : false;
+		}
+
+		return $request;
 	}
 
 	public function debug()
