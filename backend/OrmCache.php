@@ -6,7 +6,7 @@ class OrmCache
 {
 	private $_data;
 
-	public function insert($params, $data)
+	public function update($params, $data)
 	{
 		$hash = $this->_hashParams($params);
 		$this->_data[$hash] = $data;

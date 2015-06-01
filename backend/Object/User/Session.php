@@ -4,29 +4,33 @@ namespace Core\Object;
 
 class User_Session extends \Core\Object
 {
-	protected $_table = 'User_Session';
+	protected static $_config;
 
-	public function fields()
+	public function getConfig()
 	{
-		$fields = [
-			'userId' => [
-				'type' => 'id',
-				'default' => '',
-				'null' => false,
-			],
-			'entity' => [
-				'type' => 'varchar',
-				'default' => '',
-				'null' => false,
-			],
-			'hash' => [
-				'type' => 'varchar',
-				'default' => '',
-				'null' => false,
-			],
-		];
+		if (empty(self::$_config)) {
+			self::$_config = clone parent::getConfig();
+			self::$_config->setTable('User_Session');
+			self::$_config->setFields([
+				'userId' => [
+					'type' => 'id',
+					'default' => '',
+					'null' => false,
+				],
+				'entity' => [
+					'type' => 'varchar',
+					'default' => '',
+					'null' => false,
+				],
+				'hash' => [
+					'type' => 'varchar',
+					'default' => '',
+					'null' => false,
+				],
+			]);
+		}
 
-		return array_merge($fields, parent::fields());
+		return self::$_config;
 	}
 }
 

@@ -12,8 +12,8 @@ class Schema
 
 	public function __construct(Object $object)
 	{
-		$this->_table = $object->table();
-		$this->_fields = $object->fields();
+		$this->_table = $object->getConfigData('table');
+		$this->_fields = $object->getConfigData('fields');
 	}
 
 	public static function createObjects($path = [], $params = [])

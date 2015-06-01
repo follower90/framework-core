@@ -4,22 +4,28 @@ namespace Core\Object;
 
 class User extends \Core\Object
 {
-	public function fields()
-	{
-		$fields = [
-			'login' => [
-				'type' => 'varchar',
-				'default' => '',
-				'null' => false,
-			],
-			'password' => [
-				'type' => 'varchar',
-				'default' => '',
-				'null' => false,
-			],
-		];
+	protected static $_config;
 
-		return array_merge($fields, parent::fields());
+	public function getConfig()
+	{
+		if (empty(self::$_config)) {
+			self::$_config = clone parent::getConfig();
+			self::$_config->setTable('User');
+			self::$_config->setFields([
+				'login' => [
+					'type' => 'varchar',
+					'default' => '',
+					'null' => false,
+				],
+				'password' => [
+					'type' => 'varchar',
+					'default' => '',
+					'null' => false,
+				],
+			]);
+		}
+
+		return self::$_config;
 	}
 }
 

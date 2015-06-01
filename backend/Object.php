@@ -2,47 +2,70 @@
 
 namespace Core;
 
-class Object
+abstract class Object
 {
 	protected $_table;
+	protected $_class;
+
 	protected $_relations;
 	protected $_values;
 
-	private $_hasChanges = false;
+	protected $_hasChanges = false;
+
+	protected static $_config;
+	protected static $_objectRelations = [];
 
 	public function __construct($values = [])
 	{
+		$this->_class = $this->getClassName();
+
 		if (!empty($values)) {
 			$this->setValues($values);
 		}
 	}
 
-	public function fields()
+	public static function all()
 	{
-		$fields = [
-			'id' => [
-				'type' => 'int',
-				'default' => null,
-				'null' => false,
-			]
-		];
+		return OrmMapper::create(static::getClassName());
+	}
 
-		return $fields;
+	public function getConfig()
+	{
+		if (empty(self::$_config)) {
+			self::$_config = new ObjectConfig();
+			self::$_config->setFields([
+				'id' => [
+					'type' => 'int',
+					'default' => null,
+					'null' => false,
+				]
+			]);
+		}
+
+		return self::$_config;
+	}
+
+	public static function getClassName()
+	{
+		$fullClassName = get_called_class();
+		$chunks = explode('\\', $fullClassName);
+
+		return $chunks[sizeof($chunks) - 1];
+	}
+
+	public function getConfigData($alias)
+	{
+		return $this->getConfig()->getData($alias);
 	}
 
 	public function relations()
 	{
-		return [];
+		return static::$_objectRelations;
 	}
 
 	public function save()
 	{
 		Orm::save($this);
-	}
-
-	public function table()
-	{
-		return $this->_table;
 	}
 
 	public function getRelated($alias)
@@ -90,7 +113,7 @@ class Object
 	private function _checkFields()
 	{
 		$allowedFields = [];
-		$fields = $this->fields();
+		$fields = $this->getConfigData('fields');
 		foreach ($fields as $field => $properties) {
 			$allowedFields[] = $field;
 		}
@@ -124,13 +147,13 @@ class Object
 		return $this->getValue('id');
 	}
 
-	public function isActive()
-	{
-		return (bool)$this->getValue('active');
-	}
-
 	public function isModified()
 	{
 		return $this->_hasChanges;
+	}
+
+	public static function addRelation($alias, $relation)
+	{
+		static::$_objectRelations[$alias] = $relation;
 	}
 }

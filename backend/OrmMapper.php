@@ -4,7 +4,7 @@ namespace Core;
 
 class OrmMapper
 {
-	private $_collection = [];
+	private $_collection = false;
 
 	private $_object = [];
 	private $_fields = [];
@@ -19,7 +19,8 @@ class OrmMapper
 	private function __construct($class)
 	{
 		$this->_object = new $class();
-		$this->_allowedFields = array_keys($this->_object->fields());
+		$this->_object->getConfig();
+		$this->_allowedFields = array_keys($this->_object->getConfigData('fields'));
 	}
 
 	public static function create($class)
@@ -53,6 +54,7 @@ class OrmMapper
 	public function setSorting($field, $sort = 'asc')
 	{
 		$this->_sorting = [$field, $sort];
+		return $this;
 	}
 
 	public function setFilter($keys, $values)
@@ -81,14 +83,30 @@ class OrmMapper
 
 	public function load()
 	{
-		//todo - rewrite this stinky SLOW shit
+		$this->_object->getConfig();//shit
+		$this->_collection = Orm::find(
+			$this->_object->getConfigData('table'),
+			array_keys($this->_filters),
+			array_values($this->_filters),
+			[
+				'sort' => $this->_sorting,
+				'limit' => $this->_limit,
+				'offset' => $this->_offset
+			]
+		)->getCollection();
 
-		$objects = Orm::find($this->_object->table(), array_keys($this->_filters), array_values($this->_filters),
-			['sort' => $this->_sorting, 'limit' => $this->_limit, 'offset' => $this->_offset])->getCollection();
+		return $this;
+	}
+
+	public function getDataMap()
+	{
+		if ($this->_collection === false) {
+			throw new \Exception('Nothing to get. Load data map first');
+		}
 
 		$this->_map = [];
 
-		foreach ($objects as $object) {
+		foreach ($this->_collection as $object) {
 			$item = [];
 
 			foreach ($this->_fields as $field) {
@@ -106,11 +124,6 @@ class OrmMapper
 
 			$this->_map[] = $item;
 		}
-	}
-
-	public function getDataMap()
-	{
-		$this->load();
 
 		if ($this->_limit == 1) {
 			return $this->_map[0];
