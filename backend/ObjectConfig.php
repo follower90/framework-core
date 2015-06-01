@@ -19,6 +19,11 @@ class ObjectConfig
 		$this->_config['table'] = $table;
 	}
 
+	public function setRelation($alias, $relation)
+	{
+		$this->_config['relations'][$alias] = $relation;
+	}
+
 	public function getData($alias)
 	{
 		if ($alias && isset($this->_config[$alias])) {

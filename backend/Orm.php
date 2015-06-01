@@ -185,6 +185,7 @@ class Orm
 	public static function registerRelation($relationProperties, $targetObjectProperties, $relatedObjectProperties)
 	{
 		$targetObject = self::detectClass($targetObjectProperties['class']);
+
 		if (!$targetObject) {
 			throw new \Exception('Relation registering error. Could not detect target object');
 		}
@@ -225,6 +226,7 @@ class Orm
 			return $className;
 		}
 
+		echo $class.' ..';
 		throw new \Exception('Object ' . $class . ' was not found');
 	}
 
@@ -238,6 +240,7 @@ class Orm
 	{
 		$className = self::detectClass($class);
 		$object = new $className();
+		$object->getConfig();
 
 		return $object;
 	}
@@ -339,7 +342,7 @@ class Orm
 			$field = explode('.', $param);
 
 			if (!empty($field[1])) {
-				$param = self::buildRelationCondition($queryBuilder, $field, $count);
+				list($param, $alias) = self::buildRelationCondition($queryBuilder, $field, $count);
 			}
 
 			$condition = $values[$count];
@@ -373,19 +376,18 @@ class Orm
 	 */
 	protected static function buildRelationCondition(QueryBuilder $queryBuilder, $field, $count)
 	{
-		$relations = static::$_object->relations();
+		$relations = self::$_object->relations();
 		$relation = $relations[$field[0]];
 
 		$relatedObject = self::_getObject($relation['class']);
-
 		$alias = 'tb' . $count;
 
 		if ($relation['type'] == 'multiple') {
-			$queryBuilder->join('inner', $relation['table'], $alias, [static::$_object->getConfigData('table'), $relation['field']]);
+			$queryBuilder->join('inner', $relation['table'], $alias, [self::$_object->getConfigData('table'), $relation['field']]);
 		} else {
 			$queryBuilder->join('inner', $relatedObject->getConfigData('table'), $alias, [$field[0], $relation['field']]);
 		}
 
-		return $field[1];
+		return [$field[1], $alias];
 	}
 }

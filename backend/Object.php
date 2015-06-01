@@ -7,7 +7,6 @@ abstract class Object
 	protected $_table;
 	protected $_class;
 
-	protected $_relations;
 	protected $_values;
 
 	protected $_hasChanges = false;
@@ -41,7 +40,6 @@ abstract class Object
 				]
 			]);
 		}
-
 		return self::$_config;
 	}
 
