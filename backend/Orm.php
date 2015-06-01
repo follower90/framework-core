@@ -8,13 +8,8 @@ use Core\Database\QueryBuilder;
 
 class Orm
 {
-	protected static $_db;
 	protected static $_object;
 	protected static $_cache;
-	protected static $_relations;
-
-	protected static $_table;
-	protected static $_fields;
 
 	/**
 	 * Creates and return new Object
@@ -61,12 +56,11 @@ class Orm
 				$id = MySQL::insert($table, $data);
 			}
 
+			if ($langData) {
+				self::updateLangTables($object, $langData);
+			}
 		} catch (\Exception $e) {
 			throw new \Exception('Error inserting data to ' . $table, 1);
-		}
-
-		if ($langData) {
-			self::updateLangTables($object, $langData);
 		}
 
 		$object->setValue('id', $id);
@@ -217,7 +211,6 @@ class Orm
 	 */
 	public static function detectClass($class)
 	{
-
 		$projects = Config::get('projects');
 		foreach ($projects as $config) {
 
@@ -245,9 +238,6 @@ class Orm
 	{
 		$className = self::detectClass($class);
 		$object = new $className();
-
-		self::$_table = $object->getConfigData('table');
-		self::$_fields = $object->getConfigData('fields');
 
 		return $object;
 	}
@@ -299,6 +289,7 @@ class Orm
 
 		$queryBuilder = new QueryBuilder($class . '_Lang');
 		$queryBuilder->select(['field', 'value']);
+
 		$queryBuilder->where('lang', $language);
 		$queryBuilder->where(strtolower($class) . '_id', $id);
 
@@ -316,7 +307,6 @@ class Orm
 	protected static function _makeQuery($class, $filters, $values, $params)
 	{
 		$queryBuilder = new QueryBuilder($class);
-
 		self::buildConditions($queryBuilder, $filters, $values);
 
 		if (isset($params['limit'])) {
