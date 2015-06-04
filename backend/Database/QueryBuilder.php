@@ -6,12 +6,23 @@ class QueryBuilder {
 
 	private $_config;
 
+	/**
+	 * Set up base table and it's alias
+	 * @param $table
+	 */
 	public function __construct($table)
 	{
 		$this->_config['table'] = [$table];
 		$this->_config['alias'] = 'tb';
 	}
 
+	/**
+	 * Setups params for selections
+	 * @param $field
+	 * @param string $alias
+	 * @param string $table
+	 * @return $this
+	 */
 	public function select($field, $alias = '', $table = '')
 	{
 		if (isset($field)) {
@@ -25,12 +36,25 @@ class QueryBuilder {
 		return $this;
 	}
 
+	/**
+	 * Setups base table alias
+	 * @param $alias
+	 * @return $this
+	 */
 	public function setBaseAlias($alias)
 	{
 		$this->_config['alias'] = $alias;
 		return $this;
 	}
 
+	/**
+	 * Setups joins
+	 * @param $type
+	 * @param $table
+	 * @param $alias
+	 * @param $relations
+	 * @return $this
+	 */
 	public function join($type, $table, $alias, $relations)
 	{
 		if(isset($type,$table, $alias) && sizeof($relations) == 2) {
@@ -46,6 +70,13 @@ class QueryBuilder {
 		return $this;
 	}
 
+	/**
+	 * Setups where conditions
+	 * @param $value
+	 * @param $args
+	 * @param string $action
+	 * @return $this
+	 */
 	public function where($value, $args, $action = '=')
 	{
 		if (isset($value, $action)) {
@@ -59,6 +90,12 @@ class QueryBuilder {
 		return $this;
 	}
 
+	/**
+	 * Setups order by conditions
+	 * @param $field
+	 * @param string $direction
+	 * @return $this
+	 */
 	public function orderBy($field, $direction = 'asc')
 	{
 		if (isset($field)) {
@@ -71,6 +108,11 @@ class QueryBuilder {
 		return $this;
 	}
 
+	/**
+	 * Setups group by conditions
+	 * @param $field
+	 * @return $this
+	 */
 	public function groupBy($field)
 	{
 		if (isset($field)) {
@@ -82,6 +124,11 @@ class QueryBuilder {
 		return $this;
 	}
 
+	/**
+	 * Offset setup
+	 * @param $value
+	 * @return $this
+	 */
 	public function offset($value)
 	{
 		if (isset($value)) {
@@ -91,6 +138,11 @@ class QueryBuilder {
 		return $this;
 	}
 
+	/**
+	 * Limit setup
+	 * @param $value
+	 * @return $this
+	 */
 	public function limit($value)
 	{
 		if (isset($value)) {
@@ -100,6 +152,10 @@ class QueryBuilder {
 		return $this;
 	}
 
+	/**
+	 * Composes raw mysql query based on QueryBuilder setup
+	 * @return string
+	 */
 	public function composeSelectQuery()
 	{
 		$query = 'select ';
@@ -122,6 +178,10 @@ class QueryBuilder {
 		return $query;
 	}
 
+	/**
+	 * Fields composer
+	 * @return array
+	 */
 	private function _composeFields()
 	{
 		$fields = [];
@@ -151,6 +211,10 @@ class QueryBuilder {
 		return $fields;
 	}
 
+	/**
+	 * Joins composer
+	 * @return array
+	 */
 	private function _composeJoins()
 	{
 		$joins = [];
@@ -167,6 +231,10 @@ class QueryBuilder {
 		return $joins;
 	}
 
+	/**
+	 * Conditions composer
+	 * @return array
+	 */
 	private function _composeConditions()
 	{
 		$conditions = [];
@@ -207,6 +275,10 @@ class QueryBuilder {
 		return $conditions;
 	}
 
+	/**
+	 * Order composer
+	 * @return string
+	 */
 	private function _composerOrder()
 	{
 		$order = [];
@@ -225,6 +297,10 @@ class QueryBuilder {
 		return '';
 	}
 
+	/**
+	 * Grouping composer
+	 * @return string
+	 */
 	private function _composeGrouping()
 	{
 		$group = [];
@@ -242,6 +318,10 @@ class QueryBuilder {
 		return '';
 	}
 
+	/**
+	 * Offset and limit composer
+	 * @return string
+	 */
 	private function _composeLimit()
 	{
 		if (isset($this->_config['limit'])) {
@@ -256,6 +336,11 @@ class QueryBuilder {
 		return '';
 	}
 
+	/**
+	 * Returns QueryBuilder config data
+	 * @param bool $section
+	 * @return mixed
+	 */
 	public function debug($section = false)
 	{
 		if (!$section) {
@@ -265,6 +350,11 @@ class QueryBuilder {
 		return $this->_config[$section];
 	}
 
+	/**
+	 * Applies table/param alias
+	 * @param $value
+	 * @return mixed|string
+	 */
 	private function applyAlias($value)
 	{
 		if (isset($this->_config['alias']) && strpos($value, '.') === false) {

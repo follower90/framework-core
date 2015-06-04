@@ -16,6 +16,10 @@ class PDO Extends \PDO
 	private $_start;
 	private $_sth;
 
+	/**
+	 * Constructs new Mysql connection with PDO
+	 * @param $settings
+	 */
 	public function __construct($settings)
 	{
 		self::$_debugger = Debug::getInstance();
@@ -48,6 +52,10 @@ class PDO Extends \PDO
 		}
 	}
 
+	/**
+	 * Return single instance of PDO connection
+	 * @return PDO
+	 */
 	public static function getInstance()
 	{
 		if (!self::$_instance) {
@@ -58,6 +66,12 @@ class PDO Extends \PDO
 		return self::$_instance;
 	}
 
+	/**
+	 * Executes query
+	 * @param string $pattern
+	 * @param null $vars
+	 * @return bool
+	 */
 	public function query($pattern, $vars = null)
 	{
 		if (!$this->_executeQuery($pattern, $vars)) {
@@ -70,6 +84,12 @@ class PDO Extends \PDO
 		return $this->_result;
 	}
 
+	/**
+	 * Insert query, returns inserted id
+	 * @param $pattern
+	 * @param null $vars
+	 * @return bool|string
+	 */
 	public function insert_id($pattern, $vars = null)
 	{
 		if (!$this->_executeQuery($pattern, $vars)) {
@@ -82,6 +102,12 @@ class PDO Extends \PDO
 		return $this->_result;
 	}
 
+	/**
+	 * Selects multiple rows and return associative array
+	 * @param $pattern
+	 * @param null $vars
+	 * @return bool
+	 */
 	public function rows($pattern, $vars = null)
 	{
 		if (!$this->_executeQuery($pattern, $vars)) {
@@ -94,6 +120,12 @@ class PDO Extends \PDO
 		return $this->_result;
 	}
 
+	/**
+	 * Select single row and return associative array
+	 * @param $pattern
+	 * @param null $vars
+	 * @return bool
+	 */
 	public function row($pattern, $vars = null)
 	{
 		if (!$this->_executeQuery($pattern, $vars)) {
@@ -106,6 +138,12 @@ class PDO Extends \PDO
 		return $this->_result;
 	}
 
+	/**
+	 * Selects single value
+	 * @param $pattern
+	 * @param null $vars
+	 * @return bool
+	 */
 	public function cell($pattern, $vars = null)
 	{
 		if (!$this->_executeQuery($pattern, $vars)) {
@@ -118,6 +156,12 @@ class PDO Extends \PDO
 		return $this->_result;
 	}
 
+	/**
+	 * Selects and return key->value array by first two selected cells
+	 * @param $pattern
+	 * @param null $vars
+	 * @return bool
+	 */
 	public function rows_key($pattern, $vars = null)
 	{
 		if (!$this->_executeQuery($pattern, $vars)) {
@@ -130,6 +174,12 @@ class PDO Extends \PDO
 		return $this->_result;
 	}
 
+	/**
+	 * Executes every Mysql query
+	 * @param $pattern
+	 * @param $vars
+	 * @return bool
+	 */
 	private function _executeQuery($pattern, $vars)
 	{
 		try {
@@ -141,6 +191,11 @@ class PDO Extends \PDO
 		return true;
 	}
 
+	/**
+	 * Writes query start microtime and executes query
+	 * @param $pattern
+	 * @param $vars
+	 */
 	private function _prepareQuery($pattern, $vars)
 	{
 		$this->_start = microtime(true);
@@ -150,12 +205,19 @@ class PDO Extends \PDO
 		@$this->_sth->execute($this->_vars);
 	}
 
+	/**
+	 * Write failed queries to debugger
+	 * @return bool
+	 */
 	private function _logError()
 	{
 		self::$_debugger->logQuery($this->_pattern, $this->_vars, $this->_result, 0, false);
 		return false;
 	}
 
+	/**
+	 * Writes successful queries to debugger
+	 */
 	private function _logQuery()
 	{
 		$results = 0;

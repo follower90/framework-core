@@ -4,12 +4,15 @@ namespace Core\Database;
 
 class MySQL
 {
-	private static $_db;
-
+	/**
+	 * Runs Mysql update query
+	 * @param $table
+	 * @param array $params
+	 * @param array $conditions
+	 * @throws \Exception
+	 */
 	public static function update($table, $params = [], $conditions = [])
 	{
-		self::_connect();
-
 		if (!$table || empty($params) || empty($conditions)) {
 			throw new \Exception('Incorrect update query');
 		}
@@ -26,13 +29,18 @@ class MySQL
 		}
 
 		$query = 'UPDATE `' . $table . '` SET ' . implode(', ', $set) . ' WHERE ' . implode(', ', $where);
-		self::$_db->query($query);
+		PDO::getInstance()->query($query);
 	}
 
+	/**
+	 * Runs Mysql insert query
+	 * @param $table
+	 * @param array $params
+	 * @return mixed
+	 * @throws \Exception
+	 */
 	public static function insert($table, $params = [])
 	{
-		self::_connect();
-
 		if (!$table || empty($params)) {
 			throw new \Exception('Incorrect insert query');
 		}
@@ -44,13 +52,17 @@ class MySQL
 		}
 
 		$query = 'INSERT INTO `' . $table . '` SET ' . implode(', ', $set);
-		return self::$_db->insert_id($query);
+		PDO::getInstance()->insert_id($query);
 	}
 
+	/**
+	 * Deletes from table with specified conditions
+	 * @param $table
+	 * @param array $conditions
+	 * @throws \Exception
+	 */
 	public static function delete($table, $conditions = [])
 	{
-		self::_connect();
-
 		if (!$table || empty($conditions)) {
 			throw new \Exception('Incorrect delete query');
 		}
@@ -62,17 +74,15 @@ class MySQL
 		}
 
 		$query = 'DELETE FROM `' . $table . '` WHERE ' . implode(',', $where);
-		self::$_db->query($query);
+		PDO::getInstance()->query($query);
 	}
 
+	/**
+	 * Runs RAW Mysql query without any conversions
+	 * @param $query
+	 */
 	public static function query($query)
 	{
-		self::_connect();
-		self::$_db->query($query);
-	}
-
-	private static function _connect()
-	{
-		self::$_db = PDO::getInstance();
+		PDO::getInstance()->query($query);
 	}
 }

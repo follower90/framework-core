@@ -9,17 +9,37 @@ class Controller
 	protected $view;
 	protected $settings;
 
+	/**
+	 * Assigns PDO Mysql connection to protected variable
+	 * Assigns View object for templates rendering
+	 */
 	function __construct()
 	{
 		$this->db = PDO::getInstance();
 		$this->view = new View();
 	}
 
+	/**
+	 * Controllers run wrapper
+	 * for error catching
+	 * @param $method
+	 * @param $args
+	 * @return mixed
+	 */
 	public function run($method, $args)
 	{
-		return call_user_func([$this, $method], $args);
+		try {
+			return call_user_func([$this, $method], $args);
+		} catch (\Exception $e) {
+			return 'Catchable error detected: ' . $e->getCode() . ' - ' . $e->getMessage();
+		}
 	}
 
+	/**
+	 * Helper method for get POST and GET request variables
+	 * @param bool $key
+	 * @return array|bool
+	 */
 	public function request($key = false)
 	{
 		$request = array_merge($_POST, $_GET);
@@ -31,6 +51,14 @@ class Controller
 		return $request;
 	}
 
+	/**
+	 * Api/Controller method executor
+	 * For run one controller from another and avoid code duplication
+	 * @param $apiPath
+	 * @param $arguments
+	 * @return mixed
+	 * @throws \Exception
+	 */
 	protected function execute($apiPath, $arguments)
 	{
 		$apiPath = explode(':', $apiPath);

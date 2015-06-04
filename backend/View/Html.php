@@ -4,6 +4,13 @@ namespace Core;
 
 trait Html
 {
+	/**
+	 * Renders select box
+	 * @param $optionsMap - requires key value params map
+	 * @param array $params - associative array, id, class, name
+	 * @param array $default - default key
+	 * @return string
+	 */
 	public function select($optionsMap, $params = [], $default = [])
 	{
 		$result = '<select';

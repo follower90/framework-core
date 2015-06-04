@@ -19,6 +19,10 @@ class Debug
 		8 => 'Notice',
 	];
 
+	/**
+	 * Returns single instance of debugger
+	 * @return Debug
+	 */
 	public static function getInstance()
 	{
 		if (!self::$_instance) {
@@ -28,6 +32,14 @@ class Debug
 		return self::$_instance;
 	}
 
+	/**
+	 * Logs MySQL query to debugger
+	 * @param $query
+	 * @param $params
+	 * @param $results
+	 * @param int $time
+	 * @param bool $success
+	 */
 	public function logQuery($query, $params, $results, $time = 0, $success = true)
 	{
 		if (!empty($params)) {
@@ -55,21 +67,37 @@ class Debug
 		];
 	}
 
+	/**
+	 * Logs loaded files
+	 * @param $path
+	 */
 	public function logFile($path)
 	{
 		$this->_files[] = $path;
 	}
 
+	/**
+	 * Logs php errors
+	 * @param $error
+	 */
 	public function logPhpError($error)
 	{
 		$this->_php_errors[] = $error;
 	}
 
+	/**
+	 * Logs framework errors
+	 * @param $error
+	 */
 	public function logCmsError($error)
 	{
 		$this->_cms_errors[] = $error;
 	}
 
+	/**
+	 * System::vardump logger
+	 * @param $dump
+	 */
 	public function logDump($dump)
 	{
 		$trace = debug_backtrace();
@@ -82,6 +110,10 @@ class Debug
 		];
 	}
 
+	/**
+	 * Returns logged mysql queries and its count
+	 * @return array
+	 */
 	public function getQueriesLog()
 	{
 		return [
@@ -90,6 +122,10 @@ class Debug
 		];
 	}
 
+	/**
+	 * Returns logged loaded files and its count
+	 * @return array
+	 */
 	public function getFilesLog()
 	{
 		return [
@@ -98,6 +134,10 @@ class Debug
 		];
 	}
 
+	/**
+	 * Returns logged PHP errors and its count
+	 * @return array
+	 */
 	public function getPhpErrors()
 	{
 		return [
@@ -106,6 +146,10 @@ class Debug
 		];
 	}
 
+	/**
+	 * Returns logged framework errors and its count
+	 * @return array
+	 */
 	public function getCmsErrors()
 	{
 		return [
@@ -114,6 +158,10 @@ class Debug
 		];
 	}
 
+	/**
+	 * Returns logged variable dumps and its count
+	 * @return array
+	 */
 	public function getCmsDumps()
 	{
 		return [

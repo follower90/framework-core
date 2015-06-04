@@ -8,7 +8,7 @@ class Config {
 
 	/**
 	 * Get default database connection
-	 * @todo refactor for use different connections with different projects and objects
+	 * @todo refactor for use different connections with different projects / objects
 	 * @return mixed
 	 */
 	public static function dbConnection()
@@ -18,6 +18,7 @@ class Config {
 
 	/**
 	 * Set path to templates folder
+	 * @todo refactor for using with multiple projects and templates folders location
 	 * @return mixed
 	 */
 	public static function tplSettings()

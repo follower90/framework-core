@@ -2,10 +2,28 @@
 
 namespace Core;
 
+use Core\Database\PDO;
+
 class Api extends Controller
 {
 	protected $request;
 
+	/**
+	 * Assigns PDO connection to protected variable
+	 * for using in API Controllers
+	 */
+	public function __construct()
+	{
+		$this->db = PDO::getInstance();
+	}
+
+	/**
+	 * Api run wrapper for response formatting
+	 * and errors catching
+	 * @param $method
+	 * @param $args
+	 * @return array
+	 */
 	public function run($method, $args)
 	{
 		try {

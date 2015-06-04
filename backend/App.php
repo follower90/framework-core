@@ -10,12 +10,21 @@ class App
 
 	private static $_user = false;
 
+	/**
+	 * Sets entry point object
+	 * and application root path
+	 * @param EntryPoint $entryPoint
+	 */
 	public function __construct(EntryPoint $entryPoint)
 	{
 		$this->_appPath = \getcwd();
 		$this->_entryPoint = $entryPoint;
 	}
 
+	/**
+	 * Show debugger console
+	 * in the end of application life cycle
+	 */
 	public function __destruct()
 	{
 		if ($this->_entryPoint->debug()) {
@@ -23,6 +32,12 @@ class App
 		}
 	}
 
+	/**
+	 * Core application run method
+	 * Setups debugger, file including and error handling
+	 * Requests route and calls API/Controller
+	 * @throws \Exception
+	 */
 	public function run()
 	{
 		date_default_timezone_set('Europe/Kiev');
@@ -52,16 +67,29 @@ class App
 		);
 	}
 
+	/**
+	 * Sets authorized user globally
+	 * @param $user
+	 */
 	public static function setUser($user)
 	{
 		static::$_user = $user;
 	}
 
+	/**
+	 * Get authorized user object
+	 * @return bool
+	 */
 	public static function getUser()
 	{
 		return static::$_user;
 	}
 
+	/**
+	 * Setups debug-mode cookie
+	 * based on GET param
+	 * @todo need to extend for debug mode security (allowed IPs, or developer hash key)
+	 */
 	private function _setupDebugMode()
 	{
 		if (isset($_GET['cmsDebug'])) {
@@ -78,6 +106,11 @@ class App
 		}
 	}
 
+	/**
+	 * Gets debugger instance, gets all logged data
+	 * and renders template with debug console
+	 * @param string $debug
+	 */
 	public function showDebugConsole($debug = 'on')
 	{
 		if ($debug == 'on' || Cookie::get('cmsDebug') && $debug != 'off') {
@@ -96,6 +129,9 @@ class App
 		}
 	}
 
+	/**
+	 * Logs included files for debug console
+	 */
 	private function _setFileIncludeHandler()
 	{
 		spl_autoload_register(function($file) {
@@ -104,6 +140,10 @@ class App
 		}, true, true);
 	}
 
+	/**
+	 * Logs PHP warnings, notices and fatal errors to debug console
+	 * Shows debug console immediately in case of fatal error
+	 */
 	private function _setErrorHandlers()
 	{
 		set_error_handler(function($number, $string, $file, $line) {

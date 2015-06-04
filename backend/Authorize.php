@@ -11,14 +11,27 @@ class Authorize
 	private $_entity;
 	private $_user;
 
+	/**
+	 * Setups user authorizing entity, as string (Object name)
+	 * @param $entity
+	 */
 	public function __construct($entity)
 	{
 		$this->_entity = $entity;
 	}
 
-	public function login($login, $password, $hashfunction)
+	/**
+	 * Login method
+	 * Accepts login, password and hash function for password security
+	 * Inserts user session hash to database and sets appropriate cookie
+	 * @param $login
+	 * @param $password
+	 * @param $hashFunction
+	 * @throws \Exception
+	 */
+	public function login($login, $password, $hashFunction)
 	{
-		if ($user = Orm::findOne($this->_entity, ['login', 'password'], [$login, $hashfunction($password)])) {
+		if ($user = Orm::findOne($this->_entity, ['login', 'password'], [$login, $hashFunction($password)])) {
 			$hash = $this->hash($login, $password);
 			$this->_user = $user;
 
@@ -27,6 +40,11 @@ class Authorize
 		}
 	}
 
+	/**
+	 * Removes user session hash from database
+	 * and deletes auth cookie
+	 * @throws \Exception
+	 */
 	public function logout()
 	{
 		if ($this->_user = $this->getUser()) {
@@ -36,6 +54,12 @@ class Authorize
 		}
 	}
 
+	/**
+	 * Returns authorized user
+	 * If user isn't set globally to App, requests from user session table by auth cookie
+	 * And sets authorized user to App
+	 * @return bool|Object
+	 */
 	public function getUser()
 	{
 		if ($user = App::getUser()) {
@@ -54,6 +78,12 @@ class Authorize
 		return $this->_user;
 	}
 
+	/**
+	 * Hash function for security of user session hash and auth cookie value
+	 * @param $login
+	 * @param $password
+	 * @return string
+	 */
 	protected function hash($login, $password)
 	{
 		return md5($this->_entity . $login . $password . self::HASH_SALT);

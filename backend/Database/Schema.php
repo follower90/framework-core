@@ -10,12 +10,21 @@ class Schema
 	private $_table;
 	private $_fields;
 
+	/**
+	 * Setups object table and fields
+	 * @param \Core\Object $object
+	 */
 	public function __construct(Object $object)
 	{
 		$this->_table = $object->getConfigData('table');
 		$this->_fields = $object->getConfigData('fields');
 	}
 
+	/**
+	 * Process launch method, setups for wiping database
+	 * @param array $path
+	 * @param array $params
+	 */
 	public static function createObjects($path = [], $params = [])
 	{
 		if ($params['clearDb']) {
@@ -27,6 +36,10 @@ class Schema
 		}
 	}
 
+	/**
+	 * Rebuilds table for object, rebuild param drops existing tables
+	 * @param bool $rebuild
+	 */
 	public function create($rebuild = false)
 	{
 		if ($rebuild) {
@@ -47,6 +60,12 @@ class Schema
 		MySQL::query('CREATE TABLE IF NOT EXISTS `' . $this->_table . '` (' . $this->_convertFields() . ')');
 	}
 
+	/**
+	 * Launches table rebuilding for all objects in defined path
+	 * @param $rootPath
+	 * @param array $params
+	 * @throws \Core\Object
+	 */
 	private static function _createObjects($rootPath, $params = [])
 	{
 		$dir = new \RecursiveIteratorIterator(
@@ -71,6 +90,10 @@ class Schema
 		}
 	}
 
+	/**
+	 * Prepares fields for language tables
+	 * @return string
+	 */
 	private function _convertFields()
 	{
 		$result = [];
@@ -102,6 +125,9 @@ class Schema
 		return implode(',', $result);
 	}
 
+	/**
+	 * Drops all tables in database
+	 */
 	private static function _dropTables()
 	{
 		MySQL::query("

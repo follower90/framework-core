@@ -23,11 +23,6 @@ abstract class EntryPoint
 		$this->_lib = $path;
 	}
 
-	public function detectMethod()
-	{
-
-	}
-
 	public function request($key = false)
 	{
 		$request = array_merge($_POST, $_GET);
