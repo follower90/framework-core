@@ -7,6 +7,12 @@ class Router
 
 	private static $_routes;
 
+	/**
+	 * Returns controller and method for executing
+	 * by requested URI
+	 * @param $lib
+	 * @return array|bool
+	 */
 	public static function getAction($lib)
 	{
 		$url = explode('?', $_SERVER['REQUEST_URI'])[0];
@@ -40,6 +46,11 @@ class Router
 		];
 	}
 
+	/**
+	 * Autodetect appropriate route
+	 * @param $lib
+	 * @return array|bool
+	 */
 	protected static function _autoDetect($lib)
 	{
 		$url = explode('?', $_SERVER['REQUEST_URI'])[0];
@@ -78,6 +89,13 @@ class Router
 		return false;
 	}
 
+	/**
+	 * Register custom route
+	 * @param $request
+	 * @param $controller
+	 * @param $action
+	 * @param $params
+	 */
 	public static function register($request, $controller, $action, $params)
 	{
 		static::$_routes[] = [
@@ -89,11 +107,27 @@ class Router
 		];
 	}
 
+	/**
+	 * Simple redirect to URI
+	 * Accepts array of custom headers
+	 * @param $url
+	 * @param array $headers
+	 */
 	public static function redirect($url, $headers = [])
 	{
+		foreach ($headers as $header) {
+			header($header);
+		}
+
 		header('Location: ' . $url);
 	}
 
+	/**
+	 * Checks match requested URI with registered custom routes
+	 * @param $route
+	 * @param $url
+	 * @return bool
+	 */
 	private static function _matches($route, $url)
 	{
 		$routeChunks = explode('/', $route);

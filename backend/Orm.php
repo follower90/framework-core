@@ -164,6 +164,14 @@ class Orm
 	}
 
 	/**
+	 * Cleans orm cache
+	 */
+	public static function clearCache()
+	{
+		self::getOrmCache()->clear();
+	}
+
+	/**
 	 * returns or creates single Cache object
 	 * @return OrmCache
 	 */

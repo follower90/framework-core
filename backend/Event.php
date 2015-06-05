@@ -7,6 +7,10 @@ class Event
 	private static $_handlers = [];
 	private static $_listeners = [];
 
+	/**
+	 * Registering event handler
+	 * @param EventHandler $handler
+	 */
 	public static function registerHandler(EventHandler $handler)
 	{
 		if (!in_array($handler, static::$_handlers)) {
@@ -14,7 +18,14 @@ class Event
 		}
 	}
 
-	public static function dispatch($alias, $data = [], $callback = '')
+	/**
+	 * Dispatches event
+	 * Can send data array and callback
+	 * @param $alias
+	 * @param array $data
+	 * @param null $callback
+	 */
+	public static function dispatch($alias, $data = [], $callback = null)
 	{
 		foreach (static::$_handlers as $handler) {
 			if (method_exists($handler, $alias . 'Handler')) {
@@ -33,6 +44,11 @@ class Event
 		}
 	}
 
+	/**
+	 * Subscribe for event and run callback function when event will be run
+	 * @param $alias
+	 * @param bool $callback
+	 */
 	public static function listen($alias, $callback = false)
 	{
 		static::$_listeners[] = [

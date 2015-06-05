@@ -16,6 +16,11 @@ class OrmMapper
 	private $_map;
 	private $_allowedFields = [];
 
+	/**
+	 * Private constructor
+	 * Sets class and gets object configs
+	 * @param $class
+	 */
 	private function __construct($class)
 	{
 		$this->_object = new $class();
@@ -23,21 +28,35 @@ class OrmMapper
 		$this->_allowedFields = array_keys($this->_object->getConfigData('fields'));
 	}
 
+	/**
+	 * Creates new OrmMapper
+	 * @param $class
+	 * @return OrmMapper
+	 * @throws \Exception
+	 */
 	public static function create($class)
 	{
 		$className = Orm::detectClass($class);
 		return new OrmMapper($className);
 	}
 
+	/**
+	 * Returns object collection
+	 * @return bool
+	 */
 	public function getCollection()
 	{
 		return $this->_collection;
 	}
 
+	/**
+	 * Sets fields for getting
+	 * @todo fix for getting related fields
+	 * @param $fields
+	 * @return $this
+	 */
 	public function setFields($fields)
 	{
-		//todo - fix for relations
-
 		$allowedFields = $this->_allowedFields;
 		$fields = array_filter($fields, function ($item) use ($allowedFields) {
 			if (in_array($item, $allowedFields) || strpos($item, '.') > 0) {
@@ -51,12 +70,24 @@ class OrmMapper
 		return $this;
 	}
 
+	/**
+	 * Set ordering
+	 * @param $field
+	 * @param string $sort
+	 * @return $this
+	 */
 	public function setSorting($field, $sort = 'asc')
 	{
 		$this->_sorting = [$field, $sort];
 		return $this;
 	}
 
+	/**
+	 * Set filter conditions
+	 * @param $keys
+	 * @param $values
+	 * @return $this
+	 */
 	public function setFilter($keys, $values)
 	{
 		$num = 0;
@@ -69,21 +100,35 @@ class OrmMapper
 		return $this;
 	}
 
+	/**
+	 * Set offset
+	 * @param $offset
+	 * @return $this
+	 */
 	public function setOffset($offset)
 	{
 		$this->_offset = (int)$offset;
 		return $this;
 	}
 
+	/**
+	 * Set limit
+	 * @param $limit
+	 * @return $this
+	 */
 	public function setLimit($limit)
 	{
 		$this->_limit = (int)$limit;
 		return $this;
 	}
 
+	/**
+	 * Load mapper with set params
+	 * @return $this
+	 */
 	public function load()
 	{
-		$this->_object->getConfig();//shit
+		$this->_object->getConfig();
 		$this->_collection = Orm::find(
 			$this->_object->getConfigData('table'),
 			array_keys($this->_filters),
@@ -98,6 +143,11 @@ class OrmMapper
 		return $this;
 	}
 
+	/**
+	 * Returns simple array values map
+	 * @return array
+	 * @throws \Exception
+	 */
 	public function getDataMap()
 	{
 		if ($this->_collection === false) {
@@ -132,6 +182,11 @@ class OrmMapper
 		return $this->_map;
 	}
 
+	/**
+	 * Get related mapper by object relation
+	 * @param $alias
+	 * @return bool|OrmMapper
+	 */
 	public function getRelatedMapper($alias)
 	{
 		if (!in_array($alias, $this->_object->relations())) {

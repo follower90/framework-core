@@ -40,8 +40,8 @@ class App
 	 */
 	public function run()
 	{
-		date_default_timezone_set('Europe/Kiev');
-		session_start();
+		Session::init();
+		$this->_setTimeZone('Europe/Kiev');
 
 		$this->_setupDebugMode();
 		$this->_setErrorHandlers();
@@ -170,5 +170,14 @@ class App
 				$this->showDebugConsole();
 			}
 		});
+	}
+
+	/**
+	 * Set default timezone wrapper
+	 * @param $alias
+	 */
+	private function _setTimeZone($alias)
+	{
+		date_default_timezone_set($alias);
 	}
 }
