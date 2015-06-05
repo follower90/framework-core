@@ -56,6 +56,10 @@ class Router
 		$url = explode('?', $_SERVER['REQUEST_URI'])[0];
 		$isApi = false;
 
+		if ($rootPath = Config::get('site.url')) {
+			$url = str_replace($rootPath, '', $url);
+		}
+
 		if (strpos($url, '/api/') === 0) {
 			$url = str_replace('/api/', '', $url);
 			$isApi = true;

@@ -53,11 +53,11 @@ class App
 		$method = 'method' . ucfirst($action['action']);
 
 		if (!class_exists($class)) {
-			throw new \Exception('Controller was not found');
+			throw new \Exception('Controller: ' . $action['controller'] . ' was not found');
 		}
 
 		if (!method_exists($class, $method)) {
-			throw new \Exception('Method was not found');
+			throw new \Exception('Method: ' . $action['action'] . 'was not found');
 		}
 
 		$controller = new $class();
