@@ -5,7 +5,7 @@ namespace Core;
 class Router
 {
 
-	private static $_routes;
+	private static $_routes = [];
 
 	/**
 	 * Returns controller and method for executing
@@ -77,10 +77,15 @@ class Router
 			array_shift($uriChunks);
 		}
 
-		$controller = $uriChunks[0] ? ucfirst($uriChunks[0]) : 'Index';
-		$action = $uriChunks[1] ? ucfirst($uriChunks[1]) : 'Index';
+		$controller = empty($uriChunks[0]) ? 'Index' : ucfirst($uriChunks[0]);
+		$action = empty($uriChunks[1]) ? 'Index' : ucfirst($uriChunks[1]);
 
-		$args = array_shift(array_shift($uriChunks));
+		$args = [];
+		array_shift($uriChunks);
+
+		if (is_array($uriChunks)) {
+			$args = (array)array_shift($uriChunks);
+		}
 
 		if (method_exists($lib . '\\' . $controller, 'method' . $action)) {
 			return [

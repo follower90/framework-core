@@ -18,6 +18,10 @@ class App
 	public function __construct(EntryPoint $entryPoint)
 	{
 		$this->_appPath = \getcwd();
+		if ($customUrl = Config::get('site.url')) {
+			$this->_appPath = str_replace($customUrl, '', $this->_appPath);
+		}
+
 		$this->_entryPoint = $entryPoint;
 	}
 
