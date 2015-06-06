@@ -36,7 +36,7 @@ class Authorize
 			$this->_user = $user;
 
 			MySQL::insert('User_Session', ['entity' => $this->_entity, 'hash' => $hash, 'userId' => $this->_user->getId()]);
-			Cookie::set('oauth_hash', $hash);
+			Cookie::set(strtolower($this->_entity) .'_oauth_hash', $hash);
 		}
 	}
 
@@ -49,7 +49,7 @@ class Authorize
 	{
 		if ($this->_user = $this->getUser()) {
 			MySQL::delete('User_Session', ['entity' => $this->_entity, 'userId' => $this->_user->getId()]);
-			Cookie::remove('oauth_hash');
+			Cookie::remove(strtolower($this->_entity) . '_oauth_hash');
 			$this->_user = null;
 		}
 	}
@@ -67,7 +67,7 @@ class Authorize
 		}
 
 		if (!$this->_user) {
-			$oauthHash = Cookie::get('oauth_hash');
+			$oauthHash = Cookie::get(strtolower($this->_entity) . '_oauth_hash');
 
 			if ($session = Orm::findOne('User_Session', ['hash', 'entity'], [$oauthHash, $this->_entity])) {
 				$this->_user = Orm::load($this->_entity, $session->getValue('userId'));

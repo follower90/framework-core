@@ -7,6 +7,9 @@ class Router
 
 	private static $_routes = [];
 
+	private static $_url;
+	private static $_isApi = false;
+
 	/**
 	 * Returns controller and method for executing
 	 * by requested URI
@@ -15,18 +18,10 @@ class Router
 	 */
 	public static function getAction($lib)
 	{
-		$url = explode('?', $_SERVER['REQUEST_URI'])[0];
-
-		if (strpos($url, '/api/') === 0) {
-			$url = str_replace('/api/', '', $url);
-		}
-
-		if ($url == '/api.php') {
-			$url = $_GET['method'];
-		}
+		self::_initUrlParams();
 
 		foreach (static::$_routes as $route) {
-			if (static::_matches($route['url'], $url) /*&& mb_strtolower($_SERVER['REQUEST_METHOD']) == $route['method']*/) {
+			if (static::_matches($route['url'], self::$_url) && mb_strtolower($_SERVER['REQUEST_METHOD']) == $route['method']) {
 				return [
 					'controller' => $route['controller'],
 					'action' => $route['action'],
@@ -53,27 +48,10 @@ class Router
 	 */
 	protected static function _autoDetect($lib)
 	{
-		$url = explode('?', $_SERVER['REQUEST_URI'])[0];
-		$isApi = false;
-
-		if ($rootPath = Config::get('site.url')) {
-			$url = str_replace($rootPath, '', $url);
-		}
-
-		if (strpos($url, '/api/') === 0) {
-			$url = str_replace('/api/', '', $url);
-			$isApi = true;
-		}
-
-		if ($url == '/api.php') {
-			$url = $_GET['method'];
-			$isApi = true;
-		}
-
-		if ($isApi) {
-			$uriChunks = explode('.', $url);
+		if (self::$_isApi) {
+			$uriChunks = explode('.', self::$_url);
 		} else {
-			$uriChunks = explode('/', $url);
+			$uriChunks = explode('/', self::$_url);
 			array_shift($uriChunks);
 		}
 
@@ -96,6 +74,32 @@ class Router
 		}
 
 		return false;
+	}
+
+	/**
+	 * Writes requested uri, based on site.url
+	 * and 'isApi' = true, if Api request
+	 * @return array
+	 */
+	protected static function _initUrlParams()
+	{
+		$url = explode('?', $_SERVER['REQUEST_URI'])[0];
+
+		if ($rootPath = Config::get('site.url')) {
+			$url = str_replace($rootPath, '', $url);
+		}
+
+		if (strpos($url, '/api/') === 0) {
+			$url = str_replace('/api/', '', $url);
+			self::$_isApi = true;
+		}
+
+		if ($url == '/api.php') {
+			$url = $_GET['method'];
+			self::$_isApi = true;
+		}
+
+		self::$_url = $url;
 	}
 
 	/**
