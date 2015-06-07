@@ -1,4 +1,4 @@
-vf.registerModule('Model', {
+app.registerModule('Model', {
 
 	data: {},
 

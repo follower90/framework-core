@@ -1,4 +1,4 @@
-vf.registerComponent('Select_Box', {
+app.registerComponent('Select_Box', {
 
 	dom: '<select></select>',
 

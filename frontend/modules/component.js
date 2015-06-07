@@ -1,4 +1,4 @@
-vf.registerModule('Component', {
+app.registerModule('Component', {
 
 	container: '',
 	template: '',
@@ -21,7 +21,7 @@ vf.registerModule('Component', {
 	},
 
 	loadTemplate: function () {
-		vf.utils.loadTemplate(this.template, function (template) {
+		app.utils.loadTemplate(this.template, function (template) {
 			this.dom = template;
 			this.load(this.params);
 			this.renderComponents();
@@ -44,11 +44,11 @@ vf.registerModule('Component', {
 	},
 
 	render: function () {
-		var container = vf.dom.find1(this.container);
+		var container = app.dom.find1(this.container);
 
 		if (container) {
 			$(this.container).fadeOut(0);
-			container.innerHTML = vf.utils.render(this.dom, this.templateOptions);
+			container.innerHTML = app.utils.render(this.dom, this.templateOptions);
 			$(this.container).fadeIn(500);
 		} else {
 			throw 'Container error';
@@ -67,8 +67,8 @@ vf.registerModule('Component', {
 			var component = this.components[alias];
 
 			if (component.use) {
-				this.inlineComponents[alias] = vf.utils.extend(
-					vf.utils.extend({}, this.getComponent(component.use)), component);
+				this.inlineComponents[alias] = app.utils.extend(
+					app.utils.extend({}, this.getComponent(component.use)), component);
 
 				for (var opt in component) {
 					this.inlineComponents[alias][opt] = component[opt];
@@ -80,7 +80,7 @@ vf.registerModule('Component', {
 	},
 
 	getComponent: function (alias) {
-		return vf._registry.components[alias];
+		return app._registry.components[alias];
 	},
 
 	getInlineComponent: function (alias) {
@@ -102,7 +102,7 @@ vf.registerModule('Component', {
 			for (var i in this.domHandlers) {
 				var handler = this.domHandlers[i],
 					callback = handler.callback,
-					target = vf.dom.find1(this.container + ' ' + handler.element),
+					target = app.dom.find1(this.container + ' ' + handler.element),
 					_ = this;
 
 				if (!!target) {
@@ -115,10 +115,10 @@ vf.registerModule('Component', {
 	},
 
 	find1: function (query) {
-		return vf.dom.find1(this.container + ' ' + query);
+		return app.dom.find1(this.container + ' ' + query);
 	},
 
 	find: function (query) {
-		return vf.dom.find(this.container + ' ' + query);
+		return app.dom.find(this.container + ' ' + query);
 	}
 });

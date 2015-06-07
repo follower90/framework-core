@@ -1,5 +1,7 @@
-vf.registerModule('Event', {
+app.registerModule('Event', {
+
 	events: [],
+
 	register: function (event, callback) {
 		this.events.push({
 			alias: event,

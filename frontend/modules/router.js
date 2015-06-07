@@ -1,4 +1,4 @@
-vf.registerModule('Router', {
+app.registerModule('Router', {
 	run: function() {
 		var _ = this;
 
@@ -9,22 +9,22 @@ vf.registerModule('Router', {
 	},
 
 	update: function () {
-		for (var url in vf._registry.routes) {
+		for (var url in app._registry.routes) {
 
 			var args = this._matches(url, window.location.hash);
 
 			if (args) {
-				var route = vf._registry.routes[url];
+				var route = app._registry.routes[url];
 
 				var params = route.params || {},
-					component = vf._registry.components[route.page];
+					component = app._registry.components[route.page];
 
-				params = vf.utils.extend(args, params);
+				params = app.utils.extend(args, params);
 
 				if (component) {
 					component.activate(params);
 				} else {
-					vf.error('Component: ' + route.page + ' not found');
+					app.error('Component: ' + route.page + ' not found');
 				}
 			}
 		}

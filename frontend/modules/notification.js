@@ -1,4 +1,4 @@
-vf.registerModule('Notification', {
+app.registerModule('Notification', {
 
 	send: function(title, icon, body, callback) {
 		if (Notification.permission !== "granted")
