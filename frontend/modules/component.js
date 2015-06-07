@@ -47,9 +47,9 @@ vf.registerModule('Component', {
 		var container = vf.dom.find1(this.container);
 
 		if (container) {
-			//$(this.container).fadeOut(0);
+			$(this.container).fadeOut(0);
 			container.innerHTML = vf.utils.render(this.dom, this.templateOptions);
-			//	$(this.container).fadeIn(500);
+			$(this.container).fadeIn(500);
 		} else {
 			throw 'Container error';
 		}
@@ -88,11 +88,11 @@ vf.registerModule('Component', {
 	},
 
 	renderComponents: function () {
-		for (var w in this.inlineComponents) {
-			var widget = this.inlineComponents[w];
+		for (var c in this.inlineComponents) {
+			var component = this.inlineComponents[c];
 
-			if (widget) {
-				widget.activate(this.params);
+			if (component) {
+				component.activate(this.params);
 			}
 		}
 	},

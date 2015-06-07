@@ -4,11 +4,27 @@ namespace Core;
 
 use Core\Database\MySQL;
 
+/**
+ * Class Authorize
+ * Universal authorization class
+ * Implements login, logout, and check authorization status
+ *
+ * @package Core
+ */
 class Authorize
 {
 	const HASH_SALT = 'KP(4yppeP(WY$il9-y';
 
+	/**
+	 * User entity name
+	 * @var string
+	 */
 	private $_entity;
+
+	/**
+	 * User object
+	 * @var \Core\Object
+	 */
 	private $_user;
 
 	/**
@@ -24,6 +40,7 @@ class Authorize
 	 * Login method
 	 * Accepts login, password and hash function for password security
 	 * Inserts user session hash to database and sets appropriate cookie
+	 *
 	 * @param $login
 	 * @param $password
 	 * @param $hashFunction
@@ -43,6 +60,7 @@ class Authorize
 	/**
 	 * Removes user session hash from database
 	 * and deletes auth cookie
+	 *
 	 * @throws \Exception
 	 */
 	public function logout()
@@ -58,6 +76,7 @@ class Authorize
 	 * Returns authorized user
 	 * If user isn't set globally to App, requests from user session table by auth cookie
 	 * And sets authorized user to App
+	 *
 	 * @return bool|Object
 	 */
 	public function getUser()
@@ -80,6 +99,7 @@ class Authorize
 
 	/**
 	 * Hash function for security of user session hash and auth cookie value
+	 *
 	 * @param $login
 	 * @param $password
 	 * @return string

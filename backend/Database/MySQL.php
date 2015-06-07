@@ -73,7 +73,7 @@ class MySQL
 			$where[] = $field . '=' . '\'' . $value . '\'';
 		}
 
-		$query = 'DELETE FROM `' . $table . '` WHERE ' . implode(',', $where);
+		$query = 'DELETE FROM `' . $table . '` WHERE ' . implode(' and ', $where);
 		PDO::getInstance()->query($query);
 	}
 

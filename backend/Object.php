@@ -109,15 +109,6 @@ abstract class Object
 	}
 
 	/**
-	 * Direct values setting method
-	 * @param array $data
-	 */
-	public function set($data = [])
-	{
-		$this->_values = $data;
-	}
-
-	/**
 	 * Set multiple values
 	 * @param $data
 	 */
@@ -135,9 +126,10 @@ abstract class Object
 	}
 
 	/**
-	 * Set object value
-	 * @param $field
-	 * @param $value
+	 * Sets object value
+	 *
+	 * @param string $field field name
+	 * @param $value field value
 	 */
 	public function setValue($field, $value)
 	{
@@ -180,8 +172,9 @@ abstract class Object
 
 	/**
 	 * Returns object value if exists
-	 * @param $field
-	 * @return bool
+	 *
+	 * @param string $field field name
+	 * @return bool|string field value
 	 */
 	public function getValue($field)
 	{
@@ -213,8 +206,9 @@ abstract class Object
 
 	/**
 	 * Adds object relation
-	 * @param $alias
-	 * @param $relation
+	 *
+	 * @param string $alias relation alias
+	 * @param array $relation relation config
 	 */
 	public static function addRelation($alias, $relation)
 	{

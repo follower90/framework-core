@@ -17,14 +17,14 @@ vf.registerModule('Router', {
 				var route = vf._registry.routes[url];
 
 				var params = route.params || {},
-					widget = vf._registry.components[route.page];
+					component = vf._registry.components[route.page];
 
 				params = vf.utils.extend(args, params);
 
-				if (widget) {
-					widget.activate(params);
+				if (component) {
+					component.activate(params);
 				} else {
-					vf.error('Widget: ' + route.page + ' not found');
+					vf.error('Component: ' + route.page + ' not found');
 				}
 			}
 		}
