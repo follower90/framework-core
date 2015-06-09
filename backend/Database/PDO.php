@@ -48,7 +48,7 @@ class PDO Extends \PDO
 			$this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			return $dbh;
 		} catch (\Exception $e) {
-			self::$_debugger->logCmsError('Cannot connect to database!');
+			throw new \Core\Exception\Exception('Cannot connect to database!');
 		}
 	}
 

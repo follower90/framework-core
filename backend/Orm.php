@@ -60,7 +60,7 @@ class Orm
 				self::updateLangTables($object, $langData);
 			}
 		} catch (\Exception $e) {
-			throw new \Exception('Error inserting data to ' . $table, 1);
+			throw new \Core\Exception\Exception('Error inserting data to ' . $table, 1);
 		}
 
 		$object->setValue('id', $id);
@@ -156,7 +156,7 @@ class Orm
 	public static function delete(Object $object)
 	{
 		if (!$id = $object->getId()) {
-			throw new \Exception('Cannot delete object');
+			throw new \Core\Exception\Exception('Cannot delete object');
 		}
 
 		MySQL::delete($object->getConfigData('table'), ['id' => $id]);
@@ -195,7 +195,7 @@ class Orm
 		$targetObject = self::detectClass($targetObjectProperties['class']);
 
 		if (!$targetObject) {
-			throw new \Exception('Relation registering error. Could not detect target object');
+			throw new \Core\Exception\Exception('Relation registering error. Could not detect target object');
 		}
 
 		$relation = [
@@ -234,7 +234,7 @@ class Orm
 			return $className;
 		}
 
-		throw new \Exception('Object ' . $class . ' was not found');
+		throw new \Core\Exception\Exception('Object ' . $class . ' was not found');
 	}
 
 	/**

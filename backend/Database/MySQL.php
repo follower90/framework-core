@@ -14,7 +14,7 @@ class MySQL
 	public static function update($table, $params = [], $conditions = [])
 	{
 		if (!$table || empty($params) || empty($conditions)) {
-			throw new \Exception('Incorrect update query');
+			throw new \Core\Exception\Exception('Incorrect update query');
 		}
 
 		$set = [];
@@ -42,7 +42,7 @@ class MySQL
 	public static function insert($table, $params = [])
 	{
 		if (!$table || empty($params)) {
-			throw new \Exception('Incorrect insert query');
+			throw new \Core\Exception\Exception('Incorrect insert query');
 		}
 
 		$set = [];
@@ -64,7 +64,7 @@ class MySQL
 	public static function delete($table, $conditions = [])
 	{
 		if (!$table || empty($conditions)) {
-			throw new \Exception('Incorrect delete query');
+			throw new \Core\Exception\Exception('Incorrect delete query');
 		}
 
 		$where = [];

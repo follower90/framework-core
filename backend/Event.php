@@ -37,7 +37,7 @@ class Event
 			if ($listener['event'] == $alias) {
 				try {
 					$listener['callback']($data);
-				} catch (\Exception $notImportant) {
+				} catch (\Core\Exception\Exception $notImportant) {
 
 				}
 			}

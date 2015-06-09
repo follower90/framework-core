@@ -32,7 +32,7 @@ abstract class EntryPoint
 	public function getLib()
 	{
 		if (!$this->_lib) {
-			throw new \Exception('Library namespace is not set');
+			throw new \Core\Exception\Exception('Library namespace is not set');
 		}
 
 		return $this->_lib;

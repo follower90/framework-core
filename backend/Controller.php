@@ -71,7 +71,7 @@ class Controller
 		if (method_exists($apiController, $method)) {
 			return call_user_func([$apiController, $method], $arguments);
 		} else {
-			throw new \Exception('Error');
+			throw new \Core\Exception\Exception('Error');
 		}
 	}
 }
