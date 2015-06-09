@@ -40,7 +40,7 @@ col-width(columns)
 	text-align: center
 	color: #000000
 
-@media all and (max-width: 960px)
+@media screen and (max-width: 800px) and (orientation: landscape)
 	.col-1
 		width col-width(12)
 	.col-2
@@ -64,7 +64,7 @@ col-width(columns)
 	.row .col-2 ~ .col-10
 		width: col-width(1.2)
 
-	@media all and (max-width: 800px)
+	@media screen and (max-width: 600px) and (orientation: landscape)
 		.col-1
 			width: col-width(6)
 		.col-2
@@ -90,7 +90,7 @@ col-width(columns)
 		.row .col-2 ~ .col-10
 			width: col-width(2)
 
-		@media all and (max-width: 640px)
+		@media all and (max-width: 400px)
 			.col-1
 				width: col-width(2)
 			.col-2
