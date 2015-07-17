@@ -60,7 +60,11 @@ class PDO Extends \PDO
 	{
 		if (!self::$_instance) {
 			$settings = Config::dbConnection();
-			self::$_instance = new PDO($settings);
+			try {
+				self::$_instance = new PDO($settings);
+			} catch (\Exception $e) {
+				echo $e->getMessage();
+			}
 		}
 
 		return self::$_instance;
