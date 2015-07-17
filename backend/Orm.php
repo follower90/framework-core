@@ -273,17 +273,21 @@ class Orm
 	 */
 	protected static function fillCollection($class, $data, $params)
 	{
+		if (empty($data)) {
+			return new Collection([]);
+		}
+
 		$objects = [];
 
 		array_walk($data, function ($row) use (&$objects, $class) {
 			$class = self::_getObject($class);
 			$object = new $class();
 			$objects[] = self::fillObject($object, $row);
-
 		});
 
 		$collection = new Collection($objects);
 		self::getOrmCache()->update($params, $collection);
+
 		return $collection;
 	}
 

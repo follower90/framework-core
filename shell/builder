@@ -2,6 +2,9 @@
 
 <?php
 
+require_once('vendor/autoload.php');
+require_once('config.php');
+
 class ProjectBuilder
 {
 	private $scenario = [];
@@ -64,14 +67,25 @@ class ProjectBuilder
 				}
 				break;
 
+			case 'schema:create':
+				$paths = ['vendor/follower/core/backend'];
+				if (isset($this->args[2])) {
+					$paths[] = $this->args[2];
+				}
+				\Core\Database\Schema::createObjects($paths, ['clearDb' => true]);
+				break;
+
 			case 'help' :
 			default :
 				$this->result = [
-					'Project Builder v 1.0 Help:',
-					' * commit \'commit reason\' - Updates untracked files in repository and commits changes to current branch',
+					'Project Builder v 1.1',
+					'Git aggregator commands:',
+					' * commit \'commit reason\' - commits changes to current branch',
 					' * status - \'git status\' output',
-					' * push - \'git push\' command',
-					' * pull - \'git pull\' command',
+					' * push - \'git push\' to all repositories',
+					' * pull - \'git pull\' from all repositories',
+					'Schema commands:',
+					' * schema:create \'project\' - clears db and recreate schema',
 				];
 				break;
 		}
