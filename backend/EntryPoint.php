@@ -64,8 +64,8 @@ abstract class EntryPoint
 	}
 
 	/**
-	 * Switches debug mode
-	 * Can be overridden in entry points
+	 * Allows debug mode
+	 * Can be overridden in site entry points
 	 * @return bool
 	 */
 	public function debug()

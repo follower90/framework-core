@@ -37,19 +37,19 @@ class App
 	private static $_user = false;
 
 	/**
-	 * Sets entry point object
-	 * and application root path
+	 * Sets application root path
+	 * and entry point
 	 *
 	 * @param EntryPoint $entryPoint
 	 */
 	public function __construct(EntryPoint $entryPoint)
 	{
-		$this->_appPath = \getcwd();
-		if ($customUrl = Config::get('site.url')) {
-			$this->_appPath = str_replace($customUrl, '', $this->_appPath);
-		}
-
 		$this->_entryPoint = $entryPoint;
+		$this->_appPath = \getcwd();
+
+		if ($siteUrl = Config::get('site.url')) {
+			$this->_appPath = str_replace($siteUrl, '', $this->_appPath);
+		}
 	}
 
 	/**
@@ -73,7 +73,7 @@ class App
 	public function run()
 	{
 		Session::init();
-		$this->_setTimeZone('Europe/Kiev');
+		date_default_timezone_set('Europe/Kiev');
 
 		$this->_setupDebugMode();
 		$this->_setErrorHandlers();
@@ -122,20 +122,18 @@ class App
 	/**
 	 * Setups debug-mode cookie
 	 * based on GET param
-	 *
-	 * @todo need to extend for debug mode security (allowed IPs, or developer hash key)
 	 */
 	private function _setupDebugMode()
 	{
-		if (isset($_GET['cmsDebug'])) {
-			$this->_debugParam = $_GET['cmsDebug'];
+		if (isset($_GET['debug'])) {
+			$this->_debugParam = $_GET['debug'];
 			switch ($this->_debugParam) {
 				case 'on':
-					Cookie::set('cmsDebug', 'on');
+					Cookie::set('debug', 'on');
 					break;
 
 				case 'off':
-					Cookie::remove('cmsDebug');
+					Cookie::remove('debug');
 					break;
 			}
 		}
@@ -146,10 +144,16 @@ class App
 	 * and renders template with debug console
 	 *
 	 * @param string $debug on/off
+	 * @todo refactor allowed IPs configuration
 	 */
 	public function showDebugConsole($debug = 'on')
 	{
-		if ($debug == 'on' || Cookie::get('cmsDebug') && $debug != 'off') {
+		if ($debug == 'on' || Cookie::get('debug') && $debug != 'off') {
+
+			if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
+				return;
+			}
+
 			$debug = Debug::getInstance();
 
 			$data = [];
@@ -166,7 +170,8 @@ class App
 	}
 
 	/**
-	 * Logs included files for debug console
+	 * Registering handler function for
+	 * logging included files into debugger
 	 */
 	private function _setFileIncludeHandler()
 	{
@@ -206,15 +211,5 @@ class App
 				$this->showDebugConsole();
 			}
 		});
-	}
-
-	/**
-	 * Set default timezone wrapper
-	 *
-	 * @param string $alias timezone string
-	 */
-	private function _setTimeZone($alias)
-	{
-		date_default_timezone_set($alias);
 	}
 }

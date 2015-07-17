@@ -37,6 +37,21 @@ class Schema
 	}
 
 	/**
+	 * Creates table by object name
+	 * @param array $name
+	 * @param array $params
+	 */
+	public static function createObject($name, $params = [])
+	{
+		$className = Orm::detectClass($name);
+
+		$schema = new Schema(new $className());
+
+		$dropTable = isset($params['dropTable']) ? true : false;
+		$schema->create($dropTable);
+	}
+
+	/**
 	 * Rebuilds table for object, rebuild param drops existing tables
 	 * @param bool $rebuild
 	 */
@@ -57,7 +72,7 @@ class Schema
 			)');
 		}
 
-		MySQL::query('CREATE TABLE IF NOT EXISTS `' . $this->_table . '` (' . $this->_convertFields() . ')');
+		MySQL::query('CREATE TABLE IF NOT EXISTS `' . $this->_table . '` (' . $this->_prepareFields() . ')');
 	}
 
 	/**
@@ -69,7 +84,7 @@ class Schema
 	private static function _createObjects($rootPath, $params = [])
 	{
 		$dir = new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator($rootPath)
+			new \RecursiveDirectoryIterator($rootPath . '/Object/')
 		);
 
 		foreach ($dir as $path => $fileInfo) {
@@ -77,24 +92,26 @@ class Schema
 				$path = explode('/', $fileInfo->getPath());
 				$parentDir = $path[sizeof($path) - 1];
 
-				if ($parentDir == 'Object') {
-					$className = str_replace('.php', '', $fileInfo->getFilename());
-					$className = Orm::detectClass($className);
-
-					$schema = new Schema(new $className());
-
-					$dropTable = isset($params['dropTable']) ? true : false;
-					$schema->create($dropTable);
+				$className = str_replace('.php', '', $fileInfo->getFilename());
+				if ($parentDir != 'Object') {
+					$className = $parentDir . '_' . $className;
 				}
+
+				$className = Orm::detectClass($className);
+
+				$schema = new Schema(new $className());
+
+				$dropTable = isset($params['dropTable']) ? true : false;
+				$schema->create($dropTable);
 			}
 		}
 	}
 
 	/**
-	 * Prepares fields for language tables
+	 * Prepares fields for creating table
 	 * @return string
 	 */
-	private function _convertFields()
+	private function _prepareFields()
 	{
 		$result = [];
 

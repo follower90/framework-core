@@ -67,12 +67,19 @@ class ProjectBuilder
 				}
 				break;
 
-			case 'schema:create':
+			case 'schema:update':
 				$paths = ['vendor/follower/core/backend'];
 				if (isset($this->args[2])) {
 					$paths[] = $this->args[2];
 				}
 				\Core\Database\Schema::createObjects($paths, ['clearDb' => true]);
+				break;
+
+			case 'schema:create':
+				if (!isset($this->args[2])) {
+					return false;
+				}
+				\Core\Database\Schema::createObject($this->args[2], ['clearDb' => true]);
 				break;
 
 			case 'help' :
@@ -85,7 +92,8 @@ class ProjectBuilder
 					' * push - \'git push\' to all repositories',
 					' * pull - \'git pull\' from all repositories',
 					'Schema commands:',
-					' * schema:create \'project\' - clears db and recreate schema',
+					' * schema:update \'project\' - clears db and recreate schema',
+					' * schema:create \'object\' - creates table for specified object',
 				];
 				break;
 		}

@@ -53,7 +53,7 @@ class Controller
 
 	/**
 	 * Api/Controller method executor
-	 * For run one controller from another and avoid code duplication
+	 * For running one controller's method from another and avoid code duplication
 	 * @param $apiPath
 	 * @param $arguments
 	 * @return mixed

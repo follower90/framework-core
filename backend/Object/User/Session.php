@@ -13,7 +13,7 @@ class User_Session extends \Core\Object
 			self::$_config->setTable('User_Session');
 			self::$_config->setFields([
 				'userId' => [
-					'type' => 'id',
+					'type' => 'int',
 					'default' => '',
 					'null' => false,
 				],

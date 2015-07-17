@@ -49,7 +49,7 @@ class Event
 	 * @param $alias
 	 * @param bool $callback
 	 */
-	public static function listen($alias, $callback = false)
+	public static function listen($alias, $callback = null)
 	{
 		static::$_listeners[] = [
 			'event' => $alias,
