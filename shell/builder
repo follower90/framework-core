@@ -24,15 +24,16 @@ class ProjectBuilder
 		array_unshift($projects, '');
 
 		foreach ($projects as $project) {
-			//if ($cmd != 'add') { //silent add
-				echo PHP_EOL;
-				echo '+------------------------------' . PHP_EOL;
-				echo '| ' . ($project ? 'follower/' . $project : 'main'). PHP_EOL;
-				echo '+------------------------------' . PHP_EOL;
-				echo $this->runCmd($path . $project, $cmd, $params);
-			//} else {
-			//	$this->runCmd($path . $project, $cmd, $params);
-			//}
+			echo $cmd;
+			# if ($cmd != 'add') { //silent add
+			# 	echo PHP_EOL;
+			# 	echo '+------------------------------' . PHP_EOL;
+			# 	echo '| ' . ($project ? 'follower/' . $project : 'main'). PHP_EOL;
+			# 	echo '+------------------------------' . PHP_EOL;
+			# 	echo $this->runCmd($path . $project, $cmd, $params);
+			# } else {
+			# 	$this->runCmd($path . $project, $cmd, $params);
+			# }
 		}
 	}
 
