@@ -32,4 +32,22 @@ trait Html
 		$result .= '</select>';
 		return $result;
 	}
+
+	/**
+	 * Generates style including link
+	 * @return string
+	 */
+	public function loadCss($path)
+	{
+		return '<link href="' . $path . '" rel="stylesheet" type="text/css">';
+	}
+
+	/**
+	 * Generates javascript including link
+	 * @return string
+	 */
+	public function loadJs($path)
+	{
+		return '<script src="' . $path . '"></script>';
+	}
 }

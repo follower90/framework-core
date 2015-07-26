@@ -42,4 +42,21 @@ class View {
 
 		return $contents;
 	}
+
+	/**
+	 * Includes css/js/etc. file into template
+	 * Root path is "vendor path" for current entry point
+	 * Look into Html trait for setup concrete loading methods
+	 * @param $tpl
+	 * @param array $vars
+	 * @return string
+	 */
+	public function load($type, $path)
+	{
+		if(method_exists($this, 'load' . ucfirst($type))) {
+			echo call_user_func([$this, 'load' . ucfirst($type)], \Core\App::get()->getVendorPath() . $path) . PHP_EOL;
+		} else {
+			throw new \Exception('Unsupported file type');
+		}
+	}
 }

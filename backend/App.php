@@ -37,6 +37,12 @@ class App
 	private static $_user = false;
 
 	/**
+	 * This instance
+	 * @var bool|\Core\App
+	 */
+	private static $_instance = false;
+
+	/**
 	 * Sets application root path
 	 * and entry point
 	 *
@@ -50,6 +56,20 @@ class App
 		if ($siteUrl = Config::get('site.url')) {
 			$this->_appPath = str_replace($siteUrl, '', $this->_appPath);
 		}
+
+		static::$_instance = $this;
+	}
+
+	/**
+	 * Returns App instance
+	 */
+	public static function get()
+	{
+		if (static::$_instance) {
+			return static::$_instance;
+		}
+
+		throw new Exception("App is not initialized yet");
 	}
 
 	/**
@@ -107,6 +127,27 @@ class App
 	public static function setUser(Object $user)
 	{
 		static::$_user = $user;
+	}
+
+	/**
+	 * Get root path of vendor in current entry point
+	 *
+	 * @param \Core\Object $user
+	 */
+	public function setVendorPath($path)
+	{
+		$this->_vendorPath = $path;
+		return true;
+	}
+
+	/**
+	 * Get root path of vendor in current entry point
+	 *
+	 * @param \Core\Object $user
+	 */
+	public function getVendorPath()
+	{
+		return $this->_vendorPath;
 	}
 
 	/**
