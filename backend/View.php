@@ -8,6 +8,9 @@ class View {
 	private $_templateOptions = [];
 	private $_defaultPath = false;
 
+	private $_styles;
+	private $_scripts;
+
 	/**
 	 * Template params setter
 	 * @param $data
@@ -28,6 +31,26 @@ class View {
 	}
 
 	/**
+	 * Return resources batch by type
+	 * @param string $type
+	 */
+	public function getResources($type = false)
+	{
+		switch ($type) {
+			case 'css':
+				return $this->_styles;
+				break;
+
+			case 'js':
+				return $this->_scripts;
+				break;
+			default:
+				return '';
+				break;
+		}
+	}
+
+	/**
 	 * Renders template with vars
 	 * @param $tpl
 	 * @param array $vars (do not rename it!)
@@ -39,6 +62,14 @@ class View {
 
 		if ($this->_defaultPath) {
 			$tpl = App::get()->getAppPath() . $this->_defaultPath . '/' . $tpl;
+		}
+
+		if (isset($vars['styles'])) {
+			$this->_styles = $this->_prepare('css', $vars['styles']);
+		}
+
+		if (isset($vars['scripts'])) {
+			$this->_scripts = $this->_prepare('js', $vars['scripts']);
 		}
 
 		include $tpl;
@@ -62,16 +93,32 @@ class View {
 	 * Includes css/js/etc. file into template
 	 * Root path is "vendor path" for current entry point
 	 * Look into Html trait for setup concrete loading methods
-	 * @param $tpl
-	 * @param array $vars
+	 * @param $type
+	 * @param string $vars
 	 * @return string
 	 */
 	public function load($type, $path)
 	{
 		if(method_exists($this, 'load' . ucfirst($type))) {
-			echo call_user_func([$this, 'load' . ucfirst($type)], $this->_defaultPath . $path) . PHP_EOL;
+			return call_user_func([$this, 'load' . ucfirst($type)], $this->_defaultPath . $path) . PHP_EOL;
 		} else {
 			throw new \Exception('Unsupported file type');
 		}
+	}
+
+	/**
+	 * Prepares multiple resources
+	 * @param $type
+	 * @param array $paths
+	 * @return string
+	 */
+	private function _prepare($type, $paths = [])
+	{
+		$data = '';
+		foreach ($paths as $path) {
+			$data .= $this->load($type, $path);
+		}
+		
+		return $data;
 	}
 }
