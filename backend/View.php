@@ -11,6 +11,8 @@ class View {
 	private $_styles;
 	private $_scripts;
 
+	private $_notices;
+
 	/**
 	 * Template params setter
 	 * @param $data
@@ -34,7 +36,7 @@ class View {
 	 * Return resources batch by type
 	 * @param string $type
 	 */
-	public function getResources($type = false)
+	public function loadResources($type = false)
 	{
 		switch ($type) {
 			case 'css':
@@ -121,4 +123,29 @@ class View {
 		
 		return $data;
 	}
+
+	public function addNotice($key, $type, $text)
+	{
+		$this->_notices[$key] = ['type' => $type, 'text' => $text];
+		\Core\Session::set('notices', json_encode($this->_notices));
+	}
+
+	public function getNotices()
+	{
+		$notices = \Core\Session::get('notices');
+		\Core\Session::remove('notices');
+
+		return $this->renderNotices(json_decode($notices, true));
+	}
+
+	public function renderNotices($data)
+	{
+		$text = '';
+		foreach ($data as $notice) {
+			$text .= '<span class="notice">' . $notice['text'] . '</span>';
+		}
+
+		return $text;
+	}
 }
+

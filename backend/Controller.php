@@ -13,7 +13,7 @@ class Controller
 	 * Assigns PDO Mysql connection to protected variable
 	 * Assigns View object for templates rendering
 	 */
-	function __construct()
+	public function __construct()
 	{
 		$this->db = PDO::getInstance();
 		$this->view = new View();

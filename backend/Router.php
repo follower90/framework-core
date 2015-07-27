@@ -83,7 +83,7 @@ class Router
 	 */
 	protected static function _initUrlParams()
 	{
-		$url = explode('?', $_SERVER['REQUEST_URI'])[0];
+		$url = explode('?', static::get('uri'))[0];
 
 		if ($rootPath = Config::get('site.url')) {
 			$url = str_replace($rootPath, '', $url);
@@ -133,6 +133,24 @@ class Router
 		}
 
 		header('Location: ' . $url);
+	}
+
+	/**
+	 * Get Server Request params
+	 * @param $param
+	 * @return string
+	 */
+	public static function get($param)
+	{
+		switch ($param) {
+			case 'uri':
+				return $_SERVER['REQUEST_URI'];
+				break;
+			
+			default:
+				throw new \Exception('Unknown router param');
+				break;
+		}
 	}
 
 	/**
