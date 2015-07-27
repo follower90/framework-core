@@ -151,6 +151,16 @@ class App
 	}
 
 	/**
+	 * Get root path of application at server
+	 *
+	 * @param \Core\Object $user
+	 */
+	public function getAppPath()
+	{
+		return $this->_appPath;
+	}
+
+	/**
 	 * Get authorized user object
 	 *
 	 * @return bool|\Core\Object

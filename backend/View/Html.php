@@ -50,4 +50,13 @@ trait Html
 	{
 		return '<script src="' . $path . '"></script>';
 	}
+
+	/**
+	 * Generates javascript including link
+	 * @return string
+	 */
+	public function loadPhtml($path)
+	{
+		return file_get_contents(\Core\App::get()->getAppPath() . $path);
+	}
 }
