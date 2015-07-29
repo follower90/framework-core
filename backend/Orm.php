@@ -126,6 +126,28 @@ class Orm
 	}
 
 	/**
+	 * Returns count of requested object
+	 * @param $class
+	 * @param array $filters
+	 * @param array $values
+	 * @return int
+	 */
+	public static function count($class, $filters = [], $values = [])
+	{
+		$cacheParams = [$class, $filters, $values, $params];
+		static::$_object = self::_getObject($class);
+
+		if ($result = self::getOrmCache()->get($cacheParams)) {
+			return $result;
+		}
+
+		$query = self::_makeCountQuery($class, $filters, $values, $params);
+		$result = PDO::getInstance()->cell($query);
+
+		return $result;
+	}
+
+	/**
 	 * Find first object by given parameters
 	 * @param $class
 	 * @param array $filters
@@ -339,6 +361,26 @@ class Orm
 		}
 
 		return $queryBuilder->composeSelectQuery();
+	}
+
+	protected static function _makeCountQuery($class, $filters, $values, $params)
+	{
+		$queryBuilder = new QueryBuilder($class);
+		self::buildConditions($queryBuilder, $filters, $values);
+
+		if (isset($params['limit'])) {
+			$queryBuilder->limit($params['limit']);
+		}
+
+		if (isset($params['offset'])) {
+			$queryBuilder->offset($params['offset']);
+		}
+
+		if (isset($params['sort'])) {
+			$queryBuilder->orderBy($params['sort'][0], $params['sort'][1]);
+		}
+
+		return $queryBuilder->composeSelectCountQuery();
 	}
 
 	/**

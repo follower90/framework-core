@@ -160,7 +160,21 @@ class QueryBuilder {
 	{
 		$query = 'select ';
 		$query .= implode(', ', $this->_composeFields()) . ' from ' . reset($this->_config['table']) . ' ';
+		return $this->_composeQuery($query);
+	}
 
+	/**
+	 * Composes mysql query based on QueryBuilder setup for getting count of objects only
+	 * @return string
+	 */
+	public function composeSelectCountQuery()
+	{
+		$query = 'select count(*) as `count` from ' . reset($this->_config['table']) . ' ';
+		return $this->_composeQuery($query);
+	}
+
+	private function _composeQuery($query)
+	{
 		if (isset($this->_config['alias'])) {
 			$query .= $this->_config['alias'] . ' ';
 		}
