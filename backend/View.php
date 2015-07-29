@@ -11,6 +11,7 @@ class View {
 	private $_styles;
 	private $_scripts;
 
+	private $_noticeObject = '\Core\Notice';
 	private $_notices = [];
 
 	/**
@@ -124,8 +125,15 @@ class View {
 		return $data;
 	}
 
-	public function addNotice($notice)
+	public function setNoticeObject($name)
 	{
+		$this->_noticeObject = $name;
+	}
+
+	public function addNotice($type, $text)
+	{
+		$notice = new $this->_noticeObject($type, $text);
+
 		$this->_notices[] = serialize($notice);
 		\Core\Session::set('notices', json_encode($this->_notices));
 	}
