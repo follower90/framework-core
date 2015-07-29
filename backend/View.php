@@ -142,7 +142,7 @@ class View {
 	{
 		$text = '';
 		foreach ($data as $notice) {
-			$text .= '<span class="notice ' . $notice['type'] . '">' . $notice['text'] . '</span>';
+			$text .= '<div class="alert alert-' . $notice['type'].'">' . $notice['text'] . '</div>';
 		}
 
 		return $text;
