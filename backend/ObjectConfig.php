@@ -15,7 +15,7 @@ class ObjectConfig
 	 */
 	public function setFields($fields)
 	{
-		$this->_config['fields'] = array_merge($this->_config['fields'], $fields);
+		$this->_config['fields'] = array_merge_recursive($this->_config['fields'], $fields);
 	}
 
 	/**

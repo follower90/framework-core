@@ -72,7 +72,7 @@ class ProjectBuilder
 				if (isset($this->args[2])) {
 					$paths[] = $this->args[2];
 				}
-				\Core\Database\Schema::createObjects($paths, ['clearDb' => true]);
+				\Core\Database\Schema::createObjects($paths);
 				break;
 
 			case 'schema:create':

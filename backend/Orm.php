@@ -107,6 +107,8 @@ class Orm
 		$query = self::_makeQuery($class, $filters, $values, $params);
 		$rows = PDO::getInstance()->rows($query);
 
+		$fields = static::$_object->getConfig()->getData('fields');
+
 		if (!isset($fields['languageTable'])) {
 			return self::fillCollection($class, $rows, $cacheParams);
 		}
@@ -302,10 +304,11 @@ class Orm
 		$language = Config::get('site.language');
 
 		$queryBuilder = new QueryBuilder($class . '_Lang');
-		$queryBuilder->select(['field', 'value']);
-
-		$queryBuilder->where('lang', $language);
-		$queryBuilder->where(strtolower($class) . '_id', $id);
+		$queryBuilder
+			->select('field')
+			->select('value')
+			->where('lang', $language)
+			->where(strtolower($class) . '_id', $id);
 
 		return $queryBuilder->composeSelectQuery();
 	}
