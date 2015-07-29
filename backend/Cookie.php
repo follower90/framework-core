@@ -34,6 +34,6 @@ class Cookie
 	 */
 	public static function remove($name)
 	{
-		setcookie($name, '', time() - 60 * 60 * 24 * 365);
+		setcookie($name, '', time() - 60 * 60 * 24 * 365, '/');
 	}
 }

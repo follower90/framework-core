@@ -28,12 +28,23 @@ class Authorize
 	private $_user;
 
 	/**
+	 * Hash string
+	 * @var \Core\Object
+	 */
+	private $_oauth_hash;
+
+	/**
 	 * Setups user authorizing entity, as string (Object name)
 	 * @param $entity
 	 */
 	public function __construct($entity)
 	{
 		$this->_entity = $entity;
+		$this->_oauth_hash = Session::get(strtolower($this->_entity) .'_oauth_hash');
+
+		if (!$this->_oauth_hash) {
+			$this->_oauth_hash = Cookie::get(strtolower($this->_entity) .'_oauth_hash');
+		}
 	}
 
 	/**
@@ -46,14 +57,18 @@ class Authorize
 	 * @param $hashFunction
 	 * @throws \Exception
 	 */
-	public function login($login, $password, $hashFunction)
+	public function login($login, $password, $hashFunction, $remember = false)
 	{
 		if ($user = Orm::findOne($this->_entity, ['login', 'password'], [$login, $hashFunction($password)])) {
-			$hash = $this->hash($login, $password);
+			$this->_oauth_hash = $this->hash($login, $password);
 			$this->_user = $user;
 
-			MySQL::insert('User_Session', ['entity' => $this->_entity, 'hash' => $hash, 'userId' => $this->_user->getId()]);
-			Cookie::set(strtolower($this->_entity) .'_oauth_hash', $hash);
+			MySQL::insert('User_Session', ['entity' => $this->_entity, 'hash' => $this->_oauth_hash, 'userId' => $this->_user->getId()]);
+			Session::set(strtolower($this->_entity) .'_oauth_hash', $this->_oauth_hash);
+
+			if ($remember) {
+				Cookie::set(strtolower($this->_entity) .'_oauth_hash', $this->_oauth_hash);
+			}
 		}
 	}
 
@@ -65,9 +80,11 @@ class Authorize
 	 */
 	public function logout()
 	{
+		Cookie::remove(strtolower($this->_entity) . '_oauth_hash');
 		if ($this->_user = $this->getUser()) {
 			MySQL::delete('User_Session', ['entity' => $this->_entity, 'userId' => $this->_user->getId()]);
 			Cookie::remove(strtolower($this->_entity) . '_oauth_hash');
+			Session::remove(strtolower($this->_entity) . '_oauth_hash');
 			$this->_user = null;
 		}
 	}
@@ -86,9 +103,7 @@ class Authorize
 		}
 
 		if (!$this->_user) {
-			$oauthHash = Cookie::get(strtolower($this->_entity) . '_oauth_hash');
-
-			if ($session = Orm::findOne('User_Session', ['hash', 'entity'], [$oauthHash, $this->_entity])) {
+			if ($session = Orm::findOne('User_Session', ['hash', 'entity'], [$this->_oauth_hash, $this->_entity])) {
 				$this->_user = Orm::load($this->_entity, $session->getValue('userId'));
 				App::setUser($this->_user);
 			}

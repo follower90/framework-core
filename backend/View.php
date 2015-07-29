@@ -11,7 +11,7 @@ class View {
 	private $_styles;
 	private $_scripts;
 
-	private $_notices;
+	private $_notices = [];
 
 	/**
 	 * Template params setter
@@ -124,9 +124,9 @@ class View {
 		return $data;
 	}
 
-	public function addNotice($key, $type, $text)
+	public function addNotice($type, $text)
 	{
-		$this->_notices[$key] = ['type' => $type, 'text' => $text];
+		$this->_notices[] = ['type' => $type, 'text' => $text];
 		\Core\Session::set('notices', json_encode($this->_notices));
 	}
 
@@ -142,7 +142,7 @@ class View {
 	{
 		$text = '';
 		foreach ($data as $notice) {
-			$text .= '<span class="notice">' . $notice['text'] . '</span>';
+			$text .= '<span class="notice ' . $notice['type'] . '">' . $notice['text'] . '</span>';
 		}
 
 		return $text;
