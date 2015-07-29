@@ -124,9 +124,9 @@ class View {
 		return $data;
 	}
 
-	public function addNotice($type, $text)
+	public function addNotice($notice)
 	{
-		$this->_notices[] = ['type' => $type, 'text' => $text];
+		$this->_notices[] = serialize($notice);
 		\Core\Session::set('notices', json_encode($this->_notices));
 	}
 
@@ -142,7 +142,7 @@ class View {
 	{
 		$text = '';
 		foreach ($data as $notice) {
-			$text .= '<div class="alert alert-' . $notice['type'].'">' . $notice['text'] . '</div>';
+			$text = unserialize($notice)->show();
 		}
 
 		return $text;
