@@ -115,12 +115,16 @@ abstract class Object
 	public function setValues($data)
 	{
 		$allowedFields = $this->_checkFields();
+		$allowedLanguageFields = $this->_checkLanguageFields();
 
 		foreach ($data as $field => $value) {
+
 			if (in_array($field, $allowedFields)) {
 				$this->setValue($field, $value);
-			} else if ($field == 'languageTable') {
-				$this->setValues($field);
+			}
+
+			if (in_array($field, $allowedLanguageFields)) {
+				$this->setValue($field, $value);
 			}
 		}
 	}
@@ -134,10 +138,18 @@ abstract class Object
 	public function setValue($field, $value)
 	{
 		$allowedFields = $this->_checkFields();
+		$allowedLanguageFields = $this->_checkLanguageFields();
+
 		if (in_array($field, $allowedFields)) {
 			$this->_values[$field] = $value;
 			$this->_hasChanges = true;
 		}
+
+		if (in_array($field, $allowedLanguageFields)) {
+			$this->_values['languageTable'][$field] = $value;
+			$this->_hasChanges = true;
+		}
+
 	}
 
 	/**
@@ -152,13 +164,14 @@ abstract class Object
 			$allowedFields[] = $field;
 		}
 
-		if (isset($fields['languageTable'])) {
-			foreach ($fields['languageTable'] as $field => $properties) {
-				$allowedFields[] = $field;
-			}
-		}
-
+		unset($allowedFields['languageTable']);
 		return $allowedFields;
+	}
+
+	private function _checkLanguageFields()
+	{
+		$fields = $this->getConfigData('fields');
+		return isset($fields['languageTable']) ? array_keys($fields['languageTable']) : [];
 	}
 
 	/**
@@ -172,6 +185,9 @@ abstract class Object
 		if (isset($this->_values['languageTable'])) {
 			$languageData = $this->_values['languageTable'];
 		}
+
+		unset($result['languageTable']);
+		$result = array_merge($result, $languageData);
 
 		return $result;
 	}

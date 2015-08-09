@@ -36,8 +36,10 @@ class Orm
 		$data = [];
 		$langData = [];
 
+		$fields = array_keys($object->getConfigData('fields'));
+
 		foreach ($object->getValues() as $field => $value) {
-			if ($field != 'languageTable') {
+			if (in_array($field, $fields)) {
 				$data[$field] = $value;
 			}
 		}
@@ -89,8 +91,19 @@ class Orm
 
 			$hasData = MySQL::row($queryBuilder->composeSelectCountQuery());
 
+			// If table already has language data inserted, update values, else insert new row
+
 			if ($hasData['count']) {
-				MySQL::update($table . '_Lang', $values, [strtolower($table) . '_id' => $object->getId(), 'lang' => $language, 'field' => $values['field']]);
+
+				$queryBuilder->where('value', $values['value']);
+				$sameValue = MySQL::row($queryBuilder->composeSelectCountQuery());
+
+				// Update row, only if data has been changed
+
+				if (!$sameValue['count']) {
+					MySQL::update($table . '_Lang', $values, [strtolower($table) . '_id' => $object->getId(), 'lang' => $language, 'field' => $values['field']]);
+				}
+
 			} else {
 				MySQL::insert($table . '_Lang', array_merge([strtolower($table) . '_id' => $object->getId(), 'lang' =>$language], $values));
 			}

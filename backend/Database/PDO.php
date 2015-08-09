@@ -226,6 +226,7 @@ class PDO Extends \PDO
 	{
 		$results = 0;
 		$time = microtime(true) - $this->_start;
+
 		if ($this->_result) {
 			$results = count($this->_result);
 		}
