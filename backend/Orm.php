@@ -27,7 +27,7 @@ class Orm
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public static function save(Object $object)
+	public static function save(Object &$object)
 	{
 		if (!$object->isModified()) {
 			return false;
@@ -54,6 +54,7 @@ class Orm
 				MySQL::update($table, $data, ['id' => $id]);
 			} else {
 				$id = MySQL::insert($table, $data);
+				$object->setValue('id', $id);
 			}
 
 			if ($langData) {
@@ -63,7 +64,7 @@ class Orm
 			throw new \Core\Exception\Exception('Error inserting data to ' . $table, 1);
 		}
 
-		$object->setValue('id', $id);
+
 		return true;
 	}
 
@@ -79,10 +80,19 @@ class Orm
 		$table = $object->getConfigData('table');
 
 		foreach ($data as $values) {
-			if ($id = $object->getId()) {
-				MySQL::update($table . '_Lang', $values, [strtolower($table) . '_id' => $id, 'lang' => $language, 'field' => $values['field']]);
+
+			$queryBuilder = new QueryBuilder($table . '_Lang');
+			$queryBuilder
+				->where(strtolower($table) . '_id', $object->getId())
+				->where('lang', $language)
+				->where('field', $values['field']);
+
+			$hasData = MySQL::row($queryBuilder->composeSelectCountQuery());
+
+			if ($hasData['count']) {
+				MySQL::update($table . '_Lang', $values, [strtolower($table) . '_id' => $object->getId(), 'lang' => $language, 'field' => $values['field']]);
 			} else {
-				MySQL::insert($table . '_Lang', array_merge([strtolower($table) . '_id' => $id, 'lang' =>$language], $values));
+				MySQL::insert($table . '_Lang', array_merge([strtolower($table) . '_id' => $object->getId(), 'lang' =>$language], $values));
 			}
 		}
 	}

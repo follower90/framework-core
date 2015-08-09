@@ -28,7 +28,7 @@ class MySQL
 			$where[] = $field . '=' . '\'' . $value . '\'';
 		}
 
-		$query = 'UPDATE `' . $table . '` SET ' . implode(', ', $set) . ' WHERE ' . implode(', ', $where);
+		$query = 'UPDATE `' . $table . '` SET ' . implode(', ', $set) . ' WHERE ' . implode(' and ', $where);
 		PDO::getInstance()->query($query);
 	}
 
@@ -36,7 +36,7 @@ class MySQL
 	 * Runs Mysql insert query
 	 * @param $table
 	 * @param array $params
-	 * @return mixed
+	 * @return int $insertId
 	 * @throws \Exception
 	 */
 	public static function insert($table, $params = [])
@@ -52,7 +52,7 @@ class MySQL
 		}
 
 		$query = 'INSERT INTO `' . $table . '` SET ' . implode(', ', $set);
-		PDO::getInstance()->insert_id($query);
+		return PDO::getInstance()->insert_id($query);
 	}
 
 	/**
@@ -80,9 +80,20 @@ class MySQL
 	/**
 	 * Runs RAW Mysql query without any conversions
 	 * @param $query
+	 * @return int success
 	 */
 	public static function query($query)
 	{
-		PDO::getInstance()->query($query);
+		return PDO::getInstance()->query($query);
+	}
+
+	/**
+	 * Runs RAW Mysql query without any conversions
+	 * @param $query
+	 * @return Array result of query
+	 */
+	public static function row($query)
+	{
+		return PDO::getInstance()->row($query);
 	}
 }
