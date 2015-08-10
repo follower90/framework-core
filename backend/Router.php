@@ -6,8 +6,10 @@ class Router
 {
 
 	private static $_routes = [];
+	private static $_aliases = [];
 
 	private static $_url;
+
 	private static $_isApi = false;
 
 	/**
@@ -42,6 +44,16 @@ class Router
 	}
 
 	/**
+	 * Defines custom alias url for controller
+	 * @param $url first url part
+	 * @param $controller class name
+	 */
+	public static function alias($url, $controller)
+	{
+		self::$_aliases[$url] = $controller;
+	}
+
+	/**
 	 * Autodetect appropriate route
 	 * @param $lib
 	 * @return array|bool
@@ -55,7 +67,12 @@ class Router
 			array_shift($uriChunks);
 		}
 
-		$controller = empty($uriChunks[0]) ? 'Index' : ucfirst($uriChunks[0]);
+		if (isset(self::$_aliases[$uriChunks[0]])) {
+			$controller = self::$_aliases[$uriChunks[0]];
+		} else if (!$controller) {
+			$controller =  empty($uriChunks[0]) ? 'Index' : ucfirst($uriChunks[0]);
+		}
+
 		$action = empty($uriChunks[1]) ? 'Index' : ucfirst($uriChunks[1]);
 
 		$args = [];
@@ -166,6 +183,8 @@ class Router
 
 		for ($i = 0; $i < count($urlChunks); $i++) {
 			if ($routeChunks[$i] == $urlChunks[$i] || $routeChunks[$i] == '*') {
+				continue;
+			} elseif ($i == 0 && isset(self::$_aliases[$urlChunks[$i]])) {
 				continue;
 			}
 
