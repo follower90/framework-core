@@ -87,7 +87,7 @@ class View {
 	 * Set path to folder with templates, etc.
 	 * @param $path string to public folder
 	 */
-	public function setDefaultPath(string $path)
+	public function setDefaultPath($path)
 	{
 		$this->_defaultPath = $path;
 	}
