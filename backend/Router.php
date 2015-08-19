@@ -36,6 +36,7 @@ class Router
 			return $action;
 		}
 
+
 		return [
 			'controller' => 'Error',
 			'action' => 'Index',
@@ -69,7 +70,7 @@ class Router
 
 		if (isset(self::$_aliases[$uriChunks[0]])) {
 			$controller = self::$_aliases[$uriChunks[0]];
-		} else if (!$controller) {
+		} else {
 			$controller =  empty($uriChunks[0]) ? 'Index' : ucfirst($uriChunks[0]);
 		}
 
@@ -79,18 +80,36 @@ class Router
 		array_shift($uriChunks);
 
 		if (is_array($uriChunks)) {
-			$args = (array)array_shift($uriChunks);
+			$args = $uriChunks;
 		}
 
 		if (method_exists($lib . '\\' . $controller, 'method' . $action)) {
 			return [
 				'controller' => $controller,
 				'action' => $action,
-				'args' => array_merge($args, $_GET, $_POST),
+				'args' => self::getArgs($args),
 			];
 		}
 
 		return false;
+	}
+
+	/**
+	 * Combines Uri params with GET and POST data
+	 * @param $args
+	 * @return array
+	 */
+	protected static function getArgs($args)
+	{
+		$uriParams = [];
+
+		for ($i = 0; $i < sizeof($args); $i++) {
+			$key = $args[$i];
+			$value = $args[++$i];
+			$uriParams[$key] = $value;
+		}
+
+		return array_merge($uriParams, $_GET, $_POST);
 	}
 
 	/**
