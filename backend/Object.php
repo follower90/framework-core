@@ -164,7 +164,12 @@ abstract class Object
 			$allowedFields[] = $field;
 		}
 
-		unset($allowedFields['languageTable']);
+		if (isset($fields['languageTable'])) {
+			foreach ($fields['languageTable'] as $field => $properties) {
+				$allowedFields[] = $field;
+			}
+		}
+
 		return $allowedFields;
 	}
 
