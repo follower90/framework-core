@@ -130,7 +130,7 @@ class Router
 		$url = explode('?', static::get('uri'))[0];
 
 		if ($rootPath = Config::get('site.url')) {
-			$url = str_replace($rootPath, '', $url);
+			$url = preg_replace('/\/' . $rootPath . '/', '', $url, 1);
 		}
 
 		if (strpos($url, '/api/') === 0) {

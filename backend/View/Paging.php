@@ -45,6 +45,7 @@ class Paging
 		$paging = new static($className, $params['current_page'], $params['page_size']);
 		$paging->_calculate();
 
+
 		return $paging;
 	}
 

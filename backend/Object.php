@@ -186,6 +186,7 @@ abstract class Object
 	public function getValues()
 	{
 		$result = $this->_values;
+		$languageData = [];
 
 		if (isset($this->_values['languageTable'])) {
 			$languageData = $this->_values['languageTable'];

@@ -84,6 +84,22 @@ class View {
 	}
 
 	/**
+	 * Renders string with vars replacement
+	 * @param string $string
+	 * @param array $vars
+	 * @return string
+	 */
+	public static function renderString($string, $vars = [])
+	{
+		foreach($vars as $key => $val) {
+			$index = $key + 1;
+			$string = str_replace('{' . $index . '}', $val, $string);
+		}
+
+		return $string;
+	}
+
+	/**
 	 * Set path to folder with templates, etc.
 	 * @param $path string to public folder
 	 */
