@@ -133,7 +133,7 @@ abstract class Object
 	 * Sets object value
 	 *
 	 * @param string $field field name
-	 * @param $value field value
+	 * @param $value int value
 	 */
 	public function setValue($field, $value)
 	{

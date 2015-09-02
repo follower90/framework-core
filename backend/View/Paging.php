@@ -62,15 +62,13 @@ class Paging
 		$this->_paging['total'] = Orm::count($this->_class, [], []);
 		$this->_paging['items'] = count($this->_collection);
 
-		if ($this->needsPaging()) {
-			$data = [];
-			$data['page'] = $this->_curPage;
-			$data['onpage'] = $this->_onPage;
-			$data['previous'] = $data['page'] - 1;
-			$data['next'] = $data['page'] + 1;
+		$data = [];
+		$data['page'] = $this->_curPage;
+		$data['onpage'] = $this->_onPage;
+		$data['previous'] = $data['page'] - 1;
+		$data['next'] = $data['page'] + 1;
 
-			$this->_paging = array_merge($this->_paging, $data);
-		}
+		$this->_paging = array_merge($this->_paging, $data);
 	}
 
 	/**
@@ -102,7 +100,7 @@ class Paging
 	 */
 	public function firstItemOnPage()
 	{
-		$offset = ($this->_paging['offset'] > 0) ? $this->_paging['offset'] : 1;
+		$offset = ($this->_paging['offset'] > 0) ? $this->_onPage : 1;
 		return $this->_paging['page'] * $offset;
 	}
 

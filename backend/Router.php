@@ -83,6 +83,9 @@ class Router
 			$args = $uriChunks;
 		}
 
+		$action = self::_sanitize($action);
+		$controller = self::_sanitize($controller);
+
 		if (method_exists($lib . '\\' . $controller, 'method' . $action)) {
 			return [
 				'controller' => $controller,
@@ -99,7 +102,7 @@ class Router
 	 * @param $args
 	 * @return array
 	 */
-	protected static function getArgs($args)
+	protected static function getArgs($args = [])
 	{
 		$uriParams = [];
 
@@ -110,6 +113,11 @@ class Router
 		}
 
 		return array_merge($uriParams, $_GET, $_POST);
+	}
+
+	protected static function _sanitize($string)
+	{
+		return str_replace(['/'], '', $string);
 	}
 
 	/**

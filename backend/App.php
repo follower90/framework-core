@@ -109,7 +109,7 @@ class App
 		}
 
 		if (!method_exists($class, $method)) {
-			throw new \Core\Exception\Exception('Method: ' . $action['action'] . 'was not found');
+			throw new \Core\Exception\Exception('Method: ' . $action['action'] . ' was not found');
 		}
 
 		$controller = new $class();
