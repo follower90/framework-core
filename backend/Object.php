@@ -85,6 +85,16 @@ abstract class Object
 	}
 
 	/**
+	 * Object validation method
+	 * should be overridden in the object
+	 * @return array
+	 */
+	public function validate()
+	{
+		return true;
+	}
+
+	/**
 	 * Syntax sugar, saves object with Orm
 	 * @throws \Exception
 	 */

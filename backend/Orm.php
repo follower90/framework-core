@@ -5,6 +5,7 @@ namespace Core;
 use Core\Database\MySQL;
 use Core\Database\PDO;
 use Core\Database\QueryBuilder;
+use Core\Exception\UserInterface\ObjectValidationException;
 
 class Orm
 {
@@ -29,6 +30,10 @@ class Orm
 	 */
 	public static function save(Object &$object)
 	{
+		if (!$object->validate()) {
+			throw new ObjectValidationException($object->getClassName() . ' is not valid object');
+		}
+
 		if (!$object->isModified()) {
 			return false;
 		}
@@ -90,17 +95,15 @@ class Orm
 				->where('field', $values['field']);
 
 			$hasData = MySQL::row($queryBuilder->composeSelectCountQuery());
+			$hasValue = $hasData['count'];
 
-			// If table already has language data inserted, update values, else insert new row
-
-			if ($hasData['count']) {
-
+			if ($hasValue) {
 				$queryBuilder->where('value', $values['value']);
 				$sameValue = MySQL::row($queryBuilder->composeSelectCountQuery());
 
-				// Update row, only if data has been changed
+				$valueChanged = !$sameValue['count'];
 
-				if (!$sameValue['count']) {
+				if ($valueChanged) {
 					MySQL::update($table . '_Lang', $values, [strtolower($table) . '_id' => $object->getId(), 'lang' => $language, 'field' => $values['field']]);
 				}
 

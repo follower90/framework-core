@@ -57,6 +57,7 @@ trait Html
 	 */
 	public function loadPhtml($path)
 	{
-		return file_get_contents(\Core\App::get()->getAppPath() . $path);
+		$tplFilePath = \Core\App::get()->getAppPath() . $path;
+		require_once($tplFilePath);
 	}
 }
