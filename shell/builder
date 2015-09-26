@@ -24,14 +24,14 @@ class ProjectBuilder
 		array_unshift($projects, '');
 
 		foreach ($projects as $project) {
-			if ($cmd != 'add') { //silent add
-				echo PHP_EOL;
-				echo '+------------------------------' . PHP_EOL;
-				echo '| ' . ($project ? 'follower/' . $project : 'main'). PHP_EOL;
-				echo '+------------------------------' . PHP_EOL;
-				echo $this->runCmd($path . $project, $cmd, $params);
-			} else {
+			if ($cmd == 'add') {
 				$this->runCmd($path . $project, $cmd, $params);
+			} else {
+				$this->printString();
+				$this->printString('+------------------------------');
+				$this->printString('| ' . ($project ? 'follower/' . $project : 'main'));
+				$this->printString('+------------------------------');
+				$this->printString($this->runCmd($path . $project, $cmd, $params));
 			}
 		}
 	}
@@ -56,6 +56,10 @@ class ProjectBuilder
 					$this->args[3] = 'master';
 				}
 				$this->applyToAllRepo($this->args[1], $this->args[2] . ' ' . $this->args[3]);
+				break;
+
+			case 'check' :
+				$this->checkSyntaxErrors();
 				break;
 
 			case 'commit' :
@@ -101,6 +105,41 @@ class ProjectBuilder
 		$this->resultOutput();
 	}
 
+	private function checkSyntaxErrors()
+	{
+		$root = getcwd();
+		$dir = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root));
+
+		foreach ($dir as $path => $fileInfo) {
+			$results = [];
+			if ($fileInfo->isFile() && $fileInfo->getExtension() === 'php') {
+				exec('php -l ' . $fileInfo->getPathname(), $results);
+			}
+
+			foreach($results as $result) {
+				if (preg_match("/^No syntax errors detected.*$/", $result)) {
+					$this->printString($result, 'green');
+				} else {
+					$this->printString($result, 'red');
+				}
+			}
+		}
+	}
+
+	private function printString($text = '', $color = false)
+	{
+		switch($color) {
+			case 'green':
+				echo "\033[32m $text \033[0m" . PHP_EOL;
+				break;
+			case 'red':
+				echo "\033[31m $text \033[0m" . PHP_EOL;
+				break;
+			default:
+				echo $text . PHP_EOL;
+		}
+	}
+
 	private function runCmd($path, $command, $params = '')
 	{
 		if ($path) {
@@ -108,13 +147,13 @@ class ProjectBuilder
 		}
 
 		exec($cd . 'git ' . $command . ' ' . $params, $result);
-		return implode("\n", $result) . PHP_EOL;
+		return implode("\n", $result);
 	}
 
 	private function resultOutput()
 	{
 		array_walk($this->result, function ($line) {
-			echo $line . PHP_EOL;
+			$this->printString($line);
 		});
 	}
 }
