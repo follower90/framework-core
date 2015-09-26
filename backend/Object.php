@@ -264,6 +264,39 @@ abstract class Object
 	}
 
 	/**
+	 * ActiveRecord-like syntax sugar
+	 * @param $params
+	 * @return bool|Collection
+	 */
+	public static function where($params)
+	{
+		$filters = array_keys($params);
+		$values = array_values($params);
+
+		return Orm::find(self::getClassName(), $filters, $values);
+	}
+
+	/**
+	 * ActiveRecord-like syntax sugar
+	 * @param int $id
+	 * @return bool|Collection
+	 */
+	public static function find($id)
+	{
+		return Orm::load(self::getClassName(), $id);
+	}
+
+	/**
+	 * ActiveRecord-like syntax sugar
+	 * @param $params
+	 * @return bool|Collection
+	 */
+	public static function findBy($params)
+	{
+		return self::where($params)->getFirst();
+	}
+
+	/**
 	 * Adds object relation
 	 *
 	 * @param string $alias relation alias

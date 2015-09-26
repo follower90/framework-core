@@ -3,6 +3,7 @@
 namespace Core;
 
 use Core\Database\MySQL;
+use Core\Object\User_Session;
 
 /**
  * Class Authorize
@@ -52,9 +53,10 @@ class Authorize
 	 * Accepts login, password and hash function for password security
 	 * Inserts user session hash to database and sets appropriate cookie
 	 *
-	 * @param $login
-	 * @param $password
-	 * @param $hashFunction
+	 * @param string $login
+	 * @param string $password
+	 * @param \Closure $hashFunction
+	 * @param bool $remember
 	 * @throws \Exception
 	 */
 	public function login($login, $password, $hashFunction, $remember = false)
@@ -63,7 +65,16 @@ class Authorize
 			$this->_oauth_hash = $this->hash($login, $password);
 			$this->_user = $user;
 
-			MySQL::insert('User_Session', ['entity' => $this->_entity, 'hash' => $this->_oauth_hash, 'userId' => $this->_user->getId()]);
+			$params = [
+				'entity' => $this->_entity,
+				'hash' => $this->_oauth_hash,
+				'userId' => $this->_user->getId(),
+			];
+
+			if (!User_Session::where($params)->getFirst()) {
+				MySQL::insert('User_Session', $params);
+			}
+
 			Session::set(strtolower($this->_entity) .'_oauth_hash', $this->_oauth_hash);
 
 			if ($remember) {
@@ -81,6 +92,7 @@ class Authorize
 	public function logout()
 	{
 		Cookie::remove(strtolower($this->_entity) . '_oauth_hash');
+
 		if ($this->_user = $this->getUser()) {
 			MySQL::delete('User_Session', ['entity' => $this->_entity, 'userId' => $this->_user->getId()]);
 			Cookie::remove(strtolower($this->_entity) . '_oauth_hash');
@@ -98,12 +110,8 @@ class Authorize
 	 */
 	public function getUser()
 	{
-		if ($user = App::getUser()) {
-			$this->_user = $user;
-		}
-
-		if (!$this->_user) {
-			if ($session = Orm::findOne('User_Session', ['hash', 'entity'], [$this->_oauth_hash, $this->_entity])) {
+		if (!$this->_user = App::getUser()) {
+			if ($session = User_Session::findBy(['hash' => $this->_oauth_hash, 'entity' => $this->_entity])) {
 				$this->_user = Orm::load($this->_entity, $session->getValue('userId'));
 				App::setUser($this->_user);
 			}
@@ -114,7 +122,6 @@ class Authorize
 
 	/**
 	 * Hash function for security of user session hash and auth cookie value
-	 *
 	 * @param $login
 	 * @param $password
 	 * @return string
