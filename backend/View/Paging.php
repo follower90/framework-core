@@ -45,7 +45,6 @@ class Paging
 		$paging = new static($className, $params['current_page'], $params['page_size']);
 		$paging->_calculate();
 
-
 		return $paging;
 	}
 
@@ -75,7 +74,6 @@ class Paging
 	/**
 	 * Creates new view with paging data
 	 * @return string rendered paging template
-	 * @throws \Core\Exception
 	 */
 	public function getPaging()
 	{

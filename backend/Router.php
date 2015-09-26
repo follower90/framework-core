@@ -7,9 +7,7 @@ class Router
 
 	private static $_routes = [];
 	private static $_aliases = [];
-
 	private static $_url;
-
 	private static $_isApi = false;
 
 	/**
@@ -36,7 +34,6 @@ class Router
 			return $action;
 		}
 
-
 		return [
 			'controller' => 'Error',
 			'action' => 'Index',
@@ -46,8 +43,8 @@ class Router
 
 	/**
 	 * Defines custom alias url for controller
-	 * @param $url first url part
-	 * @param $controller class name
+	 * @param string $url first url part
+	 * @param string $controller class name
 	 */
 	public static function alias($url, $controller)
 	{
@@ -181,20 +178,21 @@ class Router
 
 	/**
 	 * Get Server Request params
-	 * @param $param
-	 * @return string
+	 * @param string $param
+	 * @return string|bool
 	 */
 	public static function get($param)
 	{
-		switch ($param) {
-			case 'uri':
-				return $_SERVER['REQUEST_URI'];
-				break;
-			
-			default:
-				throw new \Exception('Unknown router param');
-				break;
-		}
+		$serverParams = [
+			'name' => $_SERVER['SERVER_NAME'],
+			'host' => $_SERVER['HTTP_HOST'],
+			'uri' => $_SERVER['REQUEST_URI'],
+			'referer' => $_SERVER['HTTP_REFERER'],
+			'remote_addr' => $_SERVER['REMOTE_ADDR'],
+			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+		];
+
+		return isset($serverParams[$param]) ? $serverParams[$param] : false;
 	}
 
 	/**

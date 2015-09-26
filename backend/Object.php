@@ -12,6 +12,7 @@ abstract class Object
 	protected $_hasChanges = false;
 
 	protected static $_config;
+	protected static $_events = [];
 	protected static $_objectRelations = [];
 
 	/**
@@ -95,7 +96,29 @@ abstract class Object
 	}
 
 	/**
-	 * Syntax sugar, saves object with Orm
+	 * Trigger callback for event
+	 * if it was registered
+	 * @param string $alias
+	 */
+	public function trigger($alias)
+	{
+		if (is_callable(self::$_events[$alias])) {
+			self::$_events[$alias]();
+		}
+	}
+
+	/**
+	 * Register event callback
+	 * @param string $alias
+	 * @param \Closure $callback
+	 */
+	public function registerEvent($alias, \Closure $callback)
+	{
+		self::$_events[$alias] = $callback;
+	}
+
+	/**
+	 * Syntax sugar, just saves object with Orm
 	 * @throws \Exception
 	 */
 	public function save()
@@ -141,7 +164,6 @@ abstract class Object
 
 	/**
 	 * Sets object value
-	 *
 	 * @param string $field field name
 	 * @param $value int value
 	 */
@@ -159,7 +181,6 @@ abstract class Object
 			$this->_values['languageTable'][$field] = $value;
 			$this->_hasChanges = true;
 		}
-
 	}
 
 	/**

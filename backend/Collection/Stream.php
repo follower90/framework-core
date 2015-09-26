@@ -11,7 +11,7 @@ class Stream
 
 	/**
 	 * Sets array of objects to new stream
-	 * @param \Core\Collection $objects
+	 * @param array $objects
 	 */
 	public function __construct($objects)
 	{

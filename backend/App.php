@@ -25,6 +25,12 @@ class App
 	private $_debugParam;
 
 	/**
+	 * Path to vendor folder
+	 * @var Boolean
+	 */
+	private $_vendorPath;
+
+	/**
 	 * Root project directory
 	 * @var string
 	 */
@@ -69,7 +75,7 @@ class App
 			return static::$_instance;
 		}
 
-		throw new Exception("App is not initialized yet");
+		throw new \Core\Exception\Exception("App is not initialized yet");
 	}
 
 	/**
@@ -131,8 +137,8 @@ class App
 
 	/**
 	 * Get root path of vendor in current entry point
-	 *
-	 * @param \Core\Object $user
+	 * @param string $path
+	 * @return true
 	 */
 	public function setVendorPath($path)
 	{
@@ -142,8 +148,7 @@ class App
 
 	/**
 	 * Get root path of vendor in current entry point
-	 *
-	 * @param \Core\Object $user
+	 * @return string path
 	 */
 	public function getVendorPath()
 	{
@@ -152,8 +157,7 @@ class App
 
 	/**
 	 * Get root path of application at server
-	 *
-	 * @param \Core\Object $user
+	 * @return string
 	 */
 	public function getAppPath()
 	{
@@ -195,7 +199,7 @@ class App
 	 * and renders template with debug console
 	 *
 	 * @param string $debug on/off
-	 * @todo refactor allowed IPs configuration
+	 * @todo refactor for allowed IPs configuration
 	 */
 	public function showDebugConsole($debug = 'on')
 	{

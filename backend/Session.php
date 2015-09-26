@@ -32,7 +32,11 @@ class Session
 		$_SESSION[$key] = $value;
 	}
 
-	public function remove($key)
+	/**
+	 * Removes session param
+	 * @param $key
+	 */
+	public static function remove($key)
 	{
 		unset($_SESSION[$key]);
 	}

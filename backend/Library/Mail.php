@@ -3,6 +3,7 @@
 namespace Core\Library;
 
 use Core\Config;
+use Core\Router;
 
 class Mail
 {
@@ -32,28 +33,24 @@ class Mail
 		$headers .= "Reply-To: $from \r\n";
 		$headers .= "Content-type: text/html; charset=$send_charset \r\n";
 
-		return mail($to, $subject, $body, $headers, "-f info@" . $_SERVER['HTTP_HOST']);
+		return mail($to, $subject, $body, $headers, "-f info@" . Router::get('host'));
 	}
 
-	public static function errorMail($text)
+	public static function error($text)
 	{
 		$contact_mail = Config::get('email_error');
-		$url = $_SERVER['REQUEST_URI'];
-		$refer = '';
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			$refer = $_SERVER['HTTP_REFERER'];
-		}
-
-		$ip_user = $_SERVER['REMOTE_ADDR'];
-		$br_user = $_SERVER['HTTP_USER_AGENT'];
+		$url = Router::get('uri');
+		$refer = Router::get('referer');
+		$ip_user = Router::get('remote_addr');
+		$br_user = Router::get('user_agent');
 
 		$header = "From: $contact_mail" . "\r\n" .
 			"Reply-To: $contact_mail" . "\r\n" .
 			"Return-Path: $contact_mail" . "\r\n" .
 			"Content-type: text/plain; charset=UTF-8";
 
-		$subject = 'Error occurred at:' . $_SERVER['SERVER_NAME'];
-		$body = "SERVER_NAME:" . $_SERVER['SERVER_NAME'] . "
+		$subject = 'Error occurred at:' . Router::get('name');
+		$body = "SERVER_NAME:" . Router::get('name') . "
 				 URL: $url \n
 				 REFER page: $refer \n
 				 IP: $ip_user \n
@@ -72,6 +69,4 @@ class Mail
 
 		return '=?' . $send_charset . '?B?' . base64_encode($str) . '?=';
 	}
-
-
 }

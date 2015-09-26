@@ -6,8 +6,8 @@ class Dir
 {
 	static function remove($dir)
 	{
-		if ($objs = glob($dir . "/*")) {
-			foreach ($objs as $obj) {
+		if ($directories = glob($dir . "/*")) {
+			foreach ($directories as $obj) {
 				is_dir($obj) ? Dir::remove($obj) : unlink($obj);
 			}
 		}

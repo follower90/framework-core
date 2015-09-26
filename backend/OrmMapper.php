@@ -4,8 +4,7 @@ namespace Core;
 
 class OrmMapper
 {
-	private $_collection = false;
-
+	private $_collection = [];
 	private $_object = [];
 	private $_fields = [];
 	private $_filters = [];
@@ -150,7 +149,7 @@ class OrmMapper
 	 */
 	public function getDataMap()
 	{
-		if ($this->_collection === false) {
+		if (!$this->_collection) {
 			throw new \Core\Exception\Exception('Nothing to get. Load data map first');
 		}
 
@@ -196,7 +195,9 @@ class OrmMapper
 		$relation = $this->_object->relations()[$alias];
 		$ids = [];
 
-		foreach ($this->getCollection() as $object) {
+		$collection = $this->getCollection();
+
+		foreach ($collection as $object) {
 			$ids[] = $object->getValue($relation['field']);
 		}
 

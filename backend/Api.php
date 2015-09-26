@@ -15,6 +15,7 @@ class Api extends Controller
 	public function __construct()
 	{
 		$this->db = PDO::getInstance();
+		parent::__construct();
 	}
 
 	/**
