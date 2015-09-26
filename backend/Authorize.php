@@ -71,7 +71,7 @@ class Authorize
 				'userId' => $this->_user->getId(),
 			];
 
-			if (!User_Session::where($params)->getFirst()) {
+			if (!User_Session::findBy($params)) {
 				MySQL::insert('User_Session', $params);
 			}
 
