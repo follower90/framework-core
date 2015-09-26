@@ -100,10 +100,10 @@ abstract class Object
 	 * if it was registered
 	 * @param string $alias
 	 */
-	public function trigger($alias)
+	public function triggerEvent($alias)
 	{
 		if (is_callable(self::$_events[$alias])) {
-			self::$_events[$alias]();
+			call_user_func(self::$_events[$alias]);
 		}
 	}
 

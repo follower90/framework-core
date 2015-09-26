@@ -83,7 +83,7 @@ class Collection {
 
 	/**
 	 * Returns first object of collection
-	 * @return bool
+	 * @return \Core\Object|bool
 	 */
 	public function getFirst()
 	{
