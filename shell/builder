@@ -7,7 +7,6 @@ require_once('config.php');
 
 class ProjectBuilder
 {
-	private $scenario = [];
 	private $args = [];
 	private $result = [];
 
@@ -25,13 +24,13 @@ class ProjectBuilder
 
 		foreach ($projects as $project) {
 			if ($cmd == 'add') {
-				$this->runCmd($path . $project, $cmd, $params);
+				$this->runCmd($cmd, $path . $project, $params);
 			} else {
 				$this->printString();
 				$this->printString('+------------------------------');
 				$this->printString('| ' . ($project ? 'follower/' . $project : 'main'));
 				$this->printString('+------------------------------');
-				$this->printString($this->runCmd($path . $project, $cmd, $params));
+				$this->printString($this->runCmd($cmd, $path . $project, $params));
 			}
 		}
 	}
@@ -86,8 +85,8 @@ class ProjectBuilder
 				\Core\Database\Schema::createObject($this->args[2], ['clearDb' => true]);
 				break;
 
-			case 'help' :
-			default :
+			case 'help':
+			default:
 				$this->result = [
 					'Project Builder v 1.1',
 					'Git aggregator commands:',
@@ -95,6 +94,7 @@ class ProjectBuilder
 					' * status - \'git status\' output',
 					' * push - \'git push\' to all repositories',
 					' * pull - \'git pull\' from all repositories',
+					' * check - syntax checker for *.php files',
 					'Schema commands:',
 					' * schema:update \'project\' - clears db and recreate schema',
 					' * schema:create \'object\' - creates table for specified object',
@@ -116,7 +116,7 @@ class ProjectBuilder
 				exec('php -l ' . $fileInfo->getPathname(), $results);
 			}
 
-			foreach($results as $result) {
+			foreach ($results as $result) {
 				if (preg_match("/^No syntax errors detected.*$/", $result)) {
 					$this->printString($result, 'green');
 				} else {
@@ -128,7 +128,7 @@ class ProjectBuilder
 
 	private function printString($text = '', $color = false)
 	{
-		switch($color) {
+		switch ($color) {
 			case 'green':
 				echo "\033[32m $text \033[0m" . PHP_EOL;
 				break;
@@ -140,12 +140,9 @@ class ProjectBuilder
 		}
 	}
 
-	private function runCmd($path, $command, $params = '')
+	private function runCmd($command, $path = false, $params = '')
 	{
-		if ($path) {
-			$cd = 'cd ' . $path . ' && ';
-		}
-
+		$cd = ($path) ? 'cd ' . $path . ' && ' : '';
 		exec($cd . 'git ' . $command . ' ' . $params, $result);
 		return implode("\n", $result);
 	}

@@ -77,8 +77,8 @@ class Orm
 
 	/**
 	 * Save data to language tables, it needed for multi-language web applications
-	 * @param $object
-	 * @param $data
+	 * @param \Core\Object $object
+	 * @param array $data
 	 * @throws \Exception
 	 */
 	protected static function updateLangTables($object, $data)
@@ -160,14 +160,14 @@ class Orm
 	 */
 	public static function count($class, $filters = [], $values = [])
 	{
-		$cacheParams = [$class, $filters, $values, $params];
+		$cacheParams = [$class, $filters, $values];
 		static::$_object = self::_getObject($class);
 
 		if ($result = self::getOrmCache()->get($cacheParams)) {
 			return $result;
 		}
 
-		$query = self::_makeCountQuery($class, $filters, $values, $params);
+		$query = self::_makeCountQuery($class, $filters, $values);
 		$result = PDO::getInstance()->cell($query);
 
 		return $result;
@@ -389,7 +389,7 @@ class Orm
 		return $queryBuilder->composeSelectQuery();
 	}
 
-	protected static function _makeCountQuery($class, $filters, $values, $params)
+	protected static function _makeCountQuery($class, $filters, $values, $params = [])
 	{
 		$queryBuilder = new QueryBuilder($class);
 		self::buildConditions($queryBuilder, $filters, $values);
