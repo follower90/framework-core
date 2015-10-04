@@ -2,7 +2,7 @@
 
 namespace Core\Exception;
 
-interface UserOrientedException
+interface SystemException
 {
 
 }

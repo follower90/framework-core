@@ -7,6 +7,7 @@ use Core\Orm;
 
 class Schema
 {
+	private $_object;
 	private $_table;
 	private $_fields;
 
@@ -16,6 +17,7 @@ class Schema
 	 */
 	public function __construct(Object $object)
 	{
+		$this->_object = $object;
 		$this->_table = $object->getConfigData('table');
 		$this->_fields = $object->getConfigData('fields');
 	}
@@ -73,6 +75,15 @@ class Schema
 		}
 
 		MySQL::query('CREATE TABLE IF NOT EXISTS `' . $this->_table . '` (' . $this->_prepareFields() . ')');
+
+		foreach ($this->_object->relations() as $relation) {
+			if ($relation['type'] == 'multiple') {
+				MySQL::query('CREATE TABLE IF NOT EXISTS `' . $relation['table'] . '` (
+					`' . $this->_table . '` int NOT NULL,
+					`' . $relation['class'] . '` int NOT NULL
+				)');
+			}
+		}
 	}
 
 	/**

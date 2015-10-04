@@ -4,6 +4,8 @@ namespace Core;
 
 abstract class Object
 {
+	use ObjectHooks;
+
 	protected $_table;
 	protected $_class;
 
@@ -64,6 +66,15 @@ abstract class Object
 		$chunks = explode('\\', $fullClassName);
 
 		return $chunks[sizeof($chunks) - 1];
+	}
+]
+	/**
+	 * Returns language table name
+	 * @return mixed
+	 */
+	public function getLangTableName()
+	{
+		return $this->getConfigData('table') . '_Lang';
 	}
 
 	/**
@@ -126,6 +137,16 @@ abstract class Object
 		Orm::save($this);
 	}
 
+	/**
+	 * Syntax sugar, just deletes object with Orm
+	 * @throws \Exception
+	 */
+	public function delete()
+	{
+		Orm::delete($this);
+	}
+
+
 	public function getRelated($alias)
 	{
 		$relations = $this->relations();
@@ -144,6 +165,7 @@ abstract class Object
 	/**
 	 * Set multiple values
 	 * @param $data
+	 * @return this
 	 */
 	public function setValues($data)
 	{
@@ -160,6 +182,8 @@ abstract class Object
 				$this->setValue($field, $value);
 			}
 		}
+
+		return $this;
 	}
 
 	/**
@@ -247,11 +271,20 @@ abstract class Object
 
 	/**
 	 * Returns object id
-	 * @return bool
+	 * @return int
 	 */
 	public function getId()
 	{
 		return $this->getValue('id');
+	}
+
+	/**
+	 * Returns object is new or already exists
+	 * @return bool
+	 */
+	public function isNew()
+	{
+		return $this->getValue('id') ? true : false;
 	}
 
 	/**
@@ -305,5 +338,42 @@ abstract class Object
 	public static function addRelation($alias, $relation)
 	{
 		static::$_objectRelations[$alias] = $relation;
+	}
+
+	/**
+	 * Returns key -> value array with simple values
+	 * Used in ORM
+	 * @return array
+	 */
+	public function getSimpleFieldsData()
+	{
+		$data = [];
+		$fields = array_keys($this->getConfigData('fields'));
+
+		foreach ($this->getValues() as $field => $value) {
+			if (in_array($field, $fields)) {
+				$data[$field] = $value;
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Returns key -> value array with current language data
+	 * Used in ORM
+	 * @return array
+	 */
+	public function getLanguageFieldsData()
+	{
+		$langData = [];
+
+		if ($langTableData = $this->getValue('languageTable')) {
+			foreach ($langTableData as $field => $value) {
+				$langData[] = ['field' => $field, 'value'=> $value];
+			}
+		}
+
+		return $langData;
 	}
 }

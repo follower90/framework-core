@@ -6,6 +6,7 @@ use Core\Database\MySQL;
 use Core\Database\PDO;
 use Core\Database\QueryBuilder;
 use Core\Exception\UserInterface\ObjectValidationException;
+use Core\Exception\System\OrmException;
 
 class Orm
 {
@@ -13,11 +14,11 @@ class Orm
 	protected static $_cache;
 
 	/**
-	 * Creates and return new Object
+	 * Creates and returns new Object
 	 * @param $class
 	 * @return \Core\Object
 	 */
-	public static function create($class)
+	public static function create(string $class)
 	{
 		return self::_getObject($class);
 	}
@@ -30,6 +31,8 @@ class Orm
 	 */
 	public static function save(Object &$object)
 	{
+		$object->beforeSave();
+
 		if (!$object->validate()) {
 			throw new ObjectValidationException($object->getClassName() . ' is not valid object');
 		}
@@ -38,40 +41,28 @@ class Orm
 			return false;
 		}
 
-		$data = [];
-		$langData = [];
-
-		$fields = array_keys($object->getConfigData('fields'));
-
-		foreach ($object->getValues() as $field => $value) {
-			if (in_array($field, $fields)) {
-				$data[$field] = $value;
-			}
-		}
-
 		$table = $object->getConfigData('table');
-		if ($langTable = $object->getValue('languageTable')) {
-			foreach ($langTable as $field => $value) {
-				$langData[] = ['field' => $field, 'value'=> $value];
-			}
-		}
+		$data = $object->getSimpleFieldsData();
+		$langData = $object->getLanguageFieldsData();
 
 		try {
-			if ($id = $object->getId()) {
-				MySQL::update($table, $data, ['id' => $id]);
-			} else {
+			if ($object->isNew()) {
 				$id = MySQL::insert($table, $data);
 				$object->setValue('id', $id);
+			} else {
+				MySQL::update($table, $data, ['id' => $object->getId()]);
 			}
 
 			if ($langData) {
 				self::updateLangTables($object, $langData);
 			}
 		} catch (\Exception $e) {
-			throw new \Core\Exception\Exception('Error inserting data to ' . $table, 1);
+			throw new OrmException('Error inserting data to ' . $table);
 		}
 
+		self::getOrmCache()->clear();
 
+		$object->afterSave();
 		return true;
 	}
 
@@ -85,10 +76,11 @@ class Orm
 	{
 		$language = Config::get('site.language');
 		$table = $object->getConfigData('table');
+		$langTable = $object->getLangTableName();
 
 		foreach ($data as $values) {
 
-			$queryBuilder = new QueryBuilder($table . '_Lang');
+			$queryBuilder = new QueryBuilder($langTable);
 			$queryBuilder
 				->where(strtolower($table) . '_id', $object->getId())
 				->where('lang', $language)
@@ -104,11 +96,11 @@ class Orm
 				$valueChanged = !$sameValue['count'];
 
 				if ($valueChanged) {
-					MySQL::update($table . '_Lang', $values, [strtolower($table) . '_id' => $object->getId(), 'lang' => $language, 'field' => $values['field']]);
+					MySQL::update($langTable, $values, [strtolower($table) . '_id' => $object->getId(), 'lang' => $language, 'field' => $values['field']]);
 				}
 
 			} else {
-				MySQL::insert($table . '_Lang', array_merge([strtolower($table) . '_id' => $object->getId(), 'lang' =>$language], $values));
+				MySQL::insert($langTable, array_merge([strtolower($table) . '_id' => $object->getId(), 'lang' =>$language], $values));
 			}
 		}
 	}
@@ -130,7 +122,7 @@ class Orm
 			return $result;
 		}
 
-		$query = self::_makeQuery($class, $filters, $values, $params);
+		$query = self::_makeSimpleQuery($class, $filters, $values, $params);
 		$rows = PDO::getInstance()->rows($query);
 
 		$fields = static::$_object->getConfig()->getData('fields');
@@ -205,11 +197,15 @@ class Orm
 	 */
 	public static function delete(Object $object)
 	{
-		if (!$id = $object->getId()) {
-			throw new \Core\Exception\Exception('Cannot delete object');
+		$object->beforeDelete();
+
+		if ($id = $object->getId()) {
+			MySQL::delete($object->getConfigData('table'), ['id' => $id]);
 		}
 
-		MySQL::delete($object->getConfigData('table'), ['id' => $id]);
+		$object->afterDelete();
+
+		unset($object);
 		return true;
 	}
 
@@ -245,7 +241,7 @@ class Orm
 		$targetObject = self::detectClass($targetObjectProperties['class']);
 
 		if (!$targetObject) {
-			throw new \Core\Exception\Exception('Relation registering error. Could not detect target object');
+			throw new OrmException('Relation registering error. Could not detect target object');
 		}
 
 		$relation = [
@@ -284,7 +280,7 @@ class Orm
 			return $className;
 		}
 
-		throw new \Core\Exception\Exception('Object ' . $class . ' was not found');
+		throw new OrmException('Object ' . $class . ' was not found');
 	}
 
 	/**
@@ -299,18 +295,6 @@ class Orm
 		$object = new $className();
 		$object->getConfig();
 
-		return $object;
-	}
-
-	/**
-	 * Fills object with values
-	 * @param $object \Core\Object
-	 * @param $data
-	 * @return \Core\Object
-	 */
-	protected static function fillObject($object, $data)
-	{
-		$object->setValues($data);
 		return $object;
 	}
 
@@ -332,7 +316,7 @@ class Orm
 		array_walk($data, function ($row) use (&$objects, $class) {
 			$class = self::_getObject($class);
 			$object = new $class();
-			$objects[] = self::fillObject($object, $row);
+			$objects[] = $object->setValues($row);
 		});
 
 		$collection = new Collection($objects);
@@ -369,7 +353,7 @@ class Orm
 	 * @param $params
 	 * @return string
 	 */
-	protected static function _makeQuery($class, $filters, $values, $params)
+	protected static function _makeSimpleQuery($class, $filters, $values, $params)
 	{
 		$queryBuilder = new QueryBuilder($class);
 		self::buildConditions($queryBuilder, $filters, $values);
