@@ -67,7 +67,7 @@ abstract class Object
 
 		return $chunks[sizeof($chunks) - 1];
 	}
-]
+
 	/**
 	 * Returns language table name
 	 * @return mixed
