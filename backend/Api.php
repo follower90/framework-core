@@ -46,4 +46,14 @@ class Api extends Controller
 
 		return $response;
 	}
+
+	/**
+	 * Not authorized response
+	 */
+	public static function notAuthorized()
+	{
+		Router::sendHeaders(['Content-Type: application/json', Router::NOT_AUTHORIZED]);
+		echo json_encode(['errors' => 'Not authorized']);
+		exit;
+	}
 }

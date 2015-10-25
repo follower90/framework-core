@@ -5,6 +5,8 @@ namespace Core;
 class Router
 {
 
+	const NOT_AUTHORIZED = 'HTTP/1.1 401 Unauthorized';
+
 	private static $_routes = [];
 	private static $_aliases = [];
 	private static $_url;
@@ -169,10 +171,7 @@ class Router
 	 */
 	public static function redirect($url, $headers = [])
 	{
-		foreach ($headers as $header) {
-			header($header);
-		}
-
+		static::sendHeaders($headers);
 		header('Location: ' . $url);
 	}
 
@@ -221,5 +220,15 @@ class Router
 		}
 
 		return true;
+	}
+
+	/**
+	 * Sends http headers
+	 * @param $headers
+	 */
+	public static function sendHeaders($headers = []) {
+		foreach ($headers as $header) {
+			header($header);
+		}
 	}
 }

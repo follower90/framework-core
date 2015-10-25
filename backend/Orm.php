@@ -43,6 +43,7 @@ class Orm
 
 		$table = $object->getConfigData('table');
 		$data = $object->getSimpleFieldsData();
+		$relatedFields = $object->getHasManyRelationFieldsData();
 		$langData = $object->getLanguageFieldsData();
 
 		try {
@@ -55,6 +56,26 @@ class Orm
 
 			if ($langData) {
 				self::updateLangTables($object, $langData);
+			}
+
+			//todo refactor this SHIT
+
+			if ($relatedFields) {
+				foreach ($relatedFields as $field => $data) {
+					foreach ($object->relations() as $alias => $config) {
+						if ($alias == $field) {
+							$table =  $config['table'];
+							$me = $object->getClassName();
+							$related = $config['targetClass'];
+
+							MySQL::delete($table, [$me => $object->getId()]);
+
+							foreach ($data as $val) {
+								MySQL::insert($table, [$me => $object->getId(), $related => $val]);
+							}
+						}
+					}
+				}
 			}
 		} catch (\Exception $e) {
 			throw new OrmException('Error inserting data to ' . $table);
@@ -75,6 +96,7 @@ class Orm
 	protected static function updateLangTables($object, $data)
 	{
 		$language = Config::get('site.language');
+
 		$table = $object->getConfigData('table');
 		$langTable = $object->getLangTableName();
 
@@ -248,7 +270,7 @@ class Orm
 			'class' => $relatedObjectProperties['class'],
 			'field' => isset($targetObjectProperties['field']) ? $targetObjectProperties['field'] : 'id',
 
-			'targetClass' => $relatedObjectProperties['class'],
+			'targetClass' => $targetObjectProperties['class'],
 			'targetField' =>  isset($relatedObjectProperties['field']) ? $relatedObjectProperties['field'] : 'id',
 
 			'type' => isset($relationProperties['type']) ? $relationProperties['type'] : 'simple',
@@ -437,16 +459,16 @@ class Orm
 	 * Builds join and where conditions for relational filters
 	 * @param QueryBuilder $queryBuilder
 	 * @param $field
-	 * @param $count
+	 * @param $index
 	 * @return mixed
 	 */
-	protected static function buildRelationCondition(QueryBuilder $queryBuilder, $field, $count)
+	protected static function buildRelationCondition(QueryBuilder $queryBuilder, $field, $index)
 	{
 		$relations = self::$_object->relations();
 		$relation = $relations[$field[0]];
 
-		$relatedObject = self::_getObject($relation['class']);
-		$alias = 'tb' . $count;
+		$relatedObject = self::_getObject($relation['targetClass']);
+		$alias = 'tb' . $index;
 
 		if ($relation['type'] == 'multiple') {
 			$queryBuilder->join('inner', $relation['table'], $alias, [self::$_object->getConfigData('table'), $relation['field']]);

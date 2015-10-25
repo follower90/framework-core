@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Database\MySQL;
+
 abstract class Object
 {
 	use ObjectHooks;
@@ -270,6 +272,32 @@ abstract class Object
 	}
 
 	/**
+	 * return related object by relation alias
+	 * @param $alias
+	 * @return bool|Object
+	 */
+	public function getRelatedObject($alias)
+	{
+		$relations = $this->relations();
+		foreach ($relations as $key => $relation) {
+
+			if ($key == $alias) {
+				$query = 'select * FROM `'.$relation['class'].'` a
+				inner join '.$relation['table'].' b on a.id = b.'.$relation['class'].'
+				where b.'.$relation['targetClass'].' = '.$this->getId().'';
+
+				$result = MySQL::row($query);
+
+				if ($result) {
+					return Orm::load($relation['class'], $result['id']);
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns object id
 	 * @return int
 	 */
@@ -284,7 +312,7 @@ abstract class Object
 	 */
 	public function isNew()
 	{
-		return $this->getValue('id') ? true : false;
+		return $this->getValue('id') ? false : true;
 	}
 
 	/**
@@ -312,7 +340,7 @@ abstract class Object
 	/**
 	 * ActiveRecord-like syntax sugar
 	 * @param int $id
-	 * @return bool|Collection
+	 * @return bool|\Core\Object
 	 */
 	public static function find($id)
 	{
@@ -348,10 +376,33 @@ abstract class Object
 	public function getSimpleFieldsData()
 	{
 		$data = [];
-		$fields = array_keys($this->getConfigData('fields'));
+		$fields = array_filter($this->getConfigData('fields'), function($field) {
+			return !in_array($field['type'], ['HAS_MANY']);
+		});
 
 		foreach ($this->getValues() as $field => $value) {
-			if (in_array($field, $fields)) {
+			if (in_array($field, array_keys($fields))) {
+				$data[$field] = $value;
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Returns key -> value array with HAS_MANY relation values
+	 * Used in ORM
+	 * @return array
+	 */
+	public function getHasManyRelationFieldsData()
+	{
+		$data = [];
+		$fields = array_filter($this->getConfigData('fields'), function($field) {
+			return in_array($field['type'], ['HAS_MANY']);
+		});
+
+		foreach ($this->getValues() as $field => $value) {
+			if (in_array($field, array_keys($fields))) {
 				$data[$field] = $value;
 			}
 		}

@@ -166,7 +166,6 @@ class App
 
 	/**
 	 * Get authorized user object
-	 *
 	 * @return bool|\Core\Object
 	 */
 	public static function getUser()
