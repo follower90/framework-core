@@ -18,7 +18,7 @@ class Orm
 	 * @param $class
 	 * @return \Core\Object
 	 */
-	public static function create(string $class)
+	public static function create($class)
 	{
 		return self::_getObject($class);
 	}
@@ -192,7 +192,7 @@ class Orm
 	 * @param $class
 	 * @param array $filters
 	 * @param array $values
-	 * @return Object
+	 * @return \Core\Object
 	 */
 	public static function findOne($class, $filters = [], $values = [])
 	{
@@ -378,7 +378,7 @@ class Orm
 	protected static function _makeSimpleQuery($class, $filters, $values, $params)
 	{
 		$queryBuilder = new QueryBuilder($class);
-		self::buildConditions($queryBuilder, $filters, $values);
+		self::_buildConditions($queryBuilder, $filters, $values);
 
 		if (isset($params['limit'])) {
 			$queryBuilder->limit($params['limit']);
@@ -398,7 +398,7 @@ class Orm
 	protected static function _makeCountQuery($class, $filters, $values, $params = [])
 	{
 		$queryBuilder = new QueryBuilder($class);
-		self::buildConditions($queryBuilder, $filters, $values);
+		self::_buildConditions($queryBuilder, $filters, $values);
 
 		if (isset($params['limit'])) {
 			$queryBuilder->limit($params['limit']);
@@ -421,7 +421,7 @@ class Orm
 	 * @param $filters
 	 * @param $values
 	 */
-	protected static function buildConditions(QueryBuilder $queryBuilder, $filters, $values)
+	protected static function _buildConditions(QueryBuilder $queryBuilder, $filters, $values)
 	{
 		$alias = 'tb';
 		$count = 0;
@@ -430,7 +430,7 @@ class Orm
 			$field = explode('.', $param);
 
 			if (!empty($field[1])) {
-				list($param, $alias) = self::buildRelationCondition($queryBuilder, $field, $count);
+				list($param, $alias) = self::_buildRelationCondition($queryBuilder, $field, $count);
 			}
 
 			$condition = $values[$count];
@@ -462,7 +462,7 @@ class Orm
 	 * @param $index
 	 * @return mixed
 	 */
-	protected static function buildRelationCondition(QueryBuilder $queryBuilder, $field, $index)
+	protected static function _buildRelationCondition(QueryBuilder $queryBuilder, $field, $index)
 	{
 		$relations = self::$_object->relations();
 		$relation = $relations[$field[0]];

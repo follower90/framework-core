@@ -167,7 +167,7 @@ abstract class Object
 	/**
 	 * Set multiple values
 	 * @param $data
-	 * @return this
+	 * @return $this
 	 */
 	public function setValues($data)
 	{
@@ -273,6 +273,7 @@ abstract class Object
 
 	/**
 	 * return related object by relation alias
+	 * todo - refactor this shit
 	 * @param $alias
 	 * @return bool|Object
 	 */
@@ -391,6 +392,7 @@ abstract class Object
 
 	/**
 	 * Returns key -> value array with HAS_MANY relation values
+	 * todo refactor this shit
 	 * Used in ORM
 	 * @return array
 	 */

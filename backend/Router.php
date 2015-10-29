@@ -6,6 +6,7 @@ class Router
 {
 
 	const NOT_AUTHORIZED = 'HTTP/1.1 401 Unauthorized';
+	const NOT_FOUND_404 = 'HTTP/1.0 404 Not Found';
 
 	private static $_routes = [];
 	private static $_aliases = [];

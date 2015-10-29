@@ -41,11 +41,11 @@ class OrmMapper
 
 	/**
 	 * Returns object collection
-	 * @return bool
+	 * @return \Core\Collection
 	 */
 	public function getCollection()
 	{
-		return $this->_collection;
+		return new Collection($this->_collection);
 	}
 
 	/**
@@ -100,6 +100,19 @@ class OrmMapper
 	}
 
 	/**
+	 * Add single filter conditions
+	 * @param $key
+	 * @param $value
+	 * @return $this
+	 */
+	public function addFilter($key, $value)
+	{
+		$this->_filters[$key] = $value;
+		$this->_filters = array_unique($this->_filters);
+		return $this;
+	}
+
+	/**
 	 * Set offset
 	 * @param $offset
 	 * @return $this
@@ -123,7 +136,7 @@ class OrmMapper
 
 	/**
 	 * Load mapper with set params
-	 * @return $this
+	 * @return \Core\Collection
 	 */
 	public function load()
 	{
@@ -139,7 +152,7 @@ class OrmMapper
 			]
 		)->getCollection();
 
-		return $this;
+		return $this->getCollection();
 	}
 
 	/**
