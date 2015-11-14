@@ -2,7 +2,7 @@
 
 namespace Core;
 
-trait ObjectHooks
+trait Hooks
 {
 	public function beforeSave() {}
 	public function afterSave() {}

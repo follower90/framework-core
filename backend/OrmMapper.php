@@ -30,7 +30,7 @@ class OrmMapper
 	/**
 	 * Creates new OrmMapper
 	 * @param $class
-	 * @return OrmMapper
+	 * @return \Core\OrmMapper
 	 * @throws \Exception
 	 */
 	public static function create($class)
@@ -52,7 +52,7 @@ class OrmMapper
 	 * Sets fields for getting
 	 * @todo fix for getting related fields
 	 * @param $fields
-	 * @return $this
+	 * @return \Core\OrmMapper
 	 */
 	public function setFields($fields)
 	{
@@ -73,7 +73,7 @@ class OrmMapper
 	 * Set ordering
 	 * @param $field
 	 * @param string $sort
-	 * @return $this
+	 * @return \Core\OrmMapper
 	 */
 	public function setSorting($field, $sort = 'asc')
 	{
@@ -85,7 +85,7 @@ class OrmMapper
 	 * Set filter conditions
 	 * @param $keys
 	 * @param $values
-	 * @return $this
+	 * @return \Core\OrmMapper
 	 */
 	public function setFilter($keys, $values)
 	{
@@ -103,7 +103,7 @@ class OrmMapper
 	 * Add single filter conditions
 	 * @param $key
 	 * @param $value
-	 * @return $this
+	 * @return \Core\OrmMapper
 	 */
 	public function addFilter($key, $value)
 	{
@@ -115,7 +115,7 @@ class OrmMapper
 	/**
 	 * Set offset
 	 * @param $offset
-	 * @return $this
+	 * @return \Core\OrmMapper
 	 */
 	public function setOffset($offset)
 	{
@@ -126,7 +126,7 @@ class OrmMapper
 	/**
 	 * Set limit
 	 * @param $limit
-	 * @return $this
+	 * @return \Core\OrmMapper
 	 */
 	public function setLimit($limit)
 	{

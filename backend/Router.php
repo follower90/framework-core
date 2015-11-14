@@ -187,10 +187,13 @@ class Router
 			'name' => $_SERVER['SERVER_NAME'],
 			'host' => $_SERVER['HTTP_HOST'],
 			'uri' => $_SERVER['REQUEST_URI'],
-			'referer' => $_SERVER['HTTP_REFERER'],
 			'remote_addr' => $_SERVER['REMOTE_ADDR'],
 			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
 		];
+
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			$serverParams['referer'] = $_SERVER['HTTP_REFERER'];
+		}
 
 		return isset($serverParams[$param]) ? $serverParams[$param] : false;
 	}

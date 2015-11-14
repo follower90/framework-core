@@ -6,13 +6,12 @@ use Core\Database\MySQL;
 
 abstract class Object
 {
-	use ObjectHooks;
+	use Hooks;
+	use ActiveRecord;
 
 	protected $_table;
 	protected $_class;
-
 	protected $_values;
-
 	protected $_hasChanges = false;
 
 	protected static $_config;
@@ -31,16 +30,6 @@ abstract class Object
 		if (!empty($values)) {
 			$this->setValues($values);
 		}
-	}
-
-	/**
-	 * Syntax sugar method
-	 * Just returns orm mapper for object
-	 * @return OrmMapper
-	 */
-	public static function all()
-	{
-		return OrmMapper::create(static::getClassName());
 	}
 
 	public function getConfig()
@@ -129,25 +118,6 @@ abstract class Object
 	{
 		self::$_events[$alias] = $callback;
 	}
-
-	/**
-	 * Syntax sugar, just saves object with Orm
-	 * @throws \Exception
-	 */
-	public function save()
-	{
-		Orm::save($this);
-	}
-
-	/**
-	 * Syntax sugar, just deletes object with Orm
-	 * @throws \Exception
-	 */
-	public function delete()
-	{
-		Orm::delete($this);
-	}
-
 
 	public function getRelated($alias)
 	{
@@ -323,39 +293,6 @@ abstract class Object
 	public function isModified()
 	{
 		return $this->_hasChanges;
-	}
-
-	/**
-	 * ActiveRecord-like syntax sugar
-	 * @param $params
-	 * @return bool|Collection
-	 */
-	public static function where($params)
-	{
-		$filters = array_keys($params);
-		$values = array_values($params);
-
-		return Orm::find(self::getClassName(), $filters, $values);
-	}
-
-	/**
-	 * ActiveRecord-like syntax sugar
-	 * @param int $id
-	 * @return bool|\Core\Object
-	 */
-	public static function find($id)
-	{
-		return Orm::load(self::getClassName(), $id);
-	}
-
-	/**
-	 * ActiveRecord-like syntax sugar
-	 * @param $params
-	 * @return bool|Collection
-	 */
-	public static function findBy($params)
-	{
-		return self::where($params)->getFirst();
 	}
 
 	/**
