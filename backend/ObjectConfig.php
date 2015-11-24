@@ -6,6 +6,7 @@ class ObjectConfig
 	protected $_config = [
 		'table' => '',
 		'fields' => [],
+		'filters' => [],
 		'relations' => [],
 	];
 
@@ -16,6 +17,15 @@ class ObjectConfig
 	public function setFields($fields)
 	{
 		$this->_config['fields'] = array_merge_recursive($this->_config['fields'], $fields);
+	}
+
+	/**
+	 * Pre-filter condition
+	 * @param $fields
+	 */
+	public function beforeFilter($filter)
+	{
+		$this->_config['filters'] = array_merge_recursive($this->_config['filters'], $filter);
 	}
 
 	/**

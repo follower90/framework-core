@@ -170,11 +170,13 @@ abstract class Object
 
 		if (in_array($field, $allowedFields)) {
 			$this->_values[$field] = $value;
+			$this->triggerEvent($field . 'Changed');
 			$this->_hasChanges = true;
 		}
 
 		if (in_array($field, $allowedLanguageFields)) {
 			$this->_values['languageTable'][$field] = $value;
+			$this->triggerEvent($field . 'Changed');
 			$this->_hasChanges = true;
 		}
 	}
