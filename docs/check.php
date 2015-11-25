@@ -4,38 +4,32 @@ require_once('vendor/autoload.php');
 
 class Documentor
 {
-	private $dir;
-
-	public function __construct($folder)
-	{
-		$this->dir = $folder;
-	}
+	const CORE_APP_PATH = 'vendor/follower/core/backend/';
+	const CORE_DOCS_PATH = 'vendor/follower/core/docs';
 
 	public function run()
 	{
 		$iterator = new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator($this->dir),
+			new RecursiveDirectoryIterator(self::CORE_APP_PATH),
 			RecursiveIteratorIterator::SELF_FIRST);
 
 		foreach ( $iterator as $fileInfo ) {
 			if (!$fileInfo->isDir() && $fileInfo) {
 				if ($fileInfo->getExtension() == 'php') {
-					$this->process_file($fileInfo);
+					$this->processFile($fileInfo);
 				}
 			}
 		}
 	}
 
-	private function process_file($fileInfo)
+	private function getClassName($path)
 	{
-		$path = $fileInfo->getPathName();
 		$nameArr = explode('/', $path);
 
 		$name = '\\Core\\';
 		$push = false;
 
 		foreach ($nameArr as $arr) {
-
 			if ($arr == 'backend') {
 				$push = true;
 			} else if ($push) {
@@ -49,35 +43,37 @@ class Documentor
 			}
 		}
 
-		//dont push objects
+		return $name;
+	}
+
+	private function processFile($fileInfo)
+	{
+		$path = $fileInfo->getPathName();
+		$name = $this->getClassName($path);
+
 		if (substr($name, 0, 12) == '\\Core\\Object') {
 			return false;
 		}
 
-		if (class_exists($name) 
-			|| trait_exists($name)
-			|| interface_exists($name)) {
-				$this->analyzeClass($name);
+		if (class_exists($name) || trait_exists($name) || interface_exists($name)) {
+			$this->analyzeClass($name);
 		} else {
-			echo 'SHIT: ' . $name . PHP_EOL . PHP_EOL;
+			echo 'NOT processed: ' . $name . PHP_EOL . PHP_EOL;
 		}
 	}
 
 	private function analyzeClass($name)
 	{
 		$reflexionClass = new \ReflectionClass($name);
-		$path = getcwd() . '/vendor/follower/core/docs' . str_replace('\\', '/', $name) . '.md';
+		$path = getcwd() . '/' . SELF::CORE_DOCS_PATH . str_replace('\\', '/', $name) . '.md';
 
 		if (!is_dir(dirname($path))) {
-			$t = mkdir(dirname($path), 0777, true);
+			mkdir(dirname($path), 0777, true);
 		}
 
-		//if (!file_exists($path)) {
-			file_put_contents($path, $reflexionClass);
-		//}
-
+		file_put_contents($path, $reflexionClass);
 	}
 }
 
-$documentation = new Documentor('vendor/follower/core/backend/');
+$documentation = new Documentor();
 $documentation->run();

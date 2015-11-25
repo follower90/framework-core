@@ -201,7 +201,7 @@ Class [ <user> class Core\Orm ] {
 	 * @throws Exception\Exception
 	 */
     Method [ <user> static private method _saveRelatedFieldsData ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 16 - 37
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 17 - 38
 
       - Parameters [1] {
         Parameter #0 [ <required> $object ]
@@ -214,7 +214,7 @@ Class [ <user> class Core\Orm ] {
 	 * @throws \Exception
 	 */
     Method [ <user> static private method _updateLangTables ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 44 - 80
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 45 - 81
 
       - Parameters [1] {
         Parameter #0 [ <required> $object ]
@@ -228,7 +228,7 @@ Class [ <user> class Core\Orm ] {
 	 * @return string
 	 */
     Method [ <user> static protected method _makeLanguageQuery ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 88 - 100
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 89 - 101
 
       - Parameters [2] {
         Parameter #0 [ <required> $class ]
@@ -245,7 +245,7 @@ Class [ <user> class Core\Orm ] {
 	 * @return string
 	 */
     Method [ <user> static protected method _makeSimpleQuery ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 110 - 128
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 111 - 129
 
       - Parameters [4] {
         Parameter #0 [ <required> $class ]
@@ -256,7 +256,7 @@ Class [ <user> class Core\Orm ] {
     }
 
     Method [ <user> static protected method _makeCountQuery ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 130 - 148
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 131 - 149
 
       - Parameters [4] {
         Parameter #0 [ <required> $class ]
@@ -273,7 +273,7 @@ Class [ <user> class Core\Orm ] {
 	 * @param $values
 	 */
     Method [ <user> static protected method _buildConditions ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 156 - 188
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 157 - 189
 
       - Parameters [3] {
         Parameter #0 [ <required> Core\Database\QueryBuilder $queryBuilder ]
@@ -290,7 +290,7 @@ Class [ <user> class Core\Orm ] {
 	 * @return mixed
 	 */
     Method [ <user> static protected method _buildRelationCondition ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 197 - 212
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Traits/Orm/OrmCore.php 198 - 213
 
       - Parameters [3] {
         Parameter #0 [ <required> Core\Database\QueryBuilder $queryBuilder ]

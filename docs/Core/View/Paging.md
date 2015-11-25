@@ -1,5 +1,5 @@
 Class [ <user> class Core\View\Paging ] {
-  @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 5-142
+  @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 9-146
 
   - Constants [0] {
   }
@@ -15,7 +15,7 @@ Class [ <user> class Core\View\Paging ] {
 	 * @return static
 	 */
     Method [ <user> static public method create ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 43 - 49
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 47 - 53
 
       - Parameters [2] {
         Parameter #0 [ <required> $className ]
@@ -34,7 +34,7 @@ Class [ <user> class Core\View\Paging ] {
 
   - Methods [9] {
     Method [ <user, ctor> private method __construct ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 30 - 35
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 34 - 39
 
       - Parameters [3] {
         Parameter #0 [ <required> $className ]
@@ -48,7 +48,7 @@ Class [ <user> class Core\View\Paging ] {
 	 * Calculates limit, offset, count
 	 */
     Method [ <user> private method _calculate ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 55 - 72
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 59 - 76
     }
 
     /**
@@ -56,7 +56,7 @@ Class [ <user> class Core\View\Paging ] {
 	 * @return string rendered paging template
 	 */
     Method [ <user> public method getPaging ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 78 - 85
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 82 - 89
     }
 
     /**
@@ -64,7 +64,7 @@ Class [ <user> class Core\View\Paging ] {
 	 * @return bool
 	 */
     Method [ <user> public method needsPaging ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 91 - 94
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 95 - 98
     }
 
     /**
@@ -72,7 +72,7 @@ Class [ <user> class Core\View\Paging ] {
 	 * @return int
 	 */
     Method [ <user> public method firstItemOnPage ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 100 - 104
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 104 - 108
     }
 
     /**
@@ -80,7 +80,7 @@ Class [ <user> class Core\View\Paging ] {
 	 * @return int
 	 */
     Method [ <user> public method lastItemOnPage ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 110 - 113
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 114 - 117
     }
 
     /**
@@ -88,7 +88,7 @@ Class [ <user> class Core\View\Paging ] {
 	 * @return bool
 	 */
     Method [ <user> public method isFirstPage ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 119 - 122
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 123 - 126
     }
 
     /**
@@ -96,7 +96,7 @@ Class [ <user> class Core\View\Paging ] {
 	 * @return bool
 	 */
     Method [ <user> public method isLastPage ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 128 - 131
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 132 - 135
     }
 
     /**
@@ -105,7 +105,7 @@ Class [ <user> class Core\View\Paging ] {
 	 * @return array
 	 */
     Method [ <user> public method getObjects ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 138 - 141
+      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/View/Paging.php 142 - 145
     }
   }
 }
