@@ -162,10 +162,6 @@ class OrmMapper
 	 */
 	public function getDataMap()
 	{
-		if (!$this->_collection) {
-			throw new \Core\Exception\Exception('Nothing to get. Load data map first');
-		}
-
 		$this->_map = [];
 
 		foreach ($this->_collection as $object) {
