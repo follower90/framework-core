@@ -1,6 +1,9 @@
 <?php
 
-namespace Core;
+namespace Core\Traits\Object;
+
+use Core\Orm;
+use Core\OrmMapper;
 
 trait ActiveRecord
 {

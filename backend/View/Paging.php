@@ -1,6 +1,10 @@
 <?php
 
-namespace Core;
+namespace Core\View;
+
+use Core\Orm;
+use Core\View;
+use Core\App;
 
 class Paging
 {

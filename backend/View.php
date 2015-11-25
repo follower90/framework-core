@@ -3,7 +3,7 @@ namespace Core;
 
 class View {
 
-	use Html;
+	use Traits\View\Html;
 	
 	private $_templateOptions = [];
 	private $_defaultPath = false;
@@ -11,7 +11,7 @@ class View {
 	private $_styles;
 	private $_scripts;
 
-	private $_noticeObject = '\Core\Notice';
+	private $_noticeObject = '\Core\View\Notice';
 	private $_notices = [];
 
 	/**

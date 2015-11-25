@@ -6,8 +6,8 @@ use Core\Database\MySQL;
 
 abstract class Object
 {
-	use Hooks;
-	use ActiveRecord;
+	use Traits\Object\Hooks;
+	use Traits\Object\ActiveRecord;
 
 	protected $_table;
 	protected $_class;

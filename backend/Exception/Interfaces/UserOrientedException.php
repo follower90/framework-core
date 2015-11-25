@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Exception;
+namespace Core\Exception\Interfaces;
 
 interface UserOrientedException
 {

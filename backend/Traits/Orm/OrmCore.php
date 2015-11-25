@@ -1,9 +1,10 @@
 <?php
 
-namespace Core;
+namespace Core\Traits\Orm;
 
 use Core\Database\MySQL;
 use Core\Database\QueryBuilder;
+use Core\Config;
 
 trait OrmCore
 {

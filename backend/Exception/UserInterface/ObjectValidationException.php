@@ -2,7 +2,7 @@
 
 namespace Core\Exception\UserInterface;
 
-use Core\Exception\UserOrientedException;
+use Core\Exception\Interfaces\UserOrientedException;
 
 class ObjectValidationException extends \Core\Exception\Exception implements UserOrientedException
 {

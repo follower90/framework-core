@@ -9,7 +9,7 @@ use Core\Exception\System\OrmException;
 
 class Orm
 {
-	use OrmCore;
+	use Traits\Orm\OrmCore;
 
 	protected static $_object;
 	protected static $_cache;
