@@ -127,7 +127,7 @@ abstract class Object
 			$relation = $relations[$alias];
 
 			if (!isset($relation['multiple']) || $relation['multiple'] == false) {
-				return Orm::load($relation['class'], $this->getValue($relation['field']));
+				return Orm::load($relation['targetClass'], $this->getValue($relation['field']));
 			}
 		}
 

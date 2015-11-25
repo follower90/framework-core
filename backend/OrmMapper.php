@@ -178,6 +178,7 @@ class OrmMapper
 					$field = explode('.', $field)[1];
 
 					$related = $object->getRelated($relation);
+
 					$item[$relation][$field] = $related->getValue($field);
 				} else {
 					$item[$field] = $object->getValue($field);
