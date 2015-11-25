@@ -23,6 +23,7 @@ trait OrmCore
 		foreach ($relatedFields as $field => $data) {
 			foreach ($object->relations() as $alias => $config) {
 				if ($alias == $field) {
+
 					$table = $config['table'];
 					$me = $object->getClassName();
 					$related = $config['targetClass'];

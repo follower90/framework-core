@@ -206,10 +206,10 @@ class Orm
 		}
 
 		$relation = [
-			'class' => $relatedObjectProperties['class'],
+			'class' => $targetObjectProperties['class'],
 			'field' => isset($targetObjectProperties['field']) ? $targetObjectProperties['field'] : 'id',
 
-			'targetClass' => $targetObjectProperties['class'],
+			'targetClass' => $relatedObjectProperties['class'],
 			'targetField' =>  isset($relatedObjectProperties['field']) ? $relatedObjectProperties['field'] : 'id',
 
 			'type' => isset($relationProperties['type']) ? $relationProperties['type'] : 'simple',
