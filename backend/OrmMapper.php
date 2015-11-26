@@ -39,6 +39,12 @@ class OrmMapper
 		return new OrmMapper($className);
 	}
 
+	public function viewConfig($alias)
+	{
+		$config = '_' . $alias;
+		return $this->$config;
+	}
+
 	/**
 	 * Returns object collection
 	 * @return \Core\Collection
