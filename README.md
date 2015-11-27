@@ -218,21 +218,21 @@ For step-by-step queries constructing with many different conditions.
 Also used internally in \Core\Orm.
 
 composeSelectQuery() method will return raw query string for executing.
-
+```php
 $query = new QueryBuilder(‘User’);
 $query->setBaseAlias('pc')
-->select('id', 'title', 'name')
-->join('left', User_Catalog, 'pc', ['catalog', 'another.id'])
-->where('somevalue', [124, 125])
-->where('max(count)', 20, '<')
-->where('title', '%test', 'like')
-->where('test', null);
-->orderBy('id', 'asc')
-->groupBy('param1')
-->limit(20);
+  ->select('id', 'title', 'name')
+  ->join('left', User_Catalog, 'pc', ['catalog', 'another.id'])
+  ->where('somevalue', [124, 125])
+  ->where('max(count)', 20, '<')
+  ->where('title', '%test', 'like')
+  ->where('test', null);
+  ->orderBy('id', 'asc')
+  ->groupBy('param1')
+  ->limit(20);
 
 echo $query->composeSelectQuery();
-
+```
 ### Orm
 
 Layer for working with Database, which encapsulate queries and supports relations.
@@ -265,8 +265,8 @@ Another class, more flexible.
 ```php
 $mapper = OrmMapper::create(User);
 $mapper->setFields(['test', 'name', 'amount']);
-->setFilter(['test', 'name', 'amount'], [1,2,3]);
-->load();
+  ->setFilter(['test', 'name', 'amount'], [1,2,3]);
+  ->load();
 
 $users  = $mapper->getCollection();
 ```
@@ -278,9 +278,9 @@ Convenient way to work with objects
 Some examples:
 ```php
 $users = User::all()
-->addFilter(‘type’, $id)
-->load()
-->getCollection();
+  ->addFilter(‘type’, $id)
+  ->load()
+  ->getCollection();
 
 $user = User::find($id);
 $user->name = ‘Peter’;
