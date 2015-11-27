@@ -51,10 +51,15 @@ Config::registerProject('MyProject', 'default');
 Recommended backend project structure:
 
 Api/
+
 Controller/
+
 Service/
+
 EntryPoint/
+
 Object/
+
 Routes/
 
 
@@ -86,10 +91,10 @@ class UserProvider
 {
    public function getUsersWithPermissions($permissions)
    {
-  return \MyProject\Object\User::all()
-    ->addFilter(‘permissions.alias’’, $permissions)
-    ->load();
-   }
+      return \MyProject\Object\User::all()
+          ->addFilter(‘permissions.alias’’, $permissions)
+          ->load();
+       }
 }
 ```
 
@@ -102,12 +107,12 @@ class Site extends \Core\EntryPoint
 {
    public function init()
    {
-    Config::set('site.language', 'ru');
-    Routes::register();
+      Config::set('site.language', 'ru');
+      Routes::register();
 
-    $this->setLib('\Accounting\Controller');
-    $app = new App($this);
-    $app->run();
+      $this->setLib('\Accounting\Controller');
+      $app = new App($this);
+      $app->run();
    }
 }
 ```
@@ -145,6 +150,7 @@ It means that POST query to /add url will go to controller: Index, method: metho
 Default routing rules:
  
 /controller/ -- Controller, methodIndex().
+
 /controller/action -- Controller, methodAction().
 
  
@@ -169,7 +175,9 @@ Framework supports relations between models.
 Represents wrapper class for objects array with methods and properties. 
 
 getData() - returns array of full objects, keys are object ids.
+
 getHashMap(‘id’,’name’) - returns hash array, id => name
+
 getValues(‘id’) - returns simple array of ids
 
 ### Collection Stream
@@ -214,7 +222,7 @@ MySQL::delete(‘User’,  array(‘id’ => 1));
 ```
 ### QueryBuilder
 
-For step-by-step queries constructing with many different conditions.
+For step-by-step queries constructing with different conditions.
 Also used internally in \Core\Orm.
 
 composeSelectQuery() method will return raw query string for executing.
