@@ -104,8 +104,9 @@ abstract class Object
 	 */
 	public function triggerEvent($alias)
 	{
-		if (is_callable(self::$_events[$alias])) {
-			call_user_func(self::$_events[$alias]);
+		$callback = isset(self::$_events[$alias]) ? self::$_events[$alias] : false;
+		if ($callback) {
+			call_user_func($hook);
 		}
 	}
 

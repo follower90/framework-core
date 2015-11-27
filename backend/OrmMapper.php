@@ -39,6 +39,11 @@ class OrmMapper
 		return new OrmMapper($className);
 	}
 
+	/**
+	 * Shows config by alias
+	 * @param $alias string
+	 * @return array 
+	 */
 	public function viewConfig($alias)
 	{
 		$config = '_' . $alias;
