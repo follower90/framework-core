@@ -9,8 +9,8 @@ class Debug
 	private $_queries;
 	private $_files;
 	private $_php_errors;
-	private $_cms_errors;
-	private $_cms_dumps;
+	private $_framework_errors;
+	private $_dumps;
 
 	public static $phpErrorCode = [
 		1 => 'Fatal Error',
@@ -49,13 +49,7 @@ class Debug
 				}
 			}
 
-			$params = array_map(function ($param) {
-				if (!is_numeric($param)) {
-					return "'" . $param . "'";
-				}
-
-				return $param;
-			}, $params);
+			$params = array_map($this->_processQueryParam($param), $params);
 		}
 
 		$this->_queries[] = [
@@ -89,9 +83,9 @@ class Debug
 	 * Logs framework errors
 	 * @param $error
 	 */
-	public function logCmsError($error)
+	public function logFrameworkError($error)
 	{
-		$this->_cms_errors[] = $error;
+		$this->_framework_errors[] = $error;
 	}
 
 	/**
@@ -103,7 +97,7 @@ class Debug
 		$trace = debug_backtrace();
 		$source = $trace[1];
 
-		$this->_cms_dumps[] = [
+		$this->_dumps[] = [
 			'file' => $source['file'],
 			'line' => $source['line'],
 			'dump' => $dump,
@@ -150,11 +144,11 @@ class Debug
 	 * Returns logged framework errors and its count
 	 * @return array
 	 */
-	public function getCmsErrors()
+	public function getFrameworkErrors()
 	{
 		return [
-			'count' => count($this->_cms_errors),
-			'data' => $this->_cms_errors,
+			'count' => count($this->_framework_errors),
+			'data' => $this->_framework_errors,
 		];
 	}
 
@@ -162,11 +156,20 @@ class Debug
 	 * Returns logged variable dumps and its count
 	 * @return array
 	 */
-	public function getCmsDumps()
+	public function getDumps()
 	{
 		return [
-			'count' => count($this->_cms_dumps),
-			'data' => $this->_cms_dumps,
+			'count' => count($this->_dumps),
+			'data' => $this->_dumps,
 		];
+	}
+	
+	private function _processQueryParam($param)
+	{
+		if (!is_numeric($param)) {
+			return "'" . $param . "'";
+		}
+
+		return $param;
 	}
 }

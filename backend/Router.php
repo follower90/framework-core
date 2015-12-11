@@ -4,7 +4,6 @@ namespace Core;
 
 class Router
 {
-
 	const NOT_AUTHORIZED = 'HTTP/1.1 401 Unauthorized';
 	const NOT_FOUND_404 = 'HTTP/1.0 404 Not Found';
 
@@ -23,18 +22,12 @@ class Router
 	{
 		self::_initUrlParams();
 
-		foreach (static::$_routes as $route) {
-			if (static::_matches($route['url'], self::$_url) && mb_strtolower($_SERVER['REQUEST_METHOD']) == $route['method']) {
-				return [
-					'controller' => $route['controller'],
-					'action' => $route['action'],
-					'args' => $route['args'],
-				];
-			}
+		if ($matchedAction  = self::_findMatches()) {
+			return $matchedAction;
 		}
 
-		if ($action = self::_autoDetect($lib)) {
-			return $action;
+		if ($autoDetectedAction = self::_autoDetect($lib)) {
+			return $autoDetectedAction;
 		}
 
 		return [
@@ -42,6 +35,21 @@ class Router
 			'action' => 'Index',
 			'args' => [],
 		];
+	}
+	
+	private static function _findMatches()
+	{
+		foreach (static::$_routes as $route) {
+			if (static::_matches($route['url'], self::$_url) && self::get('request_method') == mb_strtoupper($route['method'])) {
+				return [
+					'controller' => $route['controller'],
+					'action' => $route['action'],
+					'args' => $route['args'],
+				];
+			}
+		}
+		
+		return false;
 	}
 
 	/**
@@ -83,9 +91,11 @@ class Router
 			$args = $uriChunks;
 		}
 
-		$action = self::_sanitize($action);
-		$controller = self::_sanitize($controller);
-
+		return self::_returnAction($lib, self::_sanitize($controller), self::_sanitize($action), $args);
+	}
+	
+	private static function _returnAction($lib, $controller, $action, $args)
+	{
 		if (method_exists($lib . '\\' . $controller, 'method' . $action)) {
 			return [
 				'controller' => $controller,
@@ -115,6 +125,11 @@ class Router
 		return array_merge($uriParams, $_GET, $_POST);
 	}
 
+	/**
+	 * Removes slashes from Controller path
+	 * @param type $string
+	 * @return type
+	 */
 	protected static function _sanitize($string)
 	{
 		return str_replace(['/'], '', $string);
@@ -153,13 +168,13 @@ class Router
 	 * @param $action
 	 * @param $params
 	 */
-	public static function register($request, $controller, $action, $params)
+	public static function register($request, $controller, $action, $params = [])
 	{
 		static::$_routes[] = [
 			'url' => $request[0],
 			'method' => $request[1],
-			'controller' => $controller,
-			'action' => $action,
+			'controller' => ucfirst($controller),
+			'action' => ucfirst($action),
 			'args' => $params,
 		];
 	}
@@ -189,6 +204,7 @@ class Router
 			'uri' => $_SERVER['REQUEST_URI'],
 			'remote_addr' => $_SERVER['REMOTE_ADDR'],
 			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+			'request_method' => $_SERVER['REQUEST_METHOD'],
 		];
 
 		if (isset($_SERVER['HTTP_REFERER'])) {
@@ -210,7 +226,7 @@ class Router
 		$urlChunks = explode('/', $url);
 
 		for ($i = 0; $i < count($urlChunks); $i++) {
-			if ($routeChunks[$i] == $urlChunks[$i] || $routeChunks[$i] == '*') {
+			if ($routeChunks[$i] == $urlChunks[$i] || $routeChunks[$i] == '*' || $routeChunks[$i][0] == ':') {
 				continue;
 			} elseif ($i == 0 && isset(self::$_aliases[$urlChunks[$i]])) {
 				continue;
@@ -230,9 +246,53 @@ class Router
 	 * Sends http headers
 	 * @param $headers
 	 */
-	public static function sendHeaders($headers = []) {
+	public static function sendHeaders($headers = [])
+	{
 		foreach ($headers as $header) {
 			header($header);
 		}
+	}
+
+	/**
+	 * Registers route
+	 * @param type $httpMethod
+	 * @param type $pattern
+	 * @param type $action
+	 * @return \Core\Router
+	 */
+	public function route($httpMethod, $pattern, $action)
+	{
+		$action = explode('#', $action);
+		$arguments = $this->_parseGetParams($pattern);
+		self::register([$pattern, $httpMethod], $action[0], $action[1], $arguments);
+
+		return $this;
+	}
+
+	/**
+	 * Returns params from matched pattern
+	 * @param type $pattern
+	 * @return type
+	 */
+	private function _parseGetParams($pattern)
+	{
+		$params = [];
+		preg_match_all('/\:(\w+)/', $pattern, $params);
+
+		$routeParts = explode('/', $pattern);
+		$urlParts = explode('/', self::get('uri'));
+
+		$arguments = [];
+
+		foreach ($routeParts as $num => $part) {
+			foreach ($params[0] as $i => $param) {
+				if ($param == $part) {
+					$param = $params[1][$i];
+					$arguments[$param] = $urlParts[$num];
+				}
+			}
+		}
+
+		return $arguments;
 	}
 }

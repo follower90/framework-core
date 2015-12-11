@@ -213,8 +213,8 @@ class App
 			$data = [];
 			$data['instanceHash'] = hash('crc32', rand(0,100));
 			$data['phpErrors'] = $debug->getPhpErrors();
-			$data['cmsErrors'] = $debug->getCmsErrors();
-			$data['cmsDumps'] = $debug->getCmsDumps();
+			$data['frameworkErrors'] = $debug->getFrameworkErrors();
+			$data['dumps'] = $debug->getDumps();
 			$data['queries'] = $debug->getQueriesLog();
 			$data['files'] = $debug->getFilesLog();
 

@@ -15,18 +15,21 @@ use Core\Library\System;
 	.debug-options {
 		box-sizing: border-box;
 		margin: 0;
-		padding: 5px 0;
 		height: 24px;
 		background: #c6c6c6;
 	}
 	.debug-options div {
 		float: left;
 		margin: 0 20px;
+		padding: 5px;
 		cursor: pointer;
 		font-size: 12px;
 	}
 	.debug-options div span {
 		font-weight: bold;
+	}
+	.debug-options .active {
+		background: #e8e8e8;
 	}
 	.debug-tabs div {
 		display: none;
@@ -72,8 +75,8 @@ use Core\Library\System;
 		</div>
 		<div class="tab tab-4">
 			<?php
-			foreach($vars['cmsErrors']['data'] as $cmsError) {
-				echo $cmsError;
+			foreach($vars['frameworkErrors']['data'] as $frameworkError) {
+				echo $frameworkError;
 			}
 			?>
 		</div>
@@ -103,7 +106,7 @@ use Core\Library\System;
 		</div>
 		<div class="tab tab-6">
 			<?php
-			foreach($vars['cmsDumps']['data'] as $dump) {
+			foreach($vars['dumps']['data'] as $dump) {
 				echo '<b>Dump in <i>' . $dump['file'] . '</i> at line <i>' . $dump['line'] . '</i>:</b><br/>';
 				System::vardump($dump['dump']);
 				echo '<br/>';
@@ -123,13 +126,13 @@ use Core\Library\System;
 			PHP Errors: <span><?php echo $vars['phpErrors']['count']; ?></span>
 		</div>
 		<div class="debug-option" data-option="4">
-			CMS Errors: <span><?php echo $vars['cmsErrors']['count']; ?></span>
+			Framework Errors: <span><?php echo $vars['frameworkErrors']['count']; ?></span>
 		</div>
 		<div class="debug-option" data-option="5">
 			GPCFRSS: <span>7</span>
 		</div>
 		<div class="debug-option" data-option="6">
-			Dump: <span><?php echo $vars['cmsDumps']['count']; ?></span>
+			Dumps: <span><?php echo $vars['dumps']['count']; ?></span>
 		</div>
 	</div>
 </div>
@@ -153,12 +156,18 @@ use Core\Library\System;
 				isActive = true;
 			}
 
+			var captions = document.querySelectorAll('.debug-option');
+			for (var i = 0; i < captions.length; i++) {
+				captions[i].className = 'debug-option';
+			}
+
 			var tabs = document.querySelectorAll('.debug-tabs-' + instanceHash + ' .tab');
 			for (var i = 0; i < tabs.length; i++) {
 				tabs[i].style.display = 'none';
 			}
 
 			if (!isActive) {
+				this.className = 'debug-option active';
 				currentTab.style.display = 'block';
 			}
 		}

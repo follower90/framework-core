@@ -282,7 +282,7 @@ $users  = $mapper->getCollection();
 
 ### ActiveRecord
 
-Convenient way to work with objects
+Convenient way to work with objects.
 Some examples:
 ```php
 $users = User::all()

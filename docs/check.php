@@ -13,7 +13,7 @@ class Documentor
 			new RecursiveDirectoryIterator(self::CORE_APP_PATH),
 			RecursiveIteratorIterator::SELF_FIRST);
 
-		foreach ( $iterator as $fileInfo ) {
+		foreach ($iterator as $fileInfo) {
 			if (!$fileInfo->isDir() && $fileInfo) {
 				if ($fileInfo->getExtension() == 'php') {
 					$this->processFile($fileInfo);
