@@ -1,84 +1,74 @@
-Class [ <user> abstract class Core\EntryPoint ] {
-  @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/EntryPoint.php 5-75
+# Core\EntryPoint
+## CONSTANTS
 
-  - Constants [0] {
-  }
+## PROPERTIES
 
-  - Static properties [0] {
-  }
+#### _lib
+## METHODS
 
-  - Static methods [0] {
-  }
+## init
 
-  - Properties [1] {
-    Property [ <default> private $_lib ]
-  }
 
-  - Methods [6] {
-    /**
-	 * Abstract init method
-	 * Must be defined in project entry points
-	 * @return mixed
-	 */
-    Method [ <user> abstract public method init ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/EntryPoint.php 14 - 14
-    }
 
-    /**
-	 * Default output method
-	 * Can be overridden with any data transformation
-	 * @param $data
-	 * @return mixed
-	 */
-    Method [ <user> public method output ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/EntryPoint.php 22 - 25
+	 
+ Abstract init method
+	 
+ Must be defined in project entry points
+	 
+ @return mixed
+	 
+## output
 
-      - Parameters [1] {
-        Parameter #0 [ <required> $data ]
-      }
-    }
 
-    /**
-	 * Return namespace name. Must to have been set at first
-	 * @return mixed
-	 * @throws \Exception
-	 */
-    Method [ <user> public method getLib ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/EntryPoint.php 32 - 39
-    }
 
-    /**
-	 * Set method for setting project namespace
-	 * @param $path
-	 */
-    Method [ <user> protected method setLib ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/EntryPoint.php 45 - 48
+	 
+ Default output method
+	 
+ Can be overridden with any data transformation
+	 
+ @param $data
+	 
+ @return mixed
+	 
+## getLib
 
-      - Parameters [1] {
-        Parameter #0 [ <required> $path ]
-      }
-    }
 
-    /**
-	 * Returns POST and GET params merged together
-	 * @param bool $key
-	 * @return array|bool
-	 */
-    Method [ <user> public method request ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/EntryPoint.php 55 - 64
 
-      - Parameters [1] {
-        Parameter #0 [ <optional> $key = false ]
-      }
-    }
+	 
+ Return namespace name. Must to have been set at first
+	 
+ @return mixed
+	 
+ @throws \Exception
+	 
+## setLib
 
-    /**
-	 * Allows debug mode
-	 * Can be overridden in site entry points
-	 * @return bool
-	 */
-    Method [ <user> public method debug ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/EntryPoint.php 71 - 74
-    }
-  }
-}
+
+
+	 
+ Set method for setting project namespace
+	 
+ @param $path
+	 
+## request
+
+
+
+	 
+ Returns POST and GET params merged together
+	 
+ @param bool $key
+	 
+ @return array|bool
+	 
+## debug
+
+
+
+	 
+ Allows debug mode
+	 
+ Can be overridden in site entry points
+	 
+ @return bool
+	 

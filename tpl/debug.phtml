@@ -15,7 +15,7 @@ use Core\Library\System;
 	.debug-options {
 		box-sizing: border-box;
 		margin: 0;
-		height: 24px;
+		height: 28px;
 		background: #c6c6c6;
 	}
 	.debug-options div {
@@ -152,7 +152,7 @@ use Core\Library\System;
 			var instanceHash = '<?php echo $vars['instanceHash'];?>';
 			var currentTab = document.querySelector('.debug-tabs-' + instanceHash + ' .tab-' + tabNum);
 
-			if (currentTab.style.display == 'block') {
+			if (currentTab.style.display === 'block') {
 				isActive = true;
 			}
 

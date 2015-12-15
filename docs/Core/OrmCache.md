@@ -1,64 +1,48 @@
-Class [ <user> class Core\OrmCache ] {
-  @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/OrmCache.php 5-48
+# Core\OrmCache
+## CONSTANTS
 
-  - Constants [0] {
-  }
+## PROPERTIES
 
-  - Static properties [0] {
-  }
+#### _data
+## METHODS
 
-  - Static methods [1] {
-    /**
-	 * Hash orm query params
-	 * @param $params
-	 * @return string
-	 */
-    Method [ <user> static private method _hashParams ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/OrmCache.php 44 - 47
+## update
 
-      - Parameters [1] {
-        Parameter #0 [ <required> $params ]
-      }
-    }
-  }
 
-  - Properties [1] {
-    Property [ <default> private $_data ]
-  }
 
-  - Methods [3] {
-    /**
-	 * Insert collection to hash
-	 * @param $params
-	 * @param $data
-	 */
-    Method [ <user> public method update ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/OrmCache.php 14 - 18
+	 
+ Insert collection to hash
+	 
+ @param $params
+	 
+ @param $data
+	 
+## get
 
-      - Parameters [2] {
-        Parameter #0 [ <required> $params ]
-        Parameter #1 [ <required> $data ]
-      }
-    }
 
-    /**
-	 * Get collection by hash
-	 * @param $params
-	 * @return bool
-	 */
-    Method [ <user> public method get ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/OrmCache.php 25 - 29
 
-      - Parameters [1] {
-        Parameter #0 [ <required> $params ]
-      }
-    }
+	 
+ Get collection by hash
+	 
+ @param $params
+	 
+ @return bool
+	 
+## clear
 
-    /**
-	 * Clear orm cache
-	 */
-    Method [ <user> public method clear ] {
-      @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/OrmCache.php 34 - 37
-    }
-  }
-}
+
+
+	 
+ Clear orm cache
+	 
+## _hashParams
+
+
+
+	 
+ Hash orm query params
+	 
+ @param $params
+	 
+ @return string
+	 

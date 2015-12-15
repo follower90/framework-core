@@ -36,8 +36,9 @@ class View {
 	/**
 	 * Return resources batch by type
 	 * @param string $type
+	 * @return string resources paths
 	 */
-	public function loadResources($type = false)
+	public function loadResources($type)
 	{
 		switch ($type) {
 			case 'css':

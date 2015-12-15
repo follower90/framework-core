@@ -1,18 +1,7 @@
-Interface [ <user> interface Core\Exception\Interfaces\UserOrientedException ] {
-  @@ /Users/vmalyshev/webserver/accounting/vendor/follower/core/backend/Exception/Interfaces/UserOrientedException.php 5-8
+# Core\Exception\Interfaces\UserOrientedException
+## CONSTANTS
 
-  - Constants [0] {
-  }
+## PROPERTIES
 
-  - Static properties [0] {
-  }
+## METHODS
 
-  - Static methods [0] {
-  }
-
-  - Properties [0] {
-  }
-
-  - Methods [0] {
-  }
-}
