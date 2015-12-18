@@ -218,6 +218,8 @@ class App
 			$data['queries'] = $debug->getQueriesLog();
 			$data['files'] = $debug->getFilesLog();
 
+			var_dump($this->_appPath);exit;
+
 			$view = new View();
 			echo $view->render($this->_appPath . '/vendor/follower/core/tpl/debug.phtml', $data);
 		}

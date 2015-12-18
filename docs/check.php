@@ -1,12 +1,13 @@
 <?php
 
 require_once('vendor/autoload.php');
-error_reporting(E_ALL);
 
 class Documentor
 {
     const CORE_APP_PATH = 'vendor/follower/core/backend/';
     const CORE_DOCS_PATH = 'vendor/follower/core/docs';
+
+    private $_output = [];
 
     public function run()
     {
