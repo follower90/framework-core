@@ -204,9 +204,9 @@ class App
 	{
 		if ($debug == 'on' || Cookie::get('debug') && $debug != 'off') {
 
-			if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
+			/*if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
 				return;
-			}
+			}*/
 
 			$debug = Debug::getInstance();
 
@@ -217,8 +217,6 @@ class App
 			$data['dumps'] = $debug->getDumps();
 			$data['queries'] = $debug->getQueriesLog();
 			$data['files'] = $debug->getFilesLog();
-
-			var_dump($this->_appPath);exit;
 
 			$view = new View();
 			echo $view->render($this->_appPath . '/vendor/follower/core/tpl/debug.phtml', $data);
