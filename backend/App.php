@@ -57,6 +57,7 @@ class App
 	 */
 	public function __construct(EntryPoint $entryPoint)
 	{
+		declare(ticks=1);
 		$this->_entryPoint = $entryPoint;
 		$this->_appPath = \getcwd();
 
@@ -140,8 +141,6 @@ class App
 	 */
 	private function _setBackTraceHandler()
 	{
-		declare(ticks=1);
-
 		register_tick_function(function() {
 			$call = debug_backtrace()[1];
 			$classesExclusions = [
