@@ -99,7 +99,9 @@ class App
 	 */
 	public function run()
 	{
-		if (Cookie::get('debug')) {
+		$action = Router::getAction($this->_entryPoint->getLib());
+
+		if (Cookie::get('debug') || isset($action['args']['debug'])) {
 			$this->_setBackTraceHandler();
 		}
 
@@ -109,8 +111,6 @@ class App
 		$this->_setupDebugMode();
 		$this->_setErrorHandlers();
 		$this->_setFileIncludeHandler();
-
-		$action = Router::getAction($this->_entryPoint->getLib());
 
 		$class = $this->_entryPoint->getLib() . '\\' . $action['controller'];
 		$method = 'method' . ucfirst($action['action']);
@@ -145,13 +145,10 @@ class App
 		register_tick_function(function() {
 			$call = debug_backtrace()[1];
 			$classesExclusions = [
-				'', 'Core\Debug',
-				//'Core\Orm', 'Core\Database\QueryBuilder', 'Core\Database\PDO',
-				//'Core\Object', 'Core\ObjectConfig', 'Core\Collection', 'Core\OrmMapper', 'Core\OrmCache', 'Core\App',
+				'', 'Core\Debug'
 			];
 
 			$methodsExclusions = [
-				//'getConfig',
 			];
 
 			if (isset($call['class'], $call['function'], $call['file'], $call['line']) &&
