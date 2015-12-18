@@ -99,13 +99,16 @@ class App
 	 */
 	public function run()
 	{
+		if (Cookie::get('debug')) {
+			$this->_setBackTraceHandler();
+		}
+
 		Session::init();
 		date_default_timezone_set('Europe/Kiev');
 
 		$this->_setupDebugMode();
 		$this->_setErrorHandlers();
 		$this->_setFileIncludeHandler();
-		$this->_setBackTraceHandler();
 
 		$action = Router::getAction($this->_entryPoint->getLib());
 
@@ -122,6 +125,11 @@ class App
 
 		$controller = new $class();
 
+		System::dump([
+			'Controller' => $class .'::' . $method,
+			'Arguments' =>  array_merge($action['args'], $controller->request())
+		]);
+
 		echo $this->_entryPoint->output(
 			call_user_func_array([$controller, 'run'], [$method, array_merge($action['args'], $controller->request())])
 		);
@@ -137,12 +145,13 @@ class App
 		register_tick_function(function() {
 			$call = debug_backtrace()[1];
 			$classesExclusions = [
-				'', 'Core\Debug', 'Core\Orm', 'Core\Database\QueryBuilder', 'Core\Database\PDO',
-				'Core\Object', 'Core\ObjectConfig', 'Core\Collection', 'Core\OrmMapper', 'Core\OrmCache', 'Core\App',
+				'', 'Core\Debug',
+				//'Core\Orm', 'Core\Database\QueryBuilder', 'Core\Database\PDO',
+				//'Core\Object', 'Core\ObjectConfig', 'Core\Collection', 'Core\OrmMapper', 'Core\OrmCache', 'Core\App',
 			];
 
 			$methodsExclusions = [
-				'getConfig',
+				//'getConfig',
 			];
 
 			if (isset($call['class'], $call['function'], $call['file'], $call['line']) &&
