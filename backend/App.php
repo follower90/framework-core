@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use \Core\Library\System;
 /**
  * Class App
  * Main application class
@@ -104,6 +105,7 @@ class App
 		$this->_setupDebugMode();
 		$this->_setErrorHandlers();
 		$this->_setFileIncludeHandler();
+		$this->_setBackTraceHandler();
 
 		$action = Router::getAction($this->_entryPoint->getLib());
 
@@ -123,6 +125,39 @@ class App
 		echo $this->_entryPoint->output(
 			call_user_func_array([$controller, 'run'], [$method, array_merge($action['args'], $controller->request())])
 		);
+	}
+
+	/**
+	 * Register function calls for backtrace
+	 */
+	private function _setBackTraceHandler()
+	{
+		declare(ticks=1);
+
+		register_tick_function(function() {
+			$call = debug_backtrace()[1];
+			$classesExclusions = [
+				'', 'Core\Debug', 'Core\Orm', 'Core\Database\QueryBuilder', 'Core\Database\PDO',
+				'Core\Object', 'Core\ObjectConfig', 'Core\Collection', 'Core\OrmMapper', 'Core\OrmCache', 'Core\App',
+			];
+
+			$methodsExclusions = [
+				'getConfig',
+			];
+
+			if (isset($call['class'], $call['function'], $call['file'], $call['line']) &&
+				!in_array($call['class'], $classesExclusions) &&
+				!in_array($call['function'], $methodsExclusions)
+			) {
+				$debug = Debug::getInstance();
+				$debug->logTrace([
+					'function' => $call['function'],
+					'class' => $call['class'],
+					'file' => $call['file'],
+					'line' => $call['line'],
+				]);
+			}
+		}, true);
 	}
 
 	/**
@@ -204,12 +239,11 @@ class App
 	{
 		if ($debug == 'on' || Cookie::get('debug') && $debug != 'off') {
 
-			/*if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
+			/*if (Router::get('remote_addr') != '127.0.0.1') {
 				return;
 			}*/
 
 			$debug = Debug::getInstance();
-
 			$data = [];
 			$data['instanceHash'] = hash('crc32', rand(0,100));
 			$data['phpErrors'] = $debug->getPhpErrors();
@@ -217,6 +251,7 @@ class App
 			$data['dumps'] = $debug->getDumps();
 			$data['queries'] = $debug->getQueriesLog();
 			$data['files'] = $debug->getFilesLog();
+			$data['trace'] = $debug->getTrace();
 
 			$view = new View();
 			echo $view->render($this->_appPath . '/vendor/follower/core/tpl/debug.phtml', $data);

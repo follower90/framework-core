@@ -11,6 +11,7 @@ class Debug
 	private $_php_errors;
 	private $_framework_errors;
 	private $_dumps;
+	private $_trace;
 
 	public static $phpErrorCode = [
 		1 => 'Fatal Error',
@@ -49,7 +50,7 @@ class Debug
 				}
 			}
 
-			$params = array_map($this->_processQueryParam($param), $params);
+			$params = array_map(array($this, '_processQueryParam'), $params);
 		}
 
 		$this->_queries[] = [
@@ -68,6 +69,16 @@ class Debug
 	public function logFile($path)
 	{
 		$this->_files[] = $path;
+	}
+
+	/**
+	 * Logs back trace
+	 * @param $param
+	 */
+	public function logTrace($param)
+	{
+		if ($this->_trace[count($this->_trace) - 1] != $param )
+		$this->_trace[] = $param;
 	}
 
 	/**
@@ -161,6 +172,18 @@ class Debug
 		return [
 			'count' => count($this->_dumps),
 			'data' => $this->_dumps,
+		];
+	}
+
+	/**
+	 * Returns logged variable dumps and its count
+	 * @return array
+	 */
+	public function getTrace()
+	{
+		return [
+			'count' => count($this->_trace),
+			'data' => $this->_trace,
 		];
 	}
 	

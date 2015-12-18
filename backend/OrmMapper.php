@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Library\System;
+
 class OrmMapper
 {
 	private $_collection = [];
@@ -106,7 +108,7 @@ class OrmMapper
 			$num++;
 		}
 
-		$this->_filters = array_unique($this->_filters);
+		$this->_filters = array_unique($this->_filters, SORT_REGULAR);
 		return $this;
 	}
 
