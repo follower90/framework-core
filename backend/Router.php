@@ -118,7 +118,9 @@ class Router
 
 		for ($i = 0; $i < sizeof($args); $i++) {
 			$key = $args[$i];
-			$value = $args[++$i];
+			$i++;
+
+			$value = isset($args[$i]) ? $args[$i] : null;
 			$uriParams[$key] = $value;
 		}
 
@@ -255,9 +257,9 @@ class Router
 
 	/**
 	 * Registers route
-	 * @param type $httpMethod
-	 * @param type $pattern
-	 * @param type $action
+	 * @param string $httpMethod
+	 * @param string $pattern
+	 * @param string $action
 	 * @return \Core\Router
 	 */
 	public function route($httpMethod, $pattern, $action)
@@ -271,8 +273,8 @@ class Router
 
 	/**
 	 * Returns params from matched pattern
-	 * @param type $pattern
-	 * @return type
+	 * @param string $pattern
+	 * @return array
 	 */
 	private function _parseGetParams($pattern)
 	{
