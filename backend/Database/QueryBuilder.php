@@ -2,7 +2,7 @@
 
 namespace Core\Database;
 
-class QueryBuilder {
+class QueryBuilder { //todo sql query builder
 
 	private $_config;
 

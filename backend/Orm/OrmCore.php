@@ -12,7 +12,6 @@ trait OrmCore
 	/**
 	 * Saves related fields data
 	 * @param Object $object
-	 * @throws Exception\Exception
 	 */
 	private static function _saveRelatedFieldsData($object)
 	{

@@ -2,8 +2,7 @@
 
 namespace Core;
 
-use Core\Database\MySQL;
-use Core\Database\PDO;
+use Core\Database\PDO; //todo shit architecture
 use Core\Exception\UserInterface\ObjectValidationException;
 use Core\Exception\System\OrmException;
 
@@ -13,6 +12,7 @@ class Orm
 
 	protected static $_object;
 	protected static $_cache;
+	protected static $_dbClass = '\\Core\\Database\\MySQL';
 
 	/**
 	 * Creates and returns new Object
@@ -22,6 +22,15 @@ class Orm
 	public static function create($class)
 	{
 		return self::_getObject($class);
+	}
+
+	public static function setDbType(string $type)
+	{
+		if (class_exists($type)) {
+			self::$_dbClass = $type;
+		}
+
+		throw new \Core\Exception\Exception('Database class does not exist');
 	}
 
 	/**
@@ -45,12 +54,14 @@ class Orm
 		$table = $object->getConfigData('table');
 		$data = $object->getSimpleFieldsData();
 
+		$dbEngine = self::$_dbClass;
+
 		try {
 			if ($object->isNew()) {
-				$id = MySQL::insert($table, $data);
+				$id = $dbEngine::insert($table, $data);
 				$object->setValue('id', $id);
 			} else {
-				MySQL::update($table, $data, ['id' => $object->getId()]);
+				$dbEngine::update($table, $data, ['id' => $object->getId()]);
 			}
 
 			self::_updateLangTables($object);
@@ -159,9 +170,10 @@ class Orm
 	public static function delete(Object $object)
 	{
 		$object->beforeDelete();
+		$dbEngine = self::$_dbClass;
 
 		if ($id = $object->getId()) {
-			MySQL::delete($object->getConfigData('table'), ['id' => $id]);
+			$dbEngine::delete($object->getConfigData('table'), ['id' => $id]);
 		}
 
 		$object->afterDelete();

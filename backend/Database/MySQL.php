@@ -2,7 +2,7 @@
 
 namespace Core\Database;
 
-class MySQL
+class MySQL implements Database
 {
 	/**
 	 * Runs Mysql update query
@@ -11,7 +11,7 @@ class MySQL
 	 * @param array $conditions
 	 * @throws \Exception
 	 */
-	public static function update($table, $params = [], $conditions = [])
+	public static function update($table, array $params = [], array $conditions = [])
 	{
 		if (!$table || empty($params) || empty($conditions)) {
 			throw new \Core\Exception\Exception('Incorrect update query');
@@ -39,7 +39,7 @@ class MySQL
 	 * @return int $insertId
 	 * @throws \Exception
 	 */
-	public static function insert($table, $params = [])
+	public static function insert($table, array $params = [])
 	{
 		if (!$table || empty($params)) {
 			throw new \Core\Exception\Exception('Incorrect insert query');
@@ -61,7 +61,7 @@ class MySQL
 	 * @param array $conditions
 	 * @throws \Exception
 	 */
-	public static function delete($table, $conditions = [])
+	public static function delete($table, array $conditions = [])
 	{
 		if (!$table || empty($conditions)) {
 			throw new \Core\Exception\Exception('Incorrect delete query');

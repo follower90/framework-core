@@ -4,7 +4,7 @@ namespace Core;
 
 use Core\Database\PDO;
 
-class Api extends Controller
+class Api extends Controller //todo really needed?
 {
 	protected $request;
 

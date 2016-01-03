@@ -2,7 +2,6 @@
 
 namespace Core;
 
-use \Core\Library\System;
 /**
  * Class App
  * Main application class
@@ -125,11 +124,6 @@ class App
 		}
 
 		$controller = new $class();
-
-		System::dump([
-			'Controller' => $class .'::' . $method,
-			'Arguments' =>  array_merge($action['args'], $controller->request())
-		]);
 
 		echo $this->_entryPoint->output(
 			call_user_func_array([$controller, 'run'], [$method, array_merge($action['args'], $controller->request())])
