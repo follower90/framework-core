@@ -183,6 +183,11 @@ trait OrmCore
 				$action = '>';
 			}
 
+			if ($firstChar == '!') {
+				$param = substr($param, 1, -1);
+				$action = '!=';
+			}
+
 			$queryBuilder->where($alias . '.' . $param, $condition, $action);
 			$count++;
 		}
