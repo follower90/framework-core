@@ -21,7 +21,7 @@ class Collection {
 	 * Return array of objects
 	 * @return array
 	 */
-	public function getCollection() : array
+	public function getCollection()
 	{
 		return $this->_objects;
 	}
@@ -30,7 +30,7 @@ class Collection {
 	 * Returns associative data map with keys of objects ids
 	 * @return array
 	 */
-	public function getData() : array
+	public function getData()
 	{
 		$data = [];
 		foreach ($this->_objects as $object) {
@@ -46,7 +46,7 @@ class Collection {
 	 * @param $value
 	 * @return array
 	 */
-	public function getHashMap($key, $value) : array
+	public function getHashMap($key, $value)
 	{
 		$data = [];
 
@@ -63,7 +63,7 @@ class Collection {
 	 * @param $field
 	 * @return array
 	 */
-	public function getValues($field) : array
+	public function getValues($field)
 	{
 		$data = [];
 		foreach ($this->_objects as $object) {
@@ -77,7 +77,7 @@ class Collection {
 	 * Returns count of objects in collection
 	 * @return int
 	 */
-	public function getCount() : int
+	public function getCount()
 	{
 		return count($this->_objects);
 	}
@@ -86,7 +86,7 @@ class Collection {
 	 * Returns first object of collection
 	 * @return \Core\Object|bool
 	 */
-	public function getFirst() : Object
+	public function getFirst()
 	{
 		if (!$this->isEmpty()) {
 			return $this->_objects[0];
@@ -99,7 +99,7 @@ class Collection {
 	 * Returns true if collection is empty
 	 * @return bool
 	 */
-	public function isEmpty() : bool
+	public function isEmpty()
 	{
 		return empty($this->_objects);
 	}
@@ -108,7 +108,7 @@ class Collection {
 	 * Returns collection steam
 	 * @return Stream
 	 */
-	public function stream() : Stream
+	public function stream()
 	{
 		return new Stream($this->_objects);
 	}

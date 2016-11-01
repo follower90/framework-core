@@ -39,7 +39,7 @@ trait Html
 	 */
 	public function loadCss($path)
 	{
-		return '<link href="' . $path . '" rel="stylesheet" type="text/css">';
+		return '<link href="' . '/' . $path . '" rel="stylesheet" type="text/css">';
 	}
 
 	/**
@@ -48,7 +48,7 @@ trait Html
 	 */
 	public function loadJs($path)
 	{
-		return '<script src="' . $path . '"></script>';
+		return '<script src="' . '/' . $path . '"></script>';
 	}
 
 	/**

@@ -65,7 +65,7 @@ class View {
 		ob_start();
 
 		if ($this->_defaultPath) {
-			$tpl = App::get()->getAppPath() . $this->_defaultPath . '/' . $tpl;
+			$tpl = App::get()->getAppPath() . '/' . $this->_defaultPath . '/' . $tpl;
 		}
 
 		if (isset($vars['styles'])) {
