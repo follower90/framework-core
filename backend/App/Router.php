@@ -76,7 +76,7 @@ class Router
 			array_shift($uriChunks);
 		}
 
-		if (isset(self::$_aliases[$uriChunks[0]])) {
+		if (isset($uriChunks[0]) && isset(self::$_aliases[$uriChunks[0]])) {
 			$controller = self::$_aliases[$uriChunks[0]];
 		} else {
 			$controller =  empty($uriChunks[0]) ? 'Index' : ucfirst($uriChunks[0]);
