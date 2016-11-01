@@ -85,6 +85,15 @@ class ProjectBuilder
 				\Core\Database\Schema::createObject($this->args[2], ['clearDb' => true]);
 				break;
 
+			case 'schema:migrate':
+				if (isset($this->args[2])) {
+					$path = $this->args[2];
+				}
+				if ($path) {
+					\Core\Database\Schema::migrate($path);
+				}
+				break;
+
 			case 'help':
 			default:
 				$this->result = [
@@ -97,6 +106,7 @@ class ProjectBuilder
 					' * check - syntax checker for *.php files',
 					'Schema commands:',
 					' * schema:update \'project\' - clears db and recreate schema',
+					' * schema:migrate \'project\' - do migrations for project',
 					' * schema:create \'object\' - creates table for specified object',
 				];
 				break;

@@ -86,6 +86,22 @@ class Schema
 		}
 	}
 
+	public static function migrate($rootPath)
+	{
+		$dir = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator($rootPath . '/Migration/')
+		);
+
+		foreach ($dir as $path => $fileInfo) {
+			if ($fileInfo->isFile()) {
+				$className = '\\' . ucfirst($rootPath) . '\\Migration\\' . str_replace('.php', '', $fileInfo->getFilename());
+				$migration = new $className();
+				echo ' --- ' . $migration->describe() . ' --- ' . PHP_EOL;
+				$migration->migrate();
+			}
+		}
+	}
+
 	/**
 	 * Launches table rebuilding for all objects in defined path
 	 * @param $rootPath

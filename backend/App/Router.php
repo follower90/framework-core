@@ -30,6 +30,15 @@ class Router
 			return $autoDetectedAction;
 		}
 
+//		$url = substr(static::get('uri'), 1);
+//		if (class_exists($lib . '\\Page') && $url !== '404') {
+//			return [
+//				'controller' => 'Page',
+//				'action' => 'Index',
+//				'args' => ['url' => $url],
+//			];
+//		}
+
 		return [
 			'controller' => 'Error',
 			'action' => 'Index',
@@ -44,7 +53,7 @@ class Router
 				return [
 					'controller' => $route['controller'],
 					'action' => $route['action'],
-					'args' => $route['args'],
+					'args' => array_merge(['url' => static::getUriParams()], $route['args']),
 				];
 			}
 		}
@@ -62,6 +71,12 @@ class Router
 		self::$_aliases[$url] = $controller;
 	}
 
+	protected static function getUriParams()
+	{
+		$uriChunks = explode('/', self::$_url);
+		array_shift($uriChunks);
+		return $uriChunks;
+	}
 	/**
 	 * Autodetect appropriate route
 	 * @param $lib
@@ -72,8 +87,7 @@ class Router
 		if (self::$_isApi) {
 			$uriChunks = explode('.', self::$_url);
 		} else {
-			$uriChunks = explode('/', self::$_url);
-			array_shift($uriChunks);
+			$uriChunks = static::getUriParams();
 		}
 
 		if (isset($uriChunks[0]) && isset(self::$_aliases[$uriChunks[0]])) {
@@ -93,7 +107,7 @@ class Router
 
 		return self::_returnAction($lib, self::_sanitize($controller), self::_sanitize($action), $args);
 	}
-	
+
 	private static function _returnAction($lib, $controller, $action, $args)
 	{
 		if (method_exists($lib . '\\' . $controller, 'method' . $action)) {
