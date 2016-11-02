@@ -198,6 +198,7 @@ class Router
 	{
 		static::sendHeaders($headers);
 		header('Location: ' . $url);
+		exit;
 	}
 
 	/**
