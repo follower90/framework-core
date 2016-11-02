@@ -156,7 +156,7 @@ class Schema
 			}
 
 			$tmp .= ($params['null']) ? ' NULL' : ' NOT NULL';
-			$tmp .= ($params['default']) ? ' DEFAULT ' . $params['default'] : '';
+			$tmp .= ($params['default'] || $params['default'] === 0) ? ' DEFAULT ' . $params['default'] : '';
 
 
 			if ($field == 'id') {

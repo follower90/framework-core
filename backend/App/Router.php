@@ -30,15 +30,6 @@ class Router
 			return $autoDetectedAction;
 		}
 
-//		$url = substr(static::get('uri'), 1);
-//		if (class_exists($lib . '\\Page') && $url !== '404') {
-//			return [
-//				'controller' => 'Page',
-//				'action' => 'Index',
-//				'args' => ['url' => $url],
-//			];
-//		}
-
 		return [
 			'controller' => 'Error',
 			'action' => 'Index',
@@ -242,7 +233,7 @@ class Router
 		$urlChunks = explode('/', $url);
 
 		for ($i = 0; $i < count($urlChunks); $i++) {
-			if ($routeChunks[$i] == $urlChunks[$i] || $routeChunks[$i] == '*' || $routeChunks[$i][0] == ':') {
+			if ($routeChunks[$i] == $urlChunks[$i] || $routeChunks[$i] == '*' || (isset($routeChunks[$i][0]) && $routeChunks[$i][0] == ':')) {
 				continue;
 			} elseif ($i == 0 && isset(self::$_aliases[$urlChunks[$i]])) {
 				continue;
