@@ -6,11 +6,13 @@ class Router
 {
 	const NOT_AUTHORIZED = 'HTTP/1.1 401 Unauthorized';
 	const NOT_FOUND_404 = 'HTTP/1.0 404 Not Found';
+	const HEADER_MOVED_PERMANENTLY = 'HTTP/1.1 301 Moved Permanently';
 
 	private static $_routes = [];
 	private static $_aliases = [];
-	private static $_url;
 	private static $_isApi = false;
+	private static $_url;
+	private static $_routeParams = [];
 
 	/**
 	 * Returns controller and method for executing
@@ -44,7 +46,7 @@ class Router
 				return [
 					'controller' => $route['controller'],
 					'action' => $route['action'],
-					'args' => array_merge(['url' => static::getUriParams()], $route['args']),
+					'args' => array_merge(self::$_routeParams, $route['args']),
 				];
 			}
 		}
@@ -233,13 +235,14 @@ class Router
 		$urlChunks = explode('/', $url);
 
 		for ($i = 0; $i < count($urlChunks); $i++) {
-			if ($routeChunks[$i] == $urlChunks[$i] || $routeChunks[$i] == '*' || (isset($routeChunks[$i][0]) && $routeChunks[$i][0] == ':')) {
+			if ($routeChunks[$i] === $urlChunks[$i] || $routeChunks[$i] === '*') {
 				continue;
-			} elseif ($i == 0 && isset(self::$_aliases[$urlChunks[$i]])) {
+			} elseif (isset($routeChunks[$i][0]) && $routeChunks[$i][0] === ':') {
+				self::$_routeParams[substr($routeChunks[$i], 1)] = $urlChunks[$i];
 				continue;
-			}
-
-			if ($routeChunks[$i] == '+' && $urlChunks[$i]) {
+			} elseif ($i === 0 && isset(self::$_aliases[$urlChunks[$i]])) {
+				continue;
+			} elseif ($routeChunks[$i] === '+' && $urlChunks[$i]) {
 				continue;
 			}
 

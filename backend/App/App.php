@@ -164,7 +164,7 @@ class App
 	 *
 	 * @param \Core\Object $user
 	 */
-	public static function setUser(Object $user)
+	public static function setUser($user)
 	{
 		static::$_user = $user;
 	}
@@ -230,18 +230,12 @@ class App
 	/**
 	 * Gets debugger instance, gets all logged data
 	 * and renders template with debug console
-	 *
 	 * @param string $debug on/off
-	 * @todo refactor for allowed IPs configuration
 	 */
 	public function showDebugConsole($debug = 'on')
 	{
 		if ($debug == 'on' || Cookie::get('debug') && $debug != 'off') {
-
-			/*if (Router::get('remote_addr') != '127.0.0.1') {
-				return;
-			}*/
-
+			/*if (Router::get('remote_addr') != '127.0.0.1') return; */
 			$debug = Debug::getInstance();
 			$data = [];
 			$data['instanceHash'] = hash('crc32', rand(0,100));
