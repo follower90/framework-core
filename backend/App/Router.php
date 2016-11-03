@@ -11,6 +11,8 @@ class Router
 	private static $_routes = [];
 	private static $_aliases = [];
 	private static $_isApi = false;
+	private static $_routeController = null;
+	private static $_routeAction = null;
 	private static $_url;
 	private static $_routeParams = [];
 
@@ -44,8 +46,8 @@ class Router
 		foreach (static::$_routes as $route) {
 			if (static::_matches($route['url'], self::$_url) && self::get('request_method') == mb_strtoupper($route['method'])) {
 				return [
-					'controller' => $route['controller'],
-					'action' => $route['action'],
+					'controller' => self::$_routeController ? self::$_routeController : $route['controller'],
+					'action' => self::$_routeAction ? self::$_routeAction : $route['action'],
 					'args' => array_merge(self::$_routeParams, $route['args']),
 				];
 			}
@@ -236,14 +238,18 @@ class Router
 		$urlChunks = explode('/', $url);
 
 		for ($i = 0; $i < count($urlChunks); $i++) {
-			if ($routeChunks[$i] === $urlChunks[$i] || $routeChunks[$i] === '*') {
+			if (isset($routeChunks[$i]) && $routeChunks[$i] === '*') {
+				if ($i === 1) self::$_routeController = ucfirst($urlChunks[$i]);
+				if ($i === 2) self::$_routeAction = $urlChunks[$i];
+				continue;
+			} elseif (isset($routeChunks[$i]) && $routeChunks[$i] === $urlChunks[$i]) {
 				continue;
 			} elseif (isset($routeChunks[$i][0]) && $routeChunks[$i][0] === ':') {
 				self::$_routeParams[substr($routeChunks[$i], 1)] = $urlChunks[$i];
 				continue;
 			} elseif ($i === 0 && isset(self::$_aliases[$urlChunks[$i]])) {
 				continue;
-			} elseif ($routeChunks[$i] === '+' && $urlChunks[$i]) {
+			} elseif (isset($routeChunks[$i]) && $routeChunks[$i] === '+' && $urlChunks[$i]) {
 				continue;
 			}
 
