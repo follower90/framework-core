@@ -101,7 +101,7 @@ class Router
 		}
 
 		$action = empty($uriChunks[1]) ? 'Index' : ucfirst($uriChunks[1]);
-		if (isset(self::$_actionAliases[$uriChunks[1]])) {
+		if (!empty($uriChunks[1]) && isset(self::$_actionAliases[$uriChunks[1]])) {
 			$action = self::$_actionAliases[$uriChunks[1]];
 		}
 
@@ -168,6 +168,7 @@ class Router
 		$url = explode('?', static::get('uri'))[0];
 
 		if ($rootPath = Config::get('site.url')) {
+
 			$url = preg_replace('/\/' . $rootPath . '/', '', $url, 1);
 		}
 
