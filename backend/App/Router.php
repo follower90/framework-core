@@ -9,12 +9,10 @@ class Router
 	const HEADER_MOVED_PERMANENTLY = 'HTTP/1.1 301 Moved Permanently';
 
 	private static $_routes = [];
-	private static $_aliases = [];
+	private static $_controllerAliases = [];
+	private static $_actionAliases = [];
 	private static $_isApi = false;
-	private static $_routeController = null;
-	private static $_routeAction = null;
 	private static $_url;
-	private static $_routeParams = [];
 
 	/**
 	 * Returns controller and method for executing
@@ -44,11 +42,12 @@ class Router
 	private static function _findMatches()
 	{
 		foreach (static::$_routes as $route) {
-			if (static::_matches($route['url'], self::$_url) && self::get('request_method') == mb_strtoupper($route['method'])) {
+			$match = static::_matches($route['url'], self::$_url, $route['args']);
+			if ($match && self::get('request_method') == mb_strtoupper($route['method'])) {
 				return [
-					'controller' => self::$_routeController ? self::$_routeController : $route['controller'],
-					'action' => self::$_routeAction ? self::$_routeAction : $route['action'],
-					'args' => array_merge(self::$_routeParams, $route['args']),
+					'controller' => isset($match['controller']) ? ucfirst($match['controller']) : $route['controller'],
+					'action' => isset($match['action']) ? 'method' . ucfirst($match['action']) : $route['action'],
+					'args' => $match,
 				];
 			}
 		}
@@ -63,7 +62,17 @@ class Router
 	 */
 	public static function alias($url, $controller)
 	{
-		self::$_aliases[$url] = $controller;
+		self::$_controllerAliases[$url] = $controller;
+	}
+
+	/**
+	 * Defines custom alias url for action
+	 * @param string $url first url part
+	 * @param string $controller class name
+	 */
+	public static function actionAlias($url, $action)
+	{
+		self::$_actionAliases[$url] = $action;
 	}
 
 	protected static function getUriParams()
@@ -85,13 +94,16 @@ class Router
 			$uriChunks = static::getUriParams();
 		}
 
-		if (isset($uriChunks[0]) && isset(self::$_aliases[$uriChunks[0]])) {
-			$controller = self::$_aliases[$uriChunks[0]];
+		if (isset($uriChunks[0]) && isset(self::$_controllerAliases[$uriChunks[0]])) {
+			$controller = self::$_controllerAliases[$uriChunks[0]];
 		} else {
 			$controller =  empty($uriChunks[0]) ? 'Index' : ucfirst($uriChunks[0]);
 		}
 
 		$action = empty($uriChunks[1]) ? 'Index' : ucfirst($uriChunks[1]);
+		if (isset(self::$_actionAliases[$uriChunks[1]])) {
+			$action = self::$_actionAliases[$uriChunks[1]];
+		}
 
 		$args = [];
 		array_shift($uriChunks);
@@ -232,31 +244,24 @@ class Router
 	 * @param $url
 	 * @return bool
 	 */
-	private static function _matches($route, $url)
+	private static function _matches($route, $url, $args)
 	{
-		$routeChunks = explode('/', $route);
-		$urlChunks = explode('/', $url);
+		preg_match_all($route, $url, $matches);
+		$params = [];
 
-		for ($i = 0; $i < count($urlChunks); $i++) {
-			if (isset($routeChunks[$i]) && $routeChunks[$i] === '*') {
-				if ($i === 1) self::$_routeController = ucfirst($urlChunks[$i]);
-				if ($i === 2) self::$_routeAction = $urlChunks[$i];
-				continue;
-			} elseif (isset($routeChunks[$i]) && $routeChunks[$i] === $urlChunks[$i]) {
-				continue;
-			} elseif (isset($routeChunks[$i][0]) && $routeChunks[$i][0] === ':') {
-				self::$_routeParams[substr($routeChunks[$i], 1)] = $urlChunks[$i];
-				continue;
-			} elseif ($i === 0 && isset(self::$_aliases[$urlChunks[$i]])) {
-				continue;
-			} elseif (isset($routeChunks[$i]) && $routeChunks[$i] === '+' && $urlChunks[$i]) {
-				continue;
+		if ($matches[0]) {
+			if (isset($matches[1])) {
+				for ($i = 1; $i < sizeof($matches); $i++) {
+					$params[$args[$i - 1]] = $matches[$i][0];
+				}
+
+				return $params;
 			}
 
-			return false;
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	/**
