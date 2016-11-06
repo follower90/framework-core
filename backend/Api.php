@@ -56,4 +56,17 @@ class Api extends Controller //todo really needed?
 		echo json_encode(['errors' => 'Not authorized']);
 		exit;
 	}
+
+	public static function notFound()
+	{
+		Router::sendHeaders(['Content-Type: application/json', Router::NOT_FOUND_404]);
+		echo json_encode([
+			'status' => false,
+			'error' => [
+				'code' => 404,
+				'message' => 'Endpoint was not found'
+			]
+		]);
+		exit;
+	}
 }

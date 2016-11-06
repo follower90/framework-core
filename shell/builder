@@ -26,11 +26,11 @@ class ProjectBuilder
 			if ($cmd == 'add') {
 				$this->runCmd($cmd, $path . $project, $params);
 			} else {
-				$this->printString();
-				$this->printString('+------------------------------');
-				$this->printString('| ' . ($project ? 'follower/' . $project : 'main'));
-				$this->printString('+------------------------------');
-				$this->printString($this->runCmd($cmd, $path . $project, $params));
+				echo $this->formatString() . PHP_EOL;
+				echo $this->formatString('+------------------------------') . PHP_EOL;
+				echo $this->formatString('| ' . ($project ? 'follower/' . $project : 'main')) . PHP_EOL;
+				echo $this->formatString('+------------------------------') . PHP_EOL;
+				echo $this->formatString($this->runCmd($cmd, $path . $project, $params)) . PHP_EOL;
 			}
 		}
 	}
@@ -93,21 +93,28 @@ class ProjectBuilder
 					\Core\Database\Schema::migrate($path);
 				}
 				break;
-
+			case 'test':
+				exec('cd vendor/follower/core/unitTest && phpunit .', $result);
+				echo implode("\n", $result) . PHP_EOL;
+				break;
 			case 'help':
 			default:
 				$this->result = [
-					'Project Builder v 1.1',
+					$this->formatString('Project Builder v 1.2', 'red'),
 					'Git aggregator commands:',
-					' * commit \'commit reason\' - commits changes to current branch',
-					' * status - \'git status\' output',
-					' * push - \'git push\' to all repositories',
-					' * pull - \'git pull\' from all repositories',
-					' * check - syntax checker for *.php files',
+					$this->formatString('commit \'commit reason\'', 'green') . '      commits changes to current branch',
+					$this->formatString('status', 'green') . '                      \'git status\' output',
+					$this->formatString('push', 'green') . '                        \'git push\' to all repositories',
+					$this->formatString('pull', 'green') . '                        \'git pull\' from all repositories',
+					$this->formatString('check', 'green') . '                       syntax checker for *.php files',
+					'',
 					'Schema commands:',
-					' * schema:update \'project\' - clears db and recreate schema',
-					' * schema:migrate \'project\' - do migrations for project',
-					' * schema:create \'object\' - creates table for specified object',
+					$this->formatString('schema:update \'project\'', 'green') . '     clears db and recreate schema',
+					$this->formatString('schema:migrate \'project\'', 'green') . '    does migrations for project',
+					$this->formatString('schema:create \'object\'', 'green') . '      creates table for specified object',
+					'',
+					'Other commands:',
+					$this->formatString('test', 'green') . '                        run follower/core unit tests',
 				];
 				break;
 		}
@@ -128,25 +135,25 @@ class ProjectBuilder
 
 			foreach ($results as $result) {
 				if (preg_match("/^No syntax errors detected.*$/", $result)) {
-					$this->printString($result, 'green');
+					echo $this->formatString($result, 'green') . PHP_EOL;
 				} else {
-					$this->printString($result, 'red');
+					echo $this->formatString($result, 'red') . PHP_EOL;
 				}
 			}
 		}
 	}
 
-	private function printString($text = '', $color = false)
+	private function formatString($text = '', $color = false)
 	{
 		switch ($color) {
 			case 'green':
-				echo "\033[32m $text \033[0m" . PHP_EOL;
+				return "\033[32m$text \033[0m";
 				break;
 			case 'red':
-				echo "\033[31m $text \033[0m" . PHP_EOL;
+				return "\033[31m$text \033[0m";
 				break;
 			default:
-				echo $text . PHP_EOL;
+				return $text;
 		}
 	}
 
@@ -160,7 +167,7 @@ class ProjectBuilder
 	private function resultOutput()
 	{
 		array_walk($this->result, function ($line) {
-			$this->printString($line);
+			echo $this->formatString($line) . PHP_EOL;
 		});
 	}
 }

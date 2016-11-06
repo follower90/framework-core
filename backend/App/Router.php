@@ -32,6 +32,10 @@ class Router
 			return $autoDetectedAction;
 		}
 
+		if (static::$_isApi) {
+			\Core\Api::notFound();
+		}
+
 		return [
 			'controller' => 'Error',
 			'action' => 'Index',
