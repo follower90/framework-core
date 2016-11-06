@@ -8,6 +8,8 @@ class Debug
 
 	private $_queries;
 	private $_files;
+	private $_templates;
+	private $_resources;
 	private $_php_errors;
 	private $_framework_errors;
 	private $_dumps;
@@ -69,6 +71,25 @@ class Debug
 	public function logFile($path)
 	{
 		$this->_files[] = $path;
+	}
+
+	/**
+	 * Logs used template
+	 * @param $path
+	 */
+	public function logTemplate($path)
+	{
+		$this->_templates[] = $path;
+	}
+
+
+	/**
+	 * Logs used template
+	 * @param $path
+	 */
+	public function logResource($type, $path)
+	{
+		$this->_resources[$type][] = $path;
 	}
 
 	/**
@@ -136,6 +157,35 @@ class Debug
 		return [
 			'count' => count($this->_files),
 			'data' => $this->_files,
+		];
+	}
+
+	/**
+	 * Returns logged templates and its count
+	 * @return array
+	 */
+	public function getTemplatesLog()
+	{
+		return [
+			'count' => count($this->_templates),
+			'data' => $this->_templates,
+		];
+	}
+
+	/**
+	 * Returns logged loaded files and its count
+	 * @return array
+	 */
+	public function getResourcesLog()
+	{
+		$count = 0;
+		array_map(function($data) use (&$count) {
+			$count += sizeof($data);
+		}, $this->_resources);
+
+		return [
+			'count' => $count,
+			'data' => $this->_resources,
 		];
 	}
 

@@ -61,7 +61,7 @@ class App
 		$this->_appPath = \getcwd();
 
 		if ($siteUrl = Config::get('site.url')) {
-			$this->_appPath = str_replace($siteUrl, '', $this->_appPath);
+			$this->_appPath = str_replace('/' . $siteUrl, '', $this->_appPath);
 		}
 
 		static::$_instance = $this;
@@ -244,6 +244,8 @@ class App
 			$data['dumps'] = $debug->getDumps();
 			$data['queries'] = $debug->getQueriesLog();
 			$data['files'] = $debug->getFilesLog();
+			$data['templates'] = $debug->getTemplatesLog();
+			$data['resources'] = $debug->getResourcesLog();
 			$data['trace'] = $debug->getTrace();
 
 			$view = new View();

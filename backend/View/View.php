@@ -76,6 +76,9 @@ class View {
 			$this->_scripts = $this->_prepare('js', $vars['scripts']);
 		}
 
+		$debug = Debug::getInstance();
+		$debug->logTemplate($tpl);
+
 		include $tpl;
 
 		$contents = ob_get_contents();
@@ -166,8 +169,10 @@ class View {
 	public function renderNotices($data)
 	{
 		$text = '';
-		foreach ($data as $notice) {
-			$text = unserialize($notice)->show();
+		if ($data) {
+			foreach ($data as $notice) {
+				$text = unserialize($notice)->show();
+			}
 		}
 
 		return $text;

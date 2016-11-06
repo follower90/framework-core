@@ -82,7 +82,7 @@ class Paging
 	public function getPaging()
 	{
 		$view = new View();
-		$view->setDefaultPath(App::get()->getVendorPath() .'/public');
+		$view->setDefaultPath('public/admin');
 
 		$view->paging = $this;
 		return $view->render('templates/common/paging.phtml', $this->_paging);

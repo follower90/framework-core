@@ -2,43 +2,18 @@
 
 namespace Core\Traits\View;
 
+use Core\Debug;
+
 trait Html
 {
-	/**
-	 * Renders select box
-	 * @param $optionsMap - requires key value params map
-	 * @param array $params - associative array, id, class, name
-	 * @param array $default - default key
-	 * @return string
-	 */
-	public function select($optionsMap, $params = [], $default = [])
-	{
-		$result = '<select';
-
-		if (isset($params['id'])) { $result .= ' id="' . $params['id'] . '"'; }
-		if (isset($params['class'])) { $result .= ' class="' . $params['class'] . '"'; }
-		if (isset($params['name'])) { $result .= ' name="' . $params['name'] . '"'; }
-
-		$result .= '>';
-
-		if (!empty($default)) {
-			$optionsMap = array_merge($default, $optionsMap);
-		}
-
-		array_walk($optionsMap, function($name, $key) use (&$result) {
-			$result .= '<option value="' . $key . '">' . $name .'</option>';
-		});
-
-		$result .= '</select>';
-		return $result;
-	}
-
 	/**
 	 * Generates style including link
 	 * @return string
 	 */
 	public function loadCss($path)
 	{
+		$debug = Debug::getInstance();
+		$debug->logResource('css', $path);
 		return '<link href="' . '/' . $path . '" rel="stylesheet" type="text/css">';
 	}
 
@@ -48,6 +23,8 @@ trait Html
 	 */
 	public function loadJs($path)
 	{
+		$debug = Debug::getInstance();
+		$debug->logResource('js', $path);
 		return '<script src="' . '/' . $path . '"></script>';
 	}
 
@@ -57,7 +34,7 @@ trait Html
 	 */
 	public function loadPhtml($path)
 	{
-		$tplFilePath = \Core\App::get()->getAppPath() . $path;
+		$tplFilePath = \Core\App::get()->getAppPath() . '/' . $path;
 		require_once($tplFilePath);
 	}
 }
