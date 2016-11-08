@@ -158,6 +158,11 @@ class View {
 		\Core\Session::set('notices', json_encode($this->_notices));
 	}
 
+	public function isCurrentLanguage($lang)
+	{
+		return \Core\Config::get('site.language') === $lang;
+	}
+
 	public function getNotices()
 	{
 		$notices = \Core\Session::get('notices');
