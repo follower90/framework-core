@@ -2,7 +2,7 @@
 
 namespace Core;
 
-use Core\Database\PDO; //todo shit architecture
+use Core\Database\PDO;
 use Core\Exception\UserInterface\ObjectValidationException;
 use Core\Exception\System\OrmException;
 
@@ -39,12 +39,12 @@ class Orm
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public static function save(Object &$object)
+	public static function save(&$object)
 	{
 		$object->beforeSave();
 
 		if (!$object->validate()) {
-			throw new ObjectValidationException($object->getClassName() . ' is not valid object');
+			throw new ObjectValidationException(implode("\n", $object->getErrors()));
 		}
 
 		if (!$object->isModified()) {

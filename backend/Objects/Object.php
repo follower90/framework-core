@@ -3,6 +3,7 @@
 namespace Core;
 
 use Core\Database\MySQL;
+use Core\Database\PDO;
 
 abstract class Object
 {
@@ -12,6 +13,7 @@ abstract class Object
 	protected $_table;
 	protected $_class;
 	protected $_values;
+	protected $_errors;
 	protected $_hasChanges = false;
 
 	protected static $_config;
@@ -98,6 +100,20 @@ abstract class Object
 	}
 
 	/**
+	 * Set validation error
+	 */
+	protected function setError($error) {
+		$this->_errors[] = $error;
+	}
+
+	/**
+	 * @return validation errors
+	 */
+	public function getErrors() {
+		return $this->_errors;
+	}
+
+	/**
 	 * Trigger callback for event
 	 * if it was registered
 	 * @param string $alias
@@ -127,8 +143,11 @@ abstract class Object
 		if (isset($relations[$alias])) {
 			$relation = $relations[$alias];
 
-			if (!isset($relation['multiple']) || $relation['multiple'] == false) {
+			if (!isset($relation['type']) || $relation['type'] !== 'multiple') {
 				return Orm::load($relation['targetClass'], $this->getValue($relation['field']));
+			} else {
+				$related = PDO::getInstance()->rows('select ' . $relation['targetClass'] . '  from ' . $relation['table'] . ' where ' . $relation['class'] . ' = ' . $this->getId());
+				return Orm::find($relation['targetClass'], ['id'], [array_column($related, $relation['targetClass'])]);
 			}
 		}
 
