@@ -48,13 +48,23 @@ trait OrmCore
 			return;
 		}
 
-		$language = Config::get('site.language');
+		$language = [Config::get('site.language')];
+		if ($object->isNew()) {
+			//@todo create entity to retrieve all available languages
+			$language = ['ru', 'en'];
+		}
 
+		foreach ($language as $lang) {
+			static::_writeLangData($object, $langData, $lang);
+		}
+	}
+
+	private static function _writeLangData($object, $langData, $language)
+	{
 		$table = $object->getConfigData('table');
 		$langTable = $object->getLangTableName();
 
 		foreach ($langData as $values) {
-
 			$queryBuilder = new QueryBuilder($langTable);
 			$queryBuilder
 				->where(strtolower($table) . '_id', $object->getId())

@@ -24,7 +24,7 @@ class Orm
 		return self::_getObject($class);
 	}
 
-	public static function setDbType(string $type)
+	public static function setDbType($type)
 	{
 		if (class_exists($type)) {
 			self::$_dbClass = $type;
