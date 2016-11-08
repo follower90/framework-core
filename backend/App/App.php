@@ -99,6 +99,10 @@ class App
 	 */
 	public function run()
 	{
+		$this->_setFileIncludeHandler();
+		$this->_setupDebugMode();
+		$this->_setErrorHandlers();
+
 		$action = Router::getAction($this->_entryPoint->getLib());
 
 		if (Cookie::get('debug') || isset($action['args']['debug'])) {
@@ -107,10 +111,6 @@ class App
 
 		Session::init();
 		date_default_timezone_set('Europe/Kiev');
-
-		$this->_setupDebugMode();
-		$this->_setErrorHandlers();
-		$this->_setFileIncludeHandler();
 
 		$class = $this->_entryPoint->getLib() . '\\' . $action['controller'];
 		$method = 'method' . ucfirst($action['action']);
