@@ -34,8 +34,8 @@ class Paging
 	private function __construct($className, $currentPage, $onPage)
 	{
 		$this->_class = $className;
-		$this->_curPage = $currentPage;
-		$this->_onPage = $onPage;
+		$this->_curPage = (int)$currentPage;
+		$this->_onPage = (int)$onPage;
 	}
 
 	/**
@@ -61,10 +61,10 @@ class Paging
 		$this->_paging['offset'] = ($this->_curPage - 1) * $this->_onPage;
 		$this->_paging['limit'] = $this->_onPage;
 
-		$this->_collection = Orm::find($this->_class, [], [], $this->_paging)->getData();
+		$this->_collection = Orm::find($this->_class, [], [], $this->_paging);
 
 		$this->_paging['total'] = Orm::count($this->_class, [], []);
-		$this->_paging['items'] = count($this->_collection);
+		$this->_paging['items'] = $this->_collection->getCount();
 
 		$data = [];
 		$data['page'] = $this->_curPage;
@@ -137,10 +137,11 @@ class Paging
 	/**
 	 * Returns array of fetched objects from database
 	 * required for concrete page
+	 * @param $raw Boolean configures returning object or associative array
 	 * @return array
 	 */
-	public function getObjects()
+	public function getObjects($raw = false)
 	{
-		return $this->_collection;
+		return $raw ? $this->_collection : $this->_collection->getData();
 	}
 }
