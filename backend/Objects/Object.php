@@ -257,7 +257,11 @@ abstract class Object
 	{
 		$allowedFields = $this->_checkFields();
 		if (in_array($field, $allowedFields)) {
-			return isset($this->_values[$field]) ? $this->_values[$field] : $this->_values['languageTable'][$field];
+			return isset($this->_values[$field])
+				? $this->_values[$field]
+				: (isset($this->_values['languageTable'])
+					? $this->_values['languageTable'][$field]
+					: '');
 		}
 
 		return false;
