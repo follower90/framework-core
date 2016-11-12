@@ -31,9 +31,10 @@ class Paging
 	 */
 	private $_collection = [];
 
-	private function __construct($className, $currentPage, $onPage)
+	private function __construct($className, $currentPage, $onPage, $params)
 	{
 		$this->_class = $className;
+		$this->_params = $params;
 		$this->_curPage = (int)$currentPage;
 		$this->_onPage = (int)$onPage;
 	}
@@ -46,7 +47,10 @@ class Paging
 	 */
 	public static function create($className, $params = [])
 	{
-		$paging = new static($className, $params['current_page'], $params['page_size']);
+		if (!isset($params['params'])) {
+			$params['params'] = [[], []];
+		}
+		$paging = new static($className, $params['current_page'], $params['page_size'], $params['params']);
 		$paging->_calculate();
 
 		return $paging;
@@ -61,9 +65,9 @@ class Paging
 		$this->_paging['offset'] = ($this->_curPage - 1) * $this->_onPage;
 		$this->_paging['limit'] = $this->_onPage;
 
-		$this->_collection = Orm::find($this->_class, [], [], $this->_paging);
+		$this->_collection = Orm::find($this->_class, $this->_params[0], $this->_params[1], $this->_paging);
 
-		$this->_paging['total'] = Orm::count($this->_class, [], []);
+		$this->_paging['total'] = Orm::count($this->_class, $this->_params[0], $this->_params[1]);
 		$this->_paging['items'] = $this->_collection->getCount();
 
 		$data = [];
