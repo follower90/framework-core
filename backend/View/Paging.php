@@ -107,7 +107,10 @@ class Paging
 	 */
 	public function firstItemOnPage()
 	{
-		$offset = ($this->_paging['offset'] > 0) ? $this->_onPage : 1;
+		$offset = ($this->_paging['offset'] > 0)
+			? $this->_onPage
+			: ($this->_paging['total'] > 0 ? 1 : 0);
+
 		return $this->_paging['page'] * $offset;
 	}
 
