@@ -4,7 +4,6 @@ namespace Core\View;
 
 use Core\Orm;
 use Core\View;
-use Core\App;
 
 class Paging
 {
@@ -111,7 +110,8 @@ class Paging
 			? $this->_onPage
 			: ($this->_paging['total'] > 0 ? 1 : 0);
 
-		return $this->_paging['page'] * $offset;
+		$page = ($this->_paging['page'] != 1) ? $this->_paging['page'] - 1 : 1;
+		return $page * $offset;
 	}
 
 	/**
