@@ -9,7 +9,7 @@ class File
 	public static function put($filename, $data)
 	{
 		$root = \Core\App::get()->getAppPath();
-		return file_put_contents($root . '/' . $filename, $data);
+		return file_put_contents($root . $filename, $data);
 	}
 
 	public static function upload($filename, $name = false)
@@ -23,7 +23,12 @@ class File
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: attachment; filename=' . $name);
 
-		readfile($filename);
+		echo readfile($filename);
+	}
+
+	public static function delete($path)
+	{
+		return unlink($path);
 	}
 
 	public static function request()

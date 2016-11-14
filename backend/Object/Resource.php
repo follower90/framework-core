@@ -40,7 +40,7 @@ class Resource extends \Core\Object
 	public function getStoragePath()
 	{
 		$map = [
-			1 => App::get()->getAppPath() . '/storage'
+			1 => App::get()->getAppPath()
 		];
 
 		if (!$map[$this->getValue('storageId')]) {

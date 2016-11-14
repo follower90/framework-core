@@ -122,7 +122,7 @@ abstract class Object
 	{
 		$callback = isset(self::$_events[$alias]) ? self::$_events[$alias] : false;
 		if ($callback) {
-			call_user_func($hook);
+			call_user_func($callback);
 		}
 	}
 
@@ -143,11 +143,19 @@ abstract class Object
 		if (isset($relations[$alias])) {
 			$relation = $relations[$alias];
 
-			if (!isset($relation['type']) || $relation['type'] !== 'multiple') {
-				return Orm::load($relation['targetClass'], $this->getValue($relation['field']));
-			} else {
-				$related = PDO::getInstance()->rows('select ' . $relation['targetClass'] . '  from ' . $relation['table'] . ' where ' . $relation['class'] . ' = ' . $this->getId());
-				return Orm::find($relation['targetClass'], ['id'], [array_column($related, $relation['targetClass'])]);
+			switch ($relation['type']) {
+				case 'has_many':
+					return Orm::find($relation['targetClass'], [$relation['targetField']], [$this->getValue($relation['field'])]);
+					break;
+
+				case 'multiple':
+					$related = PDO::getInstance()->rows('select ' . $relation['targetClass'] . '  from ' . $relation['table'] . ' where ' . $relation['class'] . ' = ' . $this->getId());
+					return Orm::find($relation['targetClass'], ['id'], [array_column($related, $relation['targetClass'])]);
+					break;
+
+				case 'has_one':
+				default:
+					return Orm::load($relation['targetClass'], $this->getValue($relation['field']));
 			}
 		}
 
