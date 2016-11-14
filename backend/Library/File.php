@@ -6,18 +6,15 @@ use Core\Exception\Exception;
 
 class File
 {
-	public static function save($filename, $data)
+	public static function put($filename, $data)
 	{
 		$root = \Core\App::get()->getAppPath();
 		return file_put_contents($root . '/' . $filename, $data);
 	}
 
-	static public function upload($filename, $name = false)
+	public static function upload($filename, $name = false)
 	{
 		if (!$name) $name = $filename;
-		$root = \Core\App::get()->getAppPath();
-		$filename = $root . '/' . $filename;
-
 		if (!file_exists($filename)) {
 			throw new Exception('File ' . $filename . ' does not exist');
 		}
@@ -27,5 +24,15 @@ class File
 		header('Content-Disposition: attachment; filename=' . $name);
 
 		readfile($filename);
+	}
+
+	public static function request()
+	{
+		return $_FILES;
+	}
+
+	public static function saveUploadedFile($tmpName, $path)
+	{
+		move_uploaded_file($tmpName, \Core\App::get()->getAppPath() . $path);
 	}
 }

@@ -46,7 +46,6 @@ class Schema
 	public static function createObject($name, $params = [])
 	{
 		$className = Orm::detectClass($name);
-
 		$schema = new Schema(new $className());
 
 		$dropTable = isset($params['dropTable']) ? true : false;

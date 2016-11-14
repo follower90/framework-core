@@ -22,6 +22,11 @@ class User extends \Core\Object
 					'default' => '',
 					'null' => false,
 				],
+				'active' => [
+					'type' => 'tinyint',
+					'default' => 1,
+					'null' => false,
+				],
 			]);
 		}
 

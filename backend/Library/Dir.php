@@ -14,6 +14,12 @@ class Dir
 		if (is_dir($dir)) rmdir($dir);
 	}
 
+	static function create($path) {
+		if (!is_dir($path)) {
+			mkdir(\Core\App::get()->getAppPath() . $path, 0755, true);
+		}
+	}
+
 	static function clear($path)
 	{
 		if ($handle = opendir($path)) {
