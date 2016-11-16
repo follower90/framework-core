@@ -84,7 +84,7 @@ abstract class Object
 	 * Returns object relations
 	 * @return array
 	 */
-	public function relations()
+	public static function relations()
 	{
 		return static::$_objectRelations;
 	}
@@ -138,7 +138,7 @@ abstract class Object
 
 	public function getRelated($alias)
 	{
-		$relations = $this->relations();
+		$relations = static::relations();
 
 		if (isset($relations[$alias])) {
 			$relation = $relations[$alias];
@@ -283,7 +283,7 @@ abstract class Object
 	 */
 	public function getRelatedObject($alias)
 	{
-		$relations = $this->relations();
+		$relations = static::relations();
 		foreach ($relations as $key => $relation) {
 
 			if ($key == $alias) {

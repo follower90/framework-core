@@ -32,7 +32,7 @@ trait Html
 	 * Generates javascript including link
 	 * @return string
 	 */
-	public function loadPhtml($path)
+	public function loadPhtml($path, $vars = [])
 	{
 		$tplFilePath = \Core\App::get()->getAppPath() . '/' . $path;
 		require_once($tplFilePath);

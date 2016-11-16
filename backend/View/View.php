@@ -64,6 +64,9 @@ class View {
 	{
 		ob_start();
 
+		$debug = Debug::getInstance();
+		$debug->logResource('tpl', $this->_defaultPath . '/' . $tpl);
+
 		if ($this->_defaultPath) {
 			$tpl = App::get()->getAppPath() . '/' . $this->_defaultPath . '/' . $tpl;
 		}
@@ -75,9 +78,6 @@ class View {
 		if (isset($vars['scripts'])) {
 			$this->_scripts = $this->_prepare('js', $vars['scripts']);
 		}
-
-		$debug = Debug::getInstance();
-		$debug->logTemplate($tpl);
 
 		include $tpl;
 
@@ -120,10 +120,10 @@ class View {
 	 * @param string $vars
 	 * @return string
 	 */
-	public function load($type, $path)
+	public function load($type, $path, $data = [])
 	{
 		if(method_exists($this, 'load' . ucfirst($type))) {
-			return call_user_func([$this, 'load' . ucfirst($type)], $this->_defaultPath . $path) . PHP_EOL;
+			return call_user_func([$this, 'load' . ucfirst($type)], $this->_defaultPath . $path, $data) . PHP_EOL;
 		} else {
 			throw new \Exception('Unsupported file type');
 		}

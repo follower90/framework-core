@@ -8,6 +8,7 @@ class Controller
 	protected $db;
 	protected $view;
 	protected $settings;
+	protected $user;
 
 	/**
 	 * Assigns PDO Mysql connection to protected variable
@@ -17,6 +18,7 @@ class Controller
 	{
 		$this->db = PDO::getInstance();
 		$this->view = new View();
+		$this->user = App::getUser();
 	}
 
 	/**

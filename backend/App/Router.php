@@ -51,7 +51,7 @@ class Router
 				return [
 					'controller' => isset($match['controller']) ? ucfirst($match['controller']) : $route['controller'],
 					'action' => isset($match['action']) ? 'method' . ucfirst($match['action']) : $route['action'],
-					'args' => $match,
+					'args' => is_array($match) ? $match : [],
 				];
 			}
 		}

@@ -60,6 +60,11 @@ class App
 		$this->_entryPoint = $entryPoint;
 		$this->_appPath = \getcwd();
 
+		Session::init();
+
+		$debug = Debug::getInstance();
+		$debug->logPageLoadStart();
+
 		if ($siteUrl = Config::get('site.url')) {
 			$this->_appPath = str_replace('/' . $siteUrl, '', $this->_appPath);
 		}
@@ -85,6 +90,10 @@ class App
 	 */
 	public function __destruct()
 	{
+		$debug = Debug::getInstance();
+		$debug->logMemoryUsage(memory_get_usage(true));
+		$debug->logPageLoadEnd();
+
 		if ($this->_entryPoint->debug()) {
 			$this->showDebugConsole($this->_debugParam);
 		}
@@ -109,7 +118,6 @@ class App
 			$this->_setBackTraceHandler();
 		}
 
-		Session::init();
 		date_default_timezone_set('Europe/Kiev');
 
 		$class = $this->_entryPoint->getLib() . '\\' . $action['controller'];
@@ -136,7 +144,12 @@ class App
 	private function _setBackTraceHandler()
 	{
 		register_tick_function(function() {
-			$call = debug_backtrace()[1];
+			$backtrace = debug_backtrace();
+			if (count($backtrace) <= 1) return;
+
+			$call = $backtrace[1];
+			unset($backtrace);
+
 			$classesExclusions = [
 				'', 'Core\Debug'
 			];
@@ -240,13 +253,13 @@ class App
 			$data = [];
 			$data['instanceHash'] = hash('crc32', rand(0,100));
 			$data['phpErrors'] = $debug->getPhpErrors();
-			$data['frameworkErrors'] = $debug->getFrameworkErrors();
 			$data['dumps'] = $debug->getDumps();
 			$data['queries'] = $debug->getQueriesLog();
 			$data['files'] = $debug->getFilesLog();
-			$data['templates'] = $debug->getTemplatesLog();
 			$data['resources'] = $debug->getResourcesLog();
 			$data['trace'] = $debug->getTrace();
+			$data['memory_usage'] = $debug->getMemoryUsage();
+			$data['page_load'] = $debug->getPageLoadTime();
 
 			$view = new View();
 			echo $view->render($this->_appPath . '/vendor/follower/core/tpl/debug.phtml', $data);

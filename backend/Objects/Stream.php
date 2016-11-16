@@ -38,6 +38,20 @@ class Stream
 	}
 
 	/**
+	 * Iterator
+	 * @param $callback
+	 * @return $this
+	 */
+	public function each($callback)
+	{
+		foreach ($this->_stream as $value) {
+			$callback($value);
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Reassigns filtered stream to collection
 	 */
 	private function _purgeSteam()
@@ -54,7 +68,7 @@ class Stream
 	 */
 	public function findFirst()
 	{
-		return $this->_stream[0] ? $this->_stream[0] : false;
+		return isset($this->_stream[0]) ? $this->_stream[0] : false;
 	}
 
 	/**

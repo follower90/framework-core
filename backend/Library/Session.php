@@ -13,6 +13,14 @@ class Session
 	}
 
 	/**
+	 * Session id wrapper
+	 */
+	public static function id()
+	{
+		return session_id();
+	}
+
+	/**
 	 * Returns session param by key
 	 * @param $key
 	 * @return bool

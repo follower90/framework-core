@@ -115,6 +115,13 @@ class Orm
 		return self::fillCollection($class, $rows, $cacheParams);
 	}
 
+
+	public static function findBySql($class, $query, $params = [])
+	{
+		$rows = PDO::getInstance()->rows($query, $params);
+		return self::fillCollection($class, $rows);
+	}
+
 	/**
 	 * Returns count of requested object
 	 * @param $class
@@ -167,7 +174,7 @@ class Orm
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public static function delete(Object $object)
+	public static function delete($object)
 	{
 		$object->beforeDelete();
 		$dbEngine = self::$_dbClass;
@@ -278,7 +285,7 @@ class Orm
 	 * @param $params
 	 * @return \Core\Collection
 	 */
-	protected static function fillCollection($class, $data, $params)
+	protected static function fillCollection($class, $data, $params = [])
 	{
 		if (empty($data)) {
 			return new Collection([]);

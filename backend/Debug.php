@@ -8,12 +8,12 @@ class Debug
 
 	private $_queries;
 	private $_files;
-	private $_templates;
 	private $_resources;
 	private $_php_errors;
-	private $_framework_errors;
 	private $_dumps;
 	private $_trace;
+	private $_memory_usage;
+	private $_page_load;
 
 	public static $phpErrorCode = [
 		1 => 'Fatal Error',
@@ -74,14 +74,31 @@ class Debug
 	}
 
 	/**
-	 * Logs used template
+	 * Logs memory usage in bytes
 	 * @param $path
 	 */
-	public function logTemplate($path)
+	public function logMemoryUsage($bytes)
 	{
-		$this->_templates[] = $path;
+		$this->_memory_usage = $bytes;
 	}
 
+	/**
+	 * Logs page load time start
+	 * @param $path
+	 */
+	public function logPageLoadStart()
+	{
+		$this->_page_load = microtime(true);
+	}
+
+	/**
+	 * Logs page load time end
+	 * @param $path
+	 */
+	public function logPageLoadEnd()
+	{
+		$this->_page_load = microtime(true) - $this->_page_load;
+	}
 
 	/**
 	 * Logs used template
@@ -109,15 +126,6 @@ class Debug
 	public function logPhpError($error)
 	{
 		$this->_php_errors[] = $error;
-	}
-
-	/**
-	 * Logs framework errors
-	 * @param $error
-	 */
-	public function logFrameworkError($error)
-	{
-		$this->_framework_errors[] = $error;
 	}
 
 	/**
@@ -149,6 +157,24 @@ class Debug
 	}
 
 	/**
+	 * Returns RAM allocated value
+	 * @return array
+	 */
+	public function getMemoryUsage()
+	{
+		return number_format($this->_memory_usage / 1000000, 2);
+	}
+
+	/**
+	 * Returns page load time
+	 * @return int
+	 */
+	public function getPageLoadTime()
+	{
+		return number_format($this->_page_load, 4);
+	}
+
+	/**
 	 * Returns logged loaded files and its count
 	 * @return array
 	 */
@@ -157,18 +183,6 @@ class Debug
 		return [
 			'count' => count($this->_files),
 			'data' => $this->_files,
-		];
-	}
-
-	/**
-	 * Returns logged templates and its count
-	 * @return array
-	 */
-	public function getTemplatesLog()
-	{
-		return [
-			'count' => count($this->_templates),
-			'data' => $this->_templates,
 		];
 	}
 
@@ -198,18 +212,6 @@ class Debug
 		return [
 			'count' => count($this->_php_errors),
 			'data' => $this->_php_errors,
-		];
-	}
-
-	/**
-	 * Returns logged framework errors and its count
-	 * @return array
-	 */
-	public function getFrameworkErrors()
-	{
-		return [
-			'count' => count($this->_framework_errors),
-			'data' => $this->_framework_errors,
 		];
 	}
 

@@ -68,13 +68,6 @@ use Core\Library\System;
 		</div>
 		<div class="tab tab-3">
 			<?php
-			foreach ($vars['templates']['data'] as $tpl) {
-				echo $tpl . '</br>';
-			}
-			?>
-		</div>
-		<div class="tab tab-4">
-			<?php
 				foreach ($vars['resources']['data'] as $type => $data) {
 					foreach ($data as $item) {
 						echo '<i class="red">' . $type . '</i> - ' . $item .'<br/>';
@@ -82,21 +75,14 @@ use Core\Library\System;
 				}
 			?>
 		</div>
-		<div class="tab tab-5">
+		<div class="tab tab-4">
 			<?php
 			foreach($vars['phpErrors']['data'] as $phpError) {
 				echo \Core\Debug::$phpErrorCode[$phpError['num']] . ': ' . $phpError['error'] . ' in ' . $phpError['file'] . ' at line: ' . $phpError['line'] . '</br>';
 			}
 			?>
 		</div>
-		<div class="tab tab-6">
-			<?php
-			foreach($vars['frameworkErrors']['data'] as $frameworkError) {
-				echo $frameworkError;
-			}
-			?>
-		</div>
-		<div class="tab tab-7">
+		<div class="tab tab-5">
 			<?php
 			echo '<b>GET:</b><br/>';
 			System::vardump($_GET);
@@ -120,7 +106,7 @@ use Core\Library\System;
 			System::vardump($_SERVER);
 			?>
 		</div>
-		<div class="tab tab-8">
+		<div class="tab tab-6">
 			<?php
 			foreach($vars['dumps']['data'] as $dump) {
 				echo '<b>Dump in <i>' . $dump['file'] . '</i> at line <i>' . $dump['line'] . '</i>:</b><br/>';
@@ -129,13 +115,17 @@ use Core\Library\System;
 			}
 			?>
 		</div>
-		<div class="tab tab-9">
+		<div class="tab tab-7">
 			<?php
 			foreach($vars['trace']['data'] as $i => $trace) {
 				echo '<i class="red">' . ($i + 1) . '</i>. ' . $trace['class'] . '::' . $trace['function'] . '() in ' .
 					'<i class="green">' . $trace['file'] . ' at line ' . $trace['line'] . '</i></br>';
 			}
 			?>
+		</div>
+		<div class="tab tab-8">
+			<i class="red">Memory used: </i> <?php echo $vars['memory_usage']; ?> MBytes <br/>
+			<i class="red">Page load time: </i> <?php echo $vars['page_load']; ?> sec. <br/>
 		</div>
 	</div>
 	<div class="debug-options debug-options-<?php echo $vars['instanceHash'];?>">
@@ -146,25 +136,22 @@ use Core\Library\System;
 			Files: <span><?php echo $vars['files']['count']; ?></span>
 		</div>
 		<div class="debug-option" data-option="3">
-			Templates: <span><?php echo $vars['templates']['count']; ?></span>
-		</div>
-		<div class="debug-option" data-option="4">
 			Resources: <span><?php echo $vars['resources']['count']; ?></span>
 		</div>
-		<div class="debug-option" data-option="5">
+		<div class="debug-option" data-option="4">
 			PHP Errors: <span><?php echo $vars['phpErrors']['count']; ?></span>
 		</div>
-		<div class="debug-option" data-option="6">
-			Framework Errors: <span><?php echo $vars['frameworkErrors']['count']; ?></span>
-		</div>
-		<div class="debug-option" data-option="7">
+		<div class="debug-option" data-option="5">
 			GPCFRSS: <span>7</span>
 		</div>
-		<div class="debug-option" data-option="8">
+		<div class="debug-option" data-option="6">
 			Dumps: <span><?php echo $vars['dumps']['count']; ?></span>
 		</div>
-		<div class="debug-option" data-option="9">
+		<div class="debug-option" data-option="7">
 			Backtrace: <span><?php echo $vars['trace']['count']; ?></span>
+		</div>
+		<div class="debug-option" data-option="8">
+			Stats: <span>2</span>
 		</div>
 	</div>
 </div>

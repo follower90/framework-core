@@ -50,7 +50,12 @@ class MySQL implements Database
 		$set = [];
 
 		foreach ($params as $field => $value) {
-			$set[] = $field . '=' . '\'' . $value . '\'';
+			if (is_null($value)) {
+				$value = 'null';
+			} else {
+				$value = '\'' . $value . '\'';
+			}
+			$set[] = $field . '=' . $value;
 		}
 
 		$query = 'INSERT INTO `' . $table . '` SET ' . implode(', ', $set);

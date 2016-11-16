@@ -40,6 +40,7 @@ class Authorize
 	 */
 	public function __construct($entity)
 	{
+
 		$this->_entity = $entity;
 		$this->_oauth_hash = Session::get(strtolower($this->_entity) .'_oauth_hash');
 
