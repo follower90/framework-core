@@ -14,6 +14,8 @@ class Orm
 	protected static $_cache;
 	protected static $_dbClass = '\\Core\\Database\\MySQL';
 
+	public static $_objectsConfig = [];
+
 	/**
 	 * Creates and returns new Object
 	 * @param $class
@@ -116,6 +118,13 @@ class Orm
 	}
 
 
+	/**
+	 * Request objects with custom SQL query
+	 * @param $class
+	 * @param $query
+	 * @param array $params
+	 * @return Collection
+	 */
 	public static function findBySql($class, $query, $params = [])
 	{
 		$rows = PDO::getInstance()->rows($query, $params);

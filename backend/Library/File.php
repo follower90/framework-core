@@ -40,4 +40,10 @@ class File
 	{
 		move_uploaded_file($tmpName, \Core\App::get()->getAppPath() . $path);
 	}
+
+	public static function get($path)
+	{
+		$root = \Core\App::get()->getAppPath();
+		return file_get_contents($root . $path);
+	}
 }
