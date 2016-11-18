@@ -159,7 +159,7 @@ class QueryBuilder { //todo sql query builder
 	public function composeSelectQuery()
 	{
 		$query = 'select ';
-		$query .= implode(', ', $this->_composeFields()) . ' from ' . reset($this->_config['table']) . ' ';
+		$query .= implode(', ', $this->_composeFields()) . ' from `' . reset($this->_config['table']) . '` ';
 		return $this->_composeQuery($query);
 	}
 
@@ -169,7 +169,7 @@ class QueryBuilder { //todo sql query builder
 	 */
 	public function composeSelectCountQuery()
 	{
-		$query = 'select count(*) as `count` from ' . reset($this->_config['table']) . ' ';
+		$query = 'select count(*) as `count` from `' . reset($this->_config['table']) . '` ';
 		return $this->_composeQuery($query);
 	}
 
