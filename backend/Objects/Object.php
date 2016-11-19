@@ -107,7 +107,7 @@ abstract class Object
 	}
 
 	/**
-	 * @return validation errors
+	 * @return array validation errors
 	 */
 	public function getErrors() {
 		return $this->_errors;
