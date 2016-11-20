@@ -55,7 +55,7 @@ class MySQL implements Database
 			} else {
 				$value = '\'' . $value . '\'';
 			}
-			$set[] = $field . '=' . $value;
+			$set[] = '`' . $field . '`=' . $value;
 		}
 
 		$query = 'INSERT INTO `' . $table . '` SET ' . implode(', ', $set);
