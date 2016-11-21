@@ -136,7 +136,7 @@ abstract class Object
 		self::$_events[$alias] = $callback;
 	}
 
-	public function getRelated($alias)
+	public function getRelated($alias, $params = [])
 	{
 		$relations = static::relations();
 
@@ -145,12 +145,12 @@ abstract class Object
 
 			switch ($relation['type']) {
 				case 'has_many':
-					return Orm::find($relation['targetClass'], [$relation['targetField']], [$this->getValue($relation['field'])]);
+					return Orm::find($relation['targetClass'], [$relation['targetField']], [$this->getValue($relation['field'])], $params);
 					break;
 
 				case 'multiple':
 					$related = PDO::getInstance()->rows('select ' . $relation['targetClass'] . '  from ' . $relation['table'] . ' where ' . $relation['class'] . ' = ' . $this->getId());
-					return Orm::find($relation['targetClass'], ['id'], [array_column($related, $relation['targetClass'])]);
+					return Orm::find($relation['targetClass'], ['id'], [array_column($related, $relation['targetClass'])], $params);
 					break;
 
 				case 'has_one':

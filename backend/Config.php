@@ -7,23 +7,13 @@ class Config {
 	private static $config;
 
 	/**
-	 * Get default database connection
-	 * @todo refactor for use different connections with different projects / objects
+	 * Return connection credentials by alias
+	 * @param string $connection
 	 * @return mixed
 	 */
-	public static function dbConnection()
+	public static function dbConnection($connection = 'default')
 	{
-		return self::$config['default'];
-	}
-
-	/**
-	 * Set path to templates folder
-	 * @todo refactor for using with multiple projects and templates folders location
-	 * @return mixed
-	 */
-	public static function tplSettings()
-	{
-		return self::$config['tpl_settings'];
+		return self::$config['connections'][$connection];
 	}
 
 	/**
@@ -70,9 +60,9 @@ class Config {
 	 * @param $alias
 	 * @param $config
 	 */
-	public static function setDb($alias, $config)
+	public static function setDb($alias, $connection)
 	{
-		static::set($alias, $config);
+		self::$config['connections'][$alias] = $connection;
 	}
 
 	/**

@@ -94,6 +94,7 @@ trait OrmCore
 
 		$queryBuilder = new QueryBuilder($class . '_Lang');
 		$queryBuilder
+			->select(strtolower($class) . '_id as id')
 			->select('field')
 			->select('value')
 			->where('lang', $language)

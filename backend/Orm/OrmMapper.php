@@ -58,7 +58,7 @@ class OrmMapper
 	 */
 	public function getCollection()
 	{
-		return new Collection($this->_collection);
+		return $this->_collection;
 	}
 
 	/**
@@ -149,7 +149,7 @@ class OrmMapper
 
 	/**
 	 * Load mapper with set params
-	 * @return \Core\Collection
+	 * @return \Core\OrmMapper
 	 */
 	public function load()
 	{
@@ -163,9 +163,9 @@ class OrmMapper
 				'limit' => $this->_limit,
 				'offset' => $this->_offset
 			]
-		)->getCollection();
+		);
 
-		return $this->getCollection();
+		return $this;
 	}
 
 	/**

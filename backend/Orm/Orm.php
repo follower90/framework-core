@@ -105,16 +105,33 @@ class Orm
 			return self::fillCollection($class, $rows, $cacheParams);
 		}
 
-		foreach ($rows as $key => $row) {
-			$query = self::_makeLanguageQuery($class, $row['id']);
-			$langRows = PDO::getInstance()->rows($query);
+		static::_appendLanguageData($class, $rows);
+		return self::fillCollection($class, $rows, $cacheParams);
+	}
 
+	/**
+	 * Retrieve data from _lang table
+	 * and fill fetched rows with language data
+	 * @param $class
+	 * @param $rows
+	 */
+	private static function _appendLanguageData($class, &$rows)
+	{
+		$query = self::_makeLanguageQuery($class, array_column($rows, 'id'));
+		$langRows = PDO::getInstance()->rows($query);
+
+		$langRowsResult = [];
+
+		foreach ($langRows as $row) {
+			$langRowsResult[$row['id']][] = $row;
+		}
+
+		foreach ($rows as $key => $row) {
+			$langRows = $langRowsResult[$row['id']];
 			foreach ($langRows as $langRow) {
 				$rows[$key]['languageTable'][$langRow['field']] = $langRow['value'];
 			}
 		}
-
-		return self::fillCollection($class, $rows, $cacheParams);
 	}
 
 

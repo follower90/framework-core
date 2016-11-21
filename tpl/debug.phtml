@@ -39,6 +39,13 @@ use Core\Library\System;
 		font-family: 'Arial', sans-serif;
 		font-size: 12px;
 	}
+	.debug-options .debug-info {
+		background: #d9d9d9;
+		padding: 5px 20px;
+		float: right;
+		cursor: default;
+		margin: 0;
+	}
 	.red { color: #ff0000; }
 	.green { color: #009300; }
 </style>
@@ -150,45 +157,45 @@ use Core\Library\System;
 		<div class="debug-option" data-option="7">
 			Backtrace: <span><?php echo $vars['trace']['count']; ?></span>
 		</div>
-		<div class="debug-option" data-option="8">
-			Stats: <span>2</span>
+		<div class="debug-info">
+			Page load: <span><?php echo $vars['page_load']; ?> sec.</span>
+		</div>
+		<div class="debug-info">
+			Memory used: <span><?php echo $vars['memory_usage']; ?> MBytes</span>
 		</div>
 	</div>
 </div>
 
 <script>
 	(function() {
-		var instanceHash = '<?php echo $vars['instanceHash'];?>';
-		var options = document.querySelectorAll('.debug-options-' + instanceHash +  ' div');
+		var instanceHash = '<?php echo $vars['instanceHash'];?>',
+			options = document.querySelectorAll('.debug-options-' + instanceHash +  ' div');
 
 		for (var i = 0; i < options.length; i++) {
-			options[i].addEventListener('click', showError.bind(options[i]));
-		}
+			options[i].addEventListener('click', function() {
+				var isActive = false,
+					tabNum = this.getAttribute('data-option'),
+					currentTab = document.querySelector('.debug-tabs-' + instanceHash + ' .tab-' + tabNum);
 
-		function showError () {
-			var isActive = false;
-			var tabNum = this.getAttribute('data-option');
-			var instanceHash = '<?php echo $vars['instanceHash'];?>';
-			var currentTab = document.querySelector('.debug-tabs-' + instanceHash + ' .tab-' + tabNum);
+				if (currentTab.style.display === 'block') {
+					isActive = true;
+				}
 
-			if (currentTab.style.display === 'block') {
-				isActive = true;
-			}
+				var captions = document.querySelectorAll('.debug-option');
+				for (var i = 0; i < captions.length; i++) {
+					captions[i].className = 'debug-option';
+				}
 
-			var captions = document.querySelectorAll('.debug-option');
-			for (var i = 0; i < captions.length; i++) {
-				captions[i].className = 'debug-option';
-			}
+				var tabs = document.querySelectorAll('.debug-tabs-' + instanceHash + ' .tab');
+				for (var i = 0; i < tabs.length; i++) {
+					tabs[i].style.display = 'none';
+				}
 
-			var tabs = document.querySelectorAll('.debug-tabs-' + instanceHash + ' .tab');
-			for (var i = 0; i < tabs.length; i++) {
-				tabs[i].style.display = 'none';
-			}
-
-			if (!isActive) {
-				this.className = 'debug-option active';
-				currentTab.style.display = 'block';
-			}
+				if (!isActive) {
+					this.className = 'debug-option active';
+					currentTab.style.display = 'block';
+				}
+			}.bind(options[i]));
 		}
 	})();
 </script>
