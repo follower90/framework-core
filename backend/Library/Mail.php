@@ -12,21 +12,26 @@ class Mail
 	 * @param $subject string message subject
 	 * @param $body string html message body
 	 * @param array $attachments
-	 * @return mixed
+	 * @return boolean
 	 */
 	public static function send($senderName, $senderEmail, $receiverName, $receiverEmail, $subject, $body, $attachments = [])
 	{
-		$mail = new SimpleMail();
+		$mail = new \SimpleMail();
 		$mail->setTo($receiverEmail, $receiverName)
 			->setSubject($subject)
 			->setFrom($senderEmail, $senderName);
 
-		foreach ($attachments as $path) {
-			$mail->addAttachment($path);
+		if ($attachments) {
+			foreach ($attachments as $path) {
+				$mail->addAttachment($path);
+			}
+		} else {
+			$mail
+				->addGenericHeader('X-Mailer', 'PHP/' . phpversion())
+				->addGenericHeader('Content-Type', 'text/html; charset="utf-8"');
 		}
 
-		$mail->addGenericHeader('X-Mailer', 'PHP/' . phpversion())
-			->addGenericHeader('Content-Type', 'text/html; charset="utf-8"')
+		$mail
 			->setMessage($body)
 			->setWrap(100);
 
