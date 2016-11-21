@@ -150,17 +150,7 @@ class App
 			$call = $backtrace[1];
 			unset($backtrace);
 
-			$classesExclusions = [
-				'', 'Core\Debug'
-			];
-
-			$methodsExclusions = [
-			];
-
-			if (isset($call['class'], $call['function'], $call['file'], $call['line']) &&
-				!in_array($call['class'], $classesExclusions) &&
-				!in_array($call['function'], $methodsExclusions)
-			) {
+			if (isset($call['class'], $call['function'], $call['file'], $call['line'])) {
 				$debug = Debug::getInstance();
 				$debug->logTrace([
 					'function' => $call['function'],

@@ -2,7 +2,6 @@
 
 namespace Core;
 
-use Core\Database\MySQL;
 use Core\Database\PDO;
 
 abstract class Object
@@ -11,7 +10,6 @@ abstract class Object
 	use Traits\Object\ActiveRecord;
 
 	protected $_table;
-	protected $_class;
 	protected $_values;
 	protected $_errors;
 	protected $_hasChanges = false;
@@ -27,8 +25,6 @@ abstract class Object
 	 */
 	public function __construct($values = [])
 	{
-		$this->_class = $this->getClassName();
-
 		if (!empty($values)) {
 			$this->setValues($values);
 		}
@@ -113,29 +109,6 @@ abstract class Object
 		return $this->_errors;
 	}
 
-	/**
-	 * Trigger callback for event
-	 * if it was registered
-	 * @param string $alias
-	 */
-	public function triggerEvent($alias)
-	{
-		$callback = isset(self::$_events[$alias]) ? self::$_events[$alias] : false;
-		if ($callback) {
-			call_user_func($callback);
-		}
-	}
-
-	/**
-	 * Register event callback
-	 * @param string $alias
-	 * @param \Closure $callback
-	 */
-	public function registerEvent($alias, \Closure $callback)
-	{
-		self::$_events[$alias] = $callback;
-	}
-
 	public function getRelated($alias, $params = [])
 	{
 		$relations = static::relations();
@@ -169,18 +142,8 @@ abstract class Object
 	 */
 	public function setValues($data)
 	{
-		$allowedFields = $this->_checkFields();
-		$allowedLanguageFields = $this->_checkLanguageFields();
-
 		foreach ($data as $field => $value) {
-
-			if (in_array($field, $allowedFields)) {
-				$this->setValue($field, $value);
-			}
-
-			if (in_array($field, $allowedLanguageFields)) {
-				$this->setValue($field, $value);
-			}
+			$this->setValue($field, $value);
 		}
 
 		return $this;
@@ -193,43 +156,20 @@ abstract class Object
 	 */
 	public function setValue($field, $value)
 	{
-		$allowedFields = $this->_checkFields();
 		$allowedLanguageFields = $this->_checkLanguageFields();
-
-		if (in_array($field, $allowedFields)) {
-			$this->_values[$field] = $value;
-			$this->triggerEvent($field . 'Changed');
-			$this->_hasChanges = true;
-		}
+		$this->_hasChanges = true;
 
 		if (in_array($field, $allowedLanguageFields)) {
 			$this->_values['languageTable'][$field] = $value;
-			$this->triggerEvent($field . 'Changed');
-			$this->_hasChanges = true;
+		} else {
+			$this->_values[$field] = $value;
 		}
 	}
 
 	/**
-	 * Returns existing fields
+	 * Returns existing language fields
 	 * @return array
 	 */
-	private function _checkFields()
-	{
-		$allowedFields = [];
-		$fields = $this->getConfigData('fields');
-		foreach ($fields as $field => $properties) {
-			$allowedFields[] = $field;
-		}
-
-		if (isset($fields['languageTable'])) {
-			foreach ($fields['languageTable'] as $field => $properties) {
-				$allowedFields[] = $field;
-			}
-		}
-
-		return $allowedFields;
-	}
-
 	private function _checkLanguageFields()
 	{
 		$fields = $this->getConfigData('fields');
@@ -263,43 +203,11 @@ abstract class Object
 	 */
 	public function getValue($field)
 	{
-		$allowedFields = $this->_checkFields();
-		if (in_array($field, $allowedFields)) {
-			return isset($this->_values[$field])
-				? $this->_values[$field]
-				: (isset($this->_values['languageTable'])
-					? $this->_values['languageTable'][$field]
-					: '');
-		}
-
-		return false;
-	}
-
-	/**
-	 * return related object by relation alias
-	 * todo - refactor this shit
-	 * @param $alias
-	 * @return bool|Object
-	 */
-	public function getRelatedObject($alias)
-	{
-		$relations = static::relations();
-		foreach ($relations as $key => $relation) {
-
-			if ($key == $alias) {
-				$query = 'select * FROM `'.$relation['class'].'` a
-				inner join '.$relation['table'].' b on a.id = b.'.$relation['class'].'
-				where b.'.$relation['targetClass'].' = '.$this->getId().'';
-
-				$result = MySQL::row($query);
-
-				if ($result) {
-					return Orm::load($relation['class'], $result['id']);
-				}
-			}
-		}
-
-		return false;
+		return isset($this->_values[$field])
+			? $this->_values[$field]
+			: (isset($this->_values['languageTable'])
+				? $this->_values['languageTable'][$field]
+				: '');
 	}
 
 	/**
@@ -348,34 +256,11 @@ abstract class Object
 	public function getSimpleFieldsData()
 	{
 		$data = [];
-		$fields = array_filter($this->getConfigData('fields'), function($field) {
-			return !in_array($field['type'], ['HAS_MANY']);
-		});
+		$fields = array_keys($this->getConfigData('fields'));
+		$values = $this->getValues();
 
-		foreach ($this->getValues() as $field => $value) {
-			if (in_array($field, array_keys($fields))) {
-				$data[$field] = $value;
-			}
-		}
-
-		return $data;
-	}
-
-	/**
-	 * Returns key -> value array with HAS_MANY relation values
-	 * todo refactor this shit
-	 * Used in ORM
-	 * @return array
-	 */
-	public function getHasManyRelationFieldsData()
-	{
-		$data = [];
-		$fields = array_filter($this->getConfigData('fields'), function($field) {
-			return in_array($field['type'], ['HAS_MANY']);
-		});
-
-		foreach ($this->getValues() as $field => $value) {
-			if (in_array($field, array_keys($fields))) {
+		foreach ($values as $field => $value) {
+			if (in_array($field, $fields)) {
 				$data[$field] = $value;
 			}
 		}
@@ -391,7 +276,6 @@ abstract class Object
 	public function getLanguageFieldsData()
 	{
 		$langData = [];
-
 		if ($langTableData = $this->getValue('languageTable')) {
 			foreach ($langTableData as $field => $value) {
 				$langData[] = ['field' => $field, 'value'=> $value];

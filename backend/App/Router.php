@@ -121,7 +121,8 @@ class Router
 
 	private static function _returnAction($lib, $controller, $action, $args)
 	{
-		if (method_exists($lib . '\\' . $controller, 'method' . $action)) {
+		if (method_exists($lib . '\\' . $controller, 'method' . $action)
+			&& is_callable([$lib . '\\' . $controller, 'method' . $action])) {
 			return [
 				'controller' => $controller,
 				'action' => $action,

@@ -8,35 +8,6 @@ use Core\Config;
 
 trait OrmCore
 {
-
-	/**
-	 * Saves related fields data
-	 * @param Object $object
-	 */
-	private static function _saveRelatedFieldsData($object)
-	{
-		if (!$relatedFields = $object->getHasManyRelationFieldsData()) {
-			return;
-		}
-
-		foreach ($relatedFields as $field => $data) {
-			foreach ($object->relations() as $alias => $config) {
-				if ($alias == $field) {
-
-					$table = $config['table'];
-					$me = $object->getClassName();
-					$related = $config['targetClass'];
-
-					MySQL::delete($table, [$me => $object->getId()]);
-
-					foreach ($data as $val) {
-						MySQL::insert($table, [$me => $object->getId(), $related => $val]);
-					}
-				}
-			}
-		}
-	}
-
 	/**
 	 * Save data to language tables, it needed for multi-language web applications
 	 * @param \Core\Object $object

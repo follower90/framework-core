@@ -12,9 +12,6 @@ class Orm
 
 	protected static $_object;
 	protected static $_cache;
-	protected static $_dbClass = '\\Core\\Database\\MySQL';
-
-	public static $_objectsConfig = [];
 
 	/**
 	 * Creates and returns new Object
@@ -24,15 +21,6 @@ class Orm
 	public static function create($class)
 	{
 		return self::_getObject($class);
-	}
-
-	public static function setDbType($type)
-	{
-		if (class_exists($type)) {
-			self::$_dbClass = $type;
-		}
-
-		throw new \Core\Exception\Exception('Database class does not exist');
 	}
 
 	/**
@@ -56,18 +44,15 @@ class Orm
 		$table = $object->getConfigData('table');
 		$data = $object->getSimpleFieldsData();
 
-		$dbEngine = self::$_dbClass;
-
 		try {
 			if ($object->isNew()) {
-				$id = $dbEngine::insert($table, $data);
+				$id = \Core\Database\MySQL::insert($table, $data);
 				$object->setValue('id', $id);
 			} else {
-				$dbEngine::update($table, $data, ['id' => $object->getId()]);
+				\Core\Database\MySQL::update($table, $data, ['id' => $object->getId()]);
 			}
 
 			self::_updateLangTables($object);
-			self::_saveRelatedFieldsData($object);
 
 		} catch (\Exception $e) {
 			throw new OrmException('Error inserting data to ' . $table);
@@ -99,7 +84,7 @@ class Orm
 		$query = self::_makeSimpleQuery($class, $filters, $values, $params);
 		$rows = PDO::getInstance()->rows($query);
 
-		$fields = static::$_object->getConfig()->getData('fields');
+		$fields = static::$_object->getConfigData('fields');
 
 		if (!isset($fields['languageTable'])) {
 			return self::fillCollection($class, $rows, $cacheParams);
@@ -203,10 +188,9 @@ class Orm
 	public static function delete($object)
 	{
 		$object->beforeDelete();
-		$dbEngine = self::$_dbClass;
 
 		if ($id = $object->getId()) {
-			$dbEngine::delete($object->getConfigData('table'), ['id' => $id]);
+			\Core\Database\MySQL::delete($object->getConfigData('table'), ['id' => $id]);
 		}
 
 		$object->afterDelete();
@@ -320,7 +304,7 @@ class Orm
 		$objects = [];
 
 		array_walk($data, function ($row) use (&$objects, $class) {
-			$class = self::_getObject($class);
+			$class = self::detectClass($class);
 			$object = new $class();
 			$objects[] = $object->setValues($row);
 		});
