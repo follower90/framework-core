@@ -4,7 +4,7 @@ namespace Core;
 
 class OrmCache
 {
-	private $_data;
+	private $_data = [];
 
 	/**
 	 * Insert collection to hash

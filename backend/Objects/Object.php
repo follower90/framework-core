@@ -182,17 +182,15 @@ abstract class Object
 	 */
 	public function getValues()
 	{
-		$result = $this->_values;
+		$values = $this->_values;
 		$languageData = [];
 
 		if (isset($this->_values['languageTable'])) {
 			$languageData = $this->_values['languageTable'];
 		}
 
-		unset($result['languageTable']);
-		$result = array_merge($result, $languageData);
-
-		return $result;
+		unset($values['languageTable']);
+		return array_merge($values, $languageData);
 	}
 
 	/**
@@ -207,7 +205,7 @@ abstract class Object
 			? $this->_values[$field]
 			: (isset($this->_values['languageTable'])
 				? $this->_values['languageTable'][$field]
-				: '');
+				: false);
 	}
 
 	/**

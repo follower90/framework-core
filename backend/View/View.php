@@ -1,6 +1,9 @@
 <?php
 namespace Core;
 
+use Core\Library\File;
+use MongoDB\BSON\Javascript;
+
 class View {
 
 	use Traits\View\Html;
@@ -84,6 +87,23 @@ class View {
 		$contents = ob_get_contents();
 		ob_end_clean();
 
+		return $contents;
+	}
+
+	public function renderInlineTemplate($tpl, $vars = [])
+	{
+		ob_start();
+
+		$tmpPath = '/tmp/temp' . hash('crc32', rand(0,100)) . '.phtml';
+
+		File::put($tmpPath, $tpl);
+		$includeTpl = App::get()->getAppPath() . $tmpPath;
+		include $includeTpl;
+
+		$contents = ob_get_contents();
+		ob_end_clean();
+
+		File::delete($tmpPath);
 		return $contents;
 	}
 

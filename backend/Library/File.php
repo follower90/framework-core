@@ -30,7 +30,8 @@ class File
 
 	public static function delete($path)
 	{
-		return unlink($path);
+		$root = \Core\App::get()->getAppPath();
+		return unlink($root . $path);
 	}
 
 	public static function request()

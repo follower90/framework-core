@@ -7,7 +7,6 @@ class Debug
 	private static $_instance;
 
 	private $_queries;
-	private $_files;
 	private $_resources;
 	private $_php_errors;
 	private $_dumps;
@@ -62,15 +61,6 @@ class Debug
 			'results' => $results,
 			'time' => round($time, 4),
 		];
-	}
-
-	/**
-	 * Logs loaded files
-	 * @param $path
-	 */
-	public function logFile($path)
-	{
-		$this->_files[] = $path;
 	}
 
 	/**
@@ -172,18 +162,6 @@ class Debug
 	public function getPageLoadTime()
 	{
 		return number_format($this->_page_load, 4);
-	}
-
-	/**
-	 * Returns logged loaded files and its count
-	 * @return array
-	 */
-	public function getFilesLog()
-	{
-		return [
-			'count' => count($this->_files),
-			'data' => $this->_files,
-		];
 	}
 
 	/**

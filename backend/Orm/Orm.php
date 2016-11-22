@@ -257,17 +257,13 @@ class Orm
 	public static function detectClass($class)
 	{
 		$projects = Config::get('projects');
-		foreach ($projects as $config) {
+		array_push($projects, ['project' => 'Core']);
 
+		foreach ($projects as $config) {
 			$className = '\\' . $config['project'] . '\\Object\\' . ucfirst($class);
 			if (class_exists($className)) {
 				return $className;
 			}
-		}
-
-		$className = '\\Core\\Object\\' . ucfirst($class);
-		if (class_exists($className)) {
-			return $className;
 		}
 
 		throw new OrmException('Object ' . $class . ' was not found');
@@ -302,10 +298,8 @@ class Orm
 		}
 
 		$objects = [];
-
 		array_walk($data, function ($row) use (&$objects, $class) {
-			$class = self::detectClass($class);
-			$object = new $class();
+			$object = static::_getObject($class);
 			$objects[] = $object->setValues($row);
 		});
 

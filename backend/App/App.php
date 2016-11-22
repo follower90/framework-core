@@ -108,7 +108,6 @@ class App
 	 */
 	public function run()
 	{
-		$this->_setFileIncludeHandler();
 		$this->_setupDebugMode();
 		$this->_setErrorHandlers();
 
@@ -245,7 +244,6 @@ class App
 			$data['phpErrors'] = $debug->getPhpErrors();
 			$data['dumps'] = $debug->getDumps();
 			$data['queries'] = $debug->getQueriesLog();
-			$data['files'] = $debug->getFilesLog();
 			$data['resources'] = $debug->getResourcesLog();
 			$data['trace'] = $debug->getTrace();
 			$data['memory_usage'] = $debug->getMemoryUsage();
@@ -254,18 +252,6 @@ class App
 			$view = new View();
 			echo $view->render($this->_appPath . '/vendor/follower/core/tpl/debug.phtml', $data);
 		}
-	}
-
-	/**
-	 * Registering handler function for
-	 * logging included files into debugger
-	 */
-	private function _setFileIncludeHandler()
-	{
-		spl_autoload_register(function($file) {
-			$debug = Debug::getInstance();
-			$debug->logFile($file);
-		}, true, true);
 	}
 
 	/**
