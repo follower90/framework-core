@@ -96,6 +96,19 @@ class Collection {
 	}
 
 	/**
+	 * Empty the collection
+	 * @return \Core\Object|bool
+	 */
+	public function removeAll()
+	{
+		foreach ($this->_objects as $object) {
+			Orm::delete($object);
+		}
+
+		$this->_objects = [];
+		return true;
+	}
+	/**
 	 * Returns true if collection is empty
 	 * @return bool
 	 */

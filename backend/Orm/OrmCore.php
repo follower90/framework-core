@@ -158,7 +158,7 @@ trait OrmCore
 			}
 
 			if ($firstChar == '!') {
-				$param = substr($param, 1, -1);
+				$param = substr($param, 1);
 				$action = '!=';
 			}
 

@@ -270,13 +270,15 @@ class QueryBuilder { //todo sql query builder
 					if ($raw['action'] == 'between') {
 						$where = $raw['value'] . ' between '. $raw['args'][0] . ' and ' . $raw['args'][1];
 					} else {
-						$where = $raw['value'] . ' in (' . implode(',', $raw['args']) . ')';
+						$action = ($raw['action'] === '!=') ? 'not in' : 'in';
+						$where = $raw['value'] . ' ' . $action . ' (' . implode(',', $raw['args']) . ')';
 					}
 				} else {
 					$value = reset($raw['args']);
 
-					if ($value == 'null') {
-						$where = $raw['value'] . ' is null';
+					if ($value == 'null' || empty($raw['args'])) {
+						$action = ($raw['action'] === '!=') ? 'is not null' : 'is null';
+						$where = $raw['value'] . ' ' . $action;
 					} else {
 						$where = $raw['value'] . ' ' .$raw['action'] . ' ' . $value;
 					}
