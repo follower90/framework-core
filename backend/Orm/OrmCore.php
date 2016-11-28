@@ -11,15 +11,21 @@ trait OrmCore
 	/**
 	 * Save data to language tables, it needed for multi-language web applications
 	 * @param \Core\Object $object
+	 * @param $allLanguages boolean update for current language, or for all available
 	 * @throws \Exception
 	 */
-	private static function _updateLangTables($object)
+	private static function _updateLangTables($object, $allLanguages = false)
 	{
 		if (!$langData = $object->getLanguageFieldsData()) {
 			return;
 		}
 
-		static::_writeLangData($object, $langData, Config::get('site.language'));
+		$appLangs = Config::getAvailableLanguages();
+		$languages = $allLanguages ? array_keys($appLangs) : [Config::get('site.language')];
+
+		foreach ($languages as $k => $lang) {
+			static::_writeLangData($object, $langData, $lang);
+		}
 	}
 
 	private static function _writeLangData($object, $langData, $language)

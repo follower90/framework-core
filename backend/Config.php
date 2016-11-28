@@ -66,6 +66,21 @@ class Config {
 	}
 
 	/**
+	 * Set available application languages
+	 * @param $alias
+	 * @param $config
+	 */
+	public static function setAvailableLanguages($config)
+	{
+		self::$config['available_languages'] = $config;
+	}
+
+	public static function getAvailableLanguages()
+	{
+		return self::$config['available_languages'];
+	}
+
+	/**
 	 * Set custom property to Config
 	 * @param $item
 	 * @param $value

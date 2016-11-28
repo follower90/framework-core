@@ -42,7 +42,7 @@ class Controller
 	 * @param bool $key
 	 * @return array|bool
 	 */
-	public function request($key = false)
+	public static function request($key = false)
 	{
 		$request = array_merge($_POST, $_GET);
 

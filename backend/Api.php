@@ -4,7 +4,7 @@ namespace Core;
 
 use Core\Database\PDO;
 
-class Api extends Controller //todo really needed?
+class Api
 {
 	protected $request;
 
@@ -15,7 +15,7 @@ class Api extends Controller //todo really needed?
 	public function __construct()
 	{
 		$this->db = PDO::getInstance();
-		parent::__construct();
+		//parent::__construct();
 	}
 
 	/**

@@ -48,11 +48,11 @@ class Orm
 			if ($object->isNew()) {
 				$id = \Core\Database\MySQL::insert($table, $data);
 				$object->setValue('id', $id);
+				self::_updateLangTables($object, true);
 			} else {
 				\Core\Database\MySQL::update($table, $data, ['id' => $object->getId()]);
+				self::_updateLangTables($object);
 			}
-
-			self::_updateLangTables($object);
 
 		} catch (\Exception $e) {
 			throw new OrmException('Error inserting data to ' . $table);
@@ -112,9 +112,12 @@ class Orm
 		}
 
 		foreach ($rows as $key => $row) {
-			$langRows = $langRowsResult[$row['id']];
-			foreach ($langRows as $langRow) {
-				$rows[$key]['languageTable'][$langRow['field']] = $langRow['value'];
+			if (isset($langRowsResult[$row['id']])) {
+				$langRows = $langRowsResult[$row['id']];
+
+				foreach ($langRows as $langRow) {
+					$rows[$key]['languageTable'][$langRow['field']] = $langRow['value'];
+				}
 			}
 		}
 	}

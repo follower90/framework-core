@@ -133,7 +133,7 @@ class App
 		$controller = new $class();
 
 		echo $this->_entryPoint->output(
-			call_user_func_array([$controller, 'run'], [$method, array_merge($action['args'], $controller->request())])
+			call_user_func_array([$controller, 'run'], [$method, array_merge($action['args'], \Core\Controller::request())])
 		);
 	}
 
