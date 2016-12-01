@@ -149,6 +149,6 @@ class Paging
 	 */
 	public function getObjects($raw = false)
 	{
-		return $raw ? $this->_collection : $this->_collection->getData();
+		return $raw ? $this->_collection->getCollection() : $this->_collection->getData();
 	}
 }

@@ -43,7 +43,7 @@ class MySQL implements Database
 	 */
 	public static function insert($table, array $params = [])
 	{
-		if (!$table || empty($params)) {
+		if (!$table) {
 			throw new \Core\Exception\Exception('Incorrect insert query');
 		}
 
@@ -58,7 +58,13 @@ class MySQL implements Database
 			$set[] = '`' . $field . '`=' . $value;
 		}
 
-		$query = 'INSERT INTO `' . $table . '` SET ' . implode(', ', $set);
+		if (empty($params)) {
+			$query = 'INSERT INTO `' . $table . '` VALUES()';
+		} else {
+			$query = 'INSERT INTO `' . $table . '` SET ' . implode(', ', $set);
+		}
+
+
 		return PDO::getInstance()->insert_id($query);
 	}
 

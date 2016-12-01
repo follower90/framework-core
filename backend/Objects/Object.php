@@ -30,6 +30,12 @@ abstract class Object
 		}
 	}
 
+	/**
+	 * Fields, table and relations configuration method
+	 * Needs to be overrided in each application model with own config
+	 * id field is default and required in ANY table
+	 * @return ObjectConfig
+	 */
 	public function getConfig()
 	{
 		if (empty(self::$_config)) {
@@ -109,6 +115,33 @@ abstract class Object
 		return $this->_errors;
 	}
 
+	/**
+	 * Goes through relations beetween objects separated by dot
+	 * And returns object field as last string
+	 * @param $aliasWithField
+	 * @param array $params
+	 * @return bool|string
+	 */
+	public function getRelatedValue($aliasWithField, $params = [])
+	{
+		$data = explode('.', $aliasWithField);
+		$object = $this;
+
+		while (count($data) != 1) {
+			$alias = array_shift($data);
+			$object = $object->getRelated($alias, $params);
+		}
+
+		return $object ? $object->getValue($data[0]) : false;
+	}
+
+	/**
+	 * Return related object or collection
+	 * according to Orm relations configuration
+	 * @param $alias
+	 * @param array $params
+	 * @return bool|Collection|Object
+	 */
 	public function getRelated($alias, $params = [])
 	{
 		$relations = static::relations();
