@@ -130,11 +130,14 @@ class App
 			throw new \Core\Exception\Exception('Method: ' . $action['action'] . ' was not found');
 		}
 
-		$controller = new $class();
-
-		echo $this->_entryPoint->output(
-			call_user_func_array([$controller, 'run'], [$method, array_merge($action['args'], \Core\Controller::request())])
-		);
+		try {
+			$controller = new $class();
+			echo $this->_entryPoint->output(
+				call_user_func_array([$controller, 'run'], [$method, array_merge($action['args'], \Core\Controller::request())])
+			);
+		} catch (\Exception $e) {
+			echo $e->getMessage();
+		}
 	}
 
 	/**
