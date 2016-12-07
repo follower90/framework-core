@@ -197,6 +197,8 @@ abstract class Object
 		} else {
 			$this->_values[$field] = $value;
 		}
+
+		return $this;
 	}
 
 	/**

@@ -183,6 +183,11 @@ class View {
 		return \Core\Config::get('site.language') === $lang;
 	}
 
+	public function isCurrentCurrency($id)
+	{
+		return \Core\Config::get('site.currency') === $id;
+	}
+
 	public function getNotices()
 	{
 		$notices = \Core\Session::get('notices');
