@@ -182,16 +182,24 @@ trait OrmCore
 	 */
 	protected static function _buildRelationCondition(QueryBuilder $queryBuilder, $field, $index)
 	{
-		$relations = self::$_object->relations();
-		$relation = $relations[$field[0]];
-
-		$relatedObject = self::_getObject($relation['targetClass']);
-		$alias = 'tb' . $index;
-
-		if ($relation['type'] == 'multiple') {
-			$queryBuilder->join('inner', $relation['table'], $alias, [self::$_object->getConfigData('table'), $relation['field']]);
+		if ($field[0] === 'lang') {
+			//filter by language table fields. For example Orm::find('SomeObject', ['lang.name'], ['name'])
+			$queryBuilder->join('inner', self::$_object->getLangTableName(), $field[0], [strtolower(self::$_object->getConfigData('table')) . '_id', 'id']);
+			$queryBuilder->where('lang.lang', Config::get('site.language'));
+			$queryBuilder->where('lang.field', $field[1]);
+			return ['value', $field[0]];
 		} else {
-			$queryBuilder->join('inner', $relatedObject->getConfigData('table'), $alias, [$field[0], $relation['field']]);
+			$relations = self::$_object->relations();
+			$relation = $relations[$field[0]];
+
+			$relatedObject = self::_getObject($relation['targetClass']);
+			$alias = 'tb' . $index;
+
+			if ($relation['type'] == 'multiple') {
+				$queryBuilder->join('inner', $relation['table'], $alias, [self::$_object->getConfigData('table'), $relation['field']]);
+			} else {
+				$queryBuilder->join('inner', $relatedObject->getConfigData('table'), $alias, [$field[0], $relation['field']]);
+			}
 		}
 
 		return [$field[1], $alias];

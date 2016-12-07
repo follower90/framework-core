@@ -193,7 +193,12 @@ class Orm
 		$object->beforeDelete();
 
 		if ($id = $object->getId()) {
-			\Core\Database\MySQL::delete($object->getConfigData('table'), ['id' => $id]);
+			$table = $object->getConfigData('table');
+			\Core\Database\MySQL::delete($table, ['id' => $id]);
+
+			if ($object->getConfig()->getData('fields')['languageTable']) {
+				\Core\Database\MySQL::delete($object->getLangTableName(), [strtolower($table) . '_id' => $id]);
+			}
 		}
 
 		$object->afterDelete();
