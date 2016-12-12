@@ -22,12 +22,12 @@ class MySQL implements Database
 
 		foreach ($params as $field => $value) {
 			$value = is_null($value) ? 'null' : '\'' . $value . '\'';
-			$set[] = $field . '=' . $value;
+			$set[] = '`' . $field . '`=' . $value;
 		}
 
 		foreach ($conditions as $field => $value) {
 			$value = is_null($value) ? 'null' : '\'' . $value . '\'';
-			$where[] = $field . '=' . $value;
+			$where[] = '`' . $field . '`=' . $value;
 		}
 
 		$query = 'UPDATE `' . $table . '` SET ' . implode(', ', $set) . ' WHERE ' . implode(' and ', $where);

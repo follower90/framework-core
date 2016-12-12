@@ -41,8 +41,11 @@ class File
 
 	public static function saveUploadedFile($tmpName, $path)
 	{
-		$dir = dir(\Core\App::get()->getAppPath() . $path);
-		if (!is_dir($dir)) mkdir($dir);
+		$dir = dirname(\Core\App::get()->getAppPath() . $path);
+		if (!is_dir($dir)) {
+			mkdir($dir);
+		}
+
 		move_uploaded_file($tmpName, \Core\App::get()->getAppPath() . $path);
 	}
 
