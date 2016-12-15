@@ -118,6 +118,35 @@ class Collection {
 	}
 
 	/**
+	 * Filter collection by key=>value
+	 * and return new collection
+	 * @param $field
+	 * @param $value
+	 * @return Collection
+	 */
+	public function filterBy($field, $value)
+	{
+		$objects = $this->stream()->filter(function ($o) use ($field, $value) {
+			return $o->getValue($field) == $value;
+		})->find();
+
+		return new Collection($objects);
+	}
+
+	/**
+	 * Find single object in collection
+	 * @param $field
+	 * @param $value
+	 * @return bool
+	 */
+	public function findFirstBy($field, $value)
+	{
+		return $this->stream()->filter(function ($o) use ($field, $value) {
+			return $o->getValue($field) == $value;
+		})->findFirst();
+	}
+
+	/**
 	 * Returns collection steam
 	 * @return Stream
 	 */
