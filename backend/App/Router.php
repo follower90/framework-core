@@ -104,6 +104,8 @@ class Router
 			$controller =  empty($uriChunks[0]) ? 'Index' : ucfirst($uriChunks[0]);
 		}
 
+		$controller = implode('_', array_map(function($p) { return ucfirst($p); }, explode('_', $controller)));
+
 		$action = empty($uriChunks[1]) ? 'Index' : ucfirst($uriChunks[1]);
 		if (!empty($uriChunks[1]) && isset(self::$_actionAliases[$uriChunks[1]])) {
 			$action = self::$_actionAliases[$uriChunks[1]];

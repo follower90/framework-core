@@ -34,7 +34,7 @@ class Orm
 		$object->beforeSave();
 
 		if (!$object->validate()) {
-			throw new ObjectValidationException(implode("\n", $object->getErrors()));
+			throw new ObjectValidationException(implode("___", $object->getErrors()));
 		}
 
 		if (!$object->isModified()) {

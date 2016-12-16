@@ -172,10 +172,8 @@ class View {
 
 	public function addNotice($type, $text)
 	{
-		$notice = new $this->_noticeObject($type, $text);
-
-		$this->_notices[] = serialize($notice);
-		\Core\Session::set('notices', json_encode($this->_notices));
+		$this->_notices[] = new $this->_noticeObject($type, $text);
+		\Core\Session::set('notices', json_encode(serialize($this->_notices)));
 	}
 
 	public function isCurrentLanguage($lang)
@@ -200,9 +198,8 @@ class View {
 	{
 		$text = '';
 		if ($data) {
-			foreach ($data as $notice) {
-				$text = unserialize($notice)->show();
-			}
+			$data = unserialize($data);
+			foreach ($data as $notice) $text .= $notice->show();
 		}
 
 		return $text;

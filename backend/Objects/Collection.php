@@ -26,6 +26,11 @@ class Collection {
 		return $this->_objects;
 	}
 
+	public function push($object)
+	{
+		$this->_objects[] = $object;
+	}
+
 	/**
 	 * Returns associative data map with keys of objects ids
 	 * @return array
