@@ -260,7 +260,7 @@ class QueryBuilder { //todo sql query builder
 
 				if (!empty($raw['args'])) {
 					array_walk($raw['args'], function (&$item) {
-						if (!is_numeric($item) && !is_numeric($item) && $item != 'null' && $item != '!null') {
+						if (!is_numeric($item) && $item != 'null' && $item != '!null') {
 							$item = '\'' . $item . '\'';
 						}
 					});
@@ -276,7 +276,7 @@ class QueryBuilder { //todo sql query builder
 				} else {
 					$value = reset($raw['args']);
 
-					if ($value == 'null' || empty($raw['args'])) {
+					if (($value === 'null' || empty($raw['args'])) && $value !== 0) {
 						$action = ($raw['action'] === '!=') ? 'is not null' : 'is null';
 						$where = $raw['value'] . ' ' . $action;
 					} else {
