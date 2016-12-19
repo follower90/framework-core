@@ -25,15 +25,27 @@ class Paging
 	 * @var array paging params
 	 */
 	private $_paging = [];
+
 	/**
 	 * @var array collection of fetched objects for one page
 	 */
 	private $_collection = [];
 
-	private function __construct($className, $currentPage, $onPage, $params)
+	/**
+	 * @var array filter collection
+	 */
+	private $_filters;
+
+	/**
+	 * @var array ordering params
+	 */
+	private $_order;
+
+	private function __construct($className, $currentPage, $onPage, $filters, $order)
 	{
+		$this->_order = $order;
 		$this->_class = $className;
-		$this->_params = $params;
+		$this->_filters = $filters;
 		$this->_curPage = (int)$currentPage;
 		$this->_onPage = (int)$onPage;
 	}
@@ -49,7 +61,12 @@ class Paging
 		if (!isset($params['params'])) {
 			$params['params'] = [[], []];
 		}
-		$paging = new static($className, $params['current_page'], $params['page_size'], $params['params']);
+
+		if (!isset($params['order'])) {
+			$params['order'] = false;
+		}
+
+		$paging = new static($className, $params['current_page'], $params['page_size'], $params['params'], $params['order']);
 		$paging->_calculate();
 
 		return $paging;
@@ -64,9 +81,13 @@ class Paging
 		$this->_paging['offset'] = ($this->_curPage - 1) * $this->_onPage;
 		$this->_paging['limit'] = $this->_onPage;
 
-		$this->_collection = Orm::find($this->_class, $this->_params[0], $this->_params[1], $this->_paging);
+		if ($this->_order) {
+			$this->_paging['sort'] = $this->_order;
+		}
 
-		$this->_paging['total'] = Orm::count($this->_class, $this->_params[0], $this->_params[1]);
+		$this->_collection = Orm::find($this->_class, $this->_filters[0], $this->_filters[1], $this->_paging);
+
+		$this->_paging['total'] = Orm::count($this->_class, $this->_filters[0], $this->_filters[1]);
 		$this->_paging['items'] = $this->_collection->getCount();
 
 		$data = [];
