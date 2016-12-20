@@ -84,13 +84,15 @@ class Orm
 		$query = self::_makeSimpleQuery($class, $filters, $values, $params);
 		$rows = PDO::getInstance()->rows($query);
 
-		$fields = static::$_object->getConfigData('fields');
+		if ($rows) {
+			$fields = static::$_object->getConfigData('fields');
+			if (!isset($fields['languageTable'])) {
+				return self::fillCollection($class, $rows, $cacheParams);
+			}
 
-		if (!isset($fields['languageTable'])) {
-			return self::fillCollection($class, $rows, $cacheParams);
+			static::_appendLanguageData($class, $rows);
 		}
 
-		static::_appendLanguageData($class, $rows);
 		return self::fillCollection($class, $rows, $cacheParams);
 	}
 
