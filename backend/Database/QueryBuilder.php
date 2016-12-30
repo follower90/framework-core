@@ -254,6 +254,7 @@ class QueryBuilder { //todo sql query builder
 		$conditions = [];
 		if (!empty($this->_config['where'])) {
 			foreach ($this->_config['where'] as $raw) {
+
 				if (!is_array($raw['args'])) {
 					$raw['args'] = [$raw['args']];
 				}

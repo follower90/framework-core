@@ -168,6 +168,11 @@ trait OrmCore
 				$action = '!=';
 			}
 
+			if ($firstChar == '~') {
+				$param = substr($param, 1);
+				$action = 'LIKE';
+			}
+
 			$queryBuilder->where($alias . '.' . $param, $condition, $action);
 			$count++;
 		}
@@ -183,11 +188,16 @@ trait OrmCore
 	protected static function _buildRelationCondition(QueryBuilder $queryBuilder, $field, $index)
 	{
 		if ($field[0] === 'lang') {
-			//filter by language table fields. For example Orm::find('SomeObject', ['lang.name'], ['name'])
 			$queryBuilder->join('inner', self::$_object->getLangTableName(), $field[0], [strtolower(self::$_object->getConfigData('table')) . '_id', 'id']);
 			$queryBuilder->where('lang.lang', Config::get('site.language'));
 			$queryBuilder->where('lang.field', $field[1]);
 			return ['value', $field[0]];
+		} else if ($field[0] === '~lang') {
+			$field[0] = substr($field[0], 1);
+			$queryBuilder->join('inner', self::$_object->getLangTableName(), $field[0], [strtolower(self::$_object->getConfigData('table')) . '_id', 'id']);
+			$queryBuilder->where('lang.lang', Config::get('site.language'));
+			$queryBuilder->where('lang.field', $field[1]);
+			return ['~value', $field[0]];
 		} else {
 			$relations = self::$_object->relations();
 			$relation = $relations[$field[0]];
