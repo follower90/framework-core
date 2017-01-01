@@ -165,11 +165,13 @@ class Orm
 	 * @param $class
 	 * @param array $filters
 	 * @param array $values
+	 * @param array $params
 	 * @return \Core\Object
 	 */
-	public static function findOne($class, $filters = [], $values = [])
+	public static function findOne($class, $filters = [], $values = [], $params = [])
 	{
-		$collection = self::find($class, $filters, $values, ['limit' => 1]);
+		$params = array_merge($params,['limit' => 1]);
+		$collection = self::find($class, $filters, $values, $params);
 		return $collection->getFirst();
 	}
 
