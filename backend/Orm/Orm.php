@@ -157,7 +157,7 @@ class Orm
 		$query = self::_makeCountQuery($class, $filters, $values);
 		$result = PDO::getInstance()->cell($query);
 
-		return $result;
+		return (int)$result;
 	}
 
 	/**

@@ -1,8 +1,3 @@
-<?php
-
-use Core\Library\System;
-
-?>
 <style>
 	.debug-console {
 		position: fixed;
@@ -81,39 +76,39 @@ use Core\Library\System;
 		<div class="tab tab-3">
 			<?php
 			foreach($vars['phpErrors']['data'] as $phpError) {
-				echo \Core\Debug::$phpErrorCode[$phpError['num']] . ': ' . $phpError['error'] . ' in ' . $phpError['file'] . ' at line: ' . $phpError['line'] . '</br>';
+				echo _cDebug::$phpErrorCode[$phpError['num']] . ': ' . $phpError['error'] . ' in ' . $phpError['file'] . ' at line: ' . $phpError['line'] . '</br>';
 			}
 			?>
 		</div>
 		<div class="tab tab-4">
 			<?php
 			echo '<b>GET:</b><br/>';
-			System::vardump($_GET);
+			_libSystem::vardump($_GET);
 
 			echo '<br/><b>POST:</b><br/>';
-			System::vardump($_POST);
+			_libSystem::vardump($_POST);
 
 			echo '<br/><b>COOKIES:</b><br/>';
-			System::vardump($_COOKIE);
+			_libSystem::vardump($_COOKIE);
 
 			echo '<br/><b>FILES:</b><br/>';
-			System::vardump($_FILES);
+			_libSystem::vardump($_FILES);
 
 			echo '<br/><b>REQUEST:</b><br/>';
-			System::vardump($_REQUEST);
+			_libSystem::vardump($_REQUEST);
 
 			echo '<br/><b>SESSION:</b><br/>';
-			System::vardump($_SESSION);
+			_libSystem::vardump($_SESSION);
 
 			echo '<br/><b>SERVER:</b><br/>';
-			System::vardump($_SERVER);
+			_libSystem::vardump($_SERVER);
 			?>
 		</div>
 		<div class="tab tab-5">
 			<?php
 			foreach($vars['dumps']['data'] as $dump) {
 				echo '<b>Dump in <i>' . $dump['file'] . '</i> at line <i>' . $dump['line'] . '</i>:</b><br/>';
-				System::vardump($dump['dump']);
+				_libSystem::vardump($dump['dump']);
 				echo '<br/>';
 			}
 			?>

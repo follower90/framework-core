@@ -110,6 +110,7 @@ class App
 	{
 		$this->_setupDebugMode();
 		$this->_setErrorHandlers();
+		$this->_registerClassAliases();
 
 		$action = Router::getAction($this->_entryPoint->getLib());
 
@@ -285,6 +286,28 @@ class App
 				]);
 
 				$this->showDebugConsole();
+			}
+		});
+	}
+
+	/**
+	 * Allows use short class aliases:
+	 * \Core\Class as _cClass
+	 * \Core\Library\Class as _libClass
+	 */
+	private function _registerClassAliases()
+	{
+		spl_autoload_register(function($class) {
+			$prefix = substr($class, 0, 4);
+			if ($prefix == '_lib') {
+				$name = str_replace($prefix, '', $class);
+				class_alias('\\Core\\Library\\' . $name, '_lib' . $name);
+			}
+
+			$prefix = substr($class, 0, 2);
+			if ($prefix == '_c') {
+				$name = str_replace($prefix, '', $class);
+				class_alias('\\Core\\' . $name, '_c' . $name);
 			}
 		});
 	}
