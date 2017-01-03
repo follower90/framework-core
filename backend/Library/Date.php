@@ -2,6 +2,8 @@
 
 namespace Core\Library;
 
+use Core\Config;
+
 class Date
 {
 	static function date_view($str, $format = "dd-mm-YY")
@@ -23,42 +25,44 @@ class Date
 
 	public static function getMonth($month)
 	{
+		$language = Config::get('site.language');
+
 		switch ($month) {
 			case "01":
-				$month = 'Января';
+				$month = ($language == 'ru') ? 'Января' : 'January';
 				break;
 			case "02":
-				$month = 'Февраля';
+				$month = ($language == 'ru') ? 'Февраля' : 'February';
 				break;
 			case "03":
-				$month = 'Марта';
+				$month = ($language == 'ru') ? 'Марта' : 'March';
 				break;
 			case "04":
-				$month = 'Апреля';
+				$month = ($language == 'ru') ? 'Апреля' : 'April';
 				break;
 			case "05":
-				$month = 'Мая';
+				$month = ($language == 'ru') ? 'Мая' : 'May';
 				break;
 			case "06":
-				$month = 'Июня';
+				$month = ($language == 'ru') ? 'Июня' : 'June';
 				break;
 			case "07":
-				$month = 'Июля';
+				$month = ($language == 'ru') ? 'Июля' : 'July';
 				break;
 			case "08":
-				$month = 'Августа';
+				$month = ($language == 'ru') ? 'Августа' : 'August';
 				break;
 			case "09":
-				$month = 'Сентября';
+				$month = ($language == 'ru') ? 'Сентября' : 'September';
 				break;
 			case "10";
-				$month = 'Октября';
+				$month = ($language == 'ru') ? 'Октября' : 'October';
 				break;
 			case "11":
-				$month = 'Ноября';
+				$month = ($language == 'ru') ? 'Ноября' : 'November';
 				break;
 			case "12":
-				$month = 'Декабря';
+				$month = ($language == 'ru') ? 'Декабря' : 'December';
 				break;
 		}
 		return $month;
@@ -66,28 +70,29 @@ class Date
 
 	public static function getDay($day)
 	{
+		$language = Config::get('site.language');
 		$day = getdate($day);
 		switch ($day['wday']) {
 			case "1":
-				$day = 'Понедельник';
+				$day = ($language == 'ru') ? 'Понедельник' : 'Monday';
 				break;
 			case "2":
-				$day = 'Вторник';
+				$day = ($language == 'ru') ? 'Вторник' : 'Tuesday';
 				break;
 			case "3":
-				$day = 'Среда';
+				$day = ($language == 'ru') ? 'Среда' : 'Wednesday';
 				break;
 			case "4":
-				$day = 'Четверг';
+				$day = ($language == 'ru') ? 'Четверг' : 'Thursday';
 				break;
 			case "5":
-				$day = 'Пятница';
+				$day = ($language == 'ru') ? 'Пятница' : 'Friday';
 				break;
 			case "6":
-				$day = 'Суббота';
+				$day = ($language == 'ru') ? 'Суббота' : 'Saturday';
 				break;
 			case "0":
-				$day = 'Воскресенье';
+				$day = ($language == 'ru') ? 'Воскресенье' : 'Sunday';
 				break;
 		}
 		return $day;
