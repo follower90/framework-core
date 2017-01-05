@@ -42,7 +42,11 @@ class Router
 			'args' => [],
 		];
 	}
-	
+
+	/**
+	 * Finds matching in predefined routes
+	 * @return array|bool
+	 */
 	private static function _findMatches()
 	{
 		foreach (static::$_routes as $route) {
@@ -85,6 +89,7 @@ class Router
 		array_shift($uriChunks);
 		return $uriChunks;
 	}
+
 	/**
 	 * Autodetect appropriate route
 	 * @param $lib
@@ -157,8 +162,8 @@ class Router
 
 	/**
 	 * Removes slashes from Controller path
-	 * @param type $string
-	 * @return type
+	 * @param string $string
+	 * @return string
 	 */
 	protected static function _sanitize($string)
 	{

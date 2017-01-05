@@ -10,7 +10,8 @@ class File
 	{
 		$root = \Core\App::get()->getAppPath();
 		$dir = dirname($root . $filename);
-		if (!is_dir($dir)) mkdir($dir);
+
+		if (!is_dir($dir)) mkdir($dir, 0755, true);
 		return file_put_contents($root . $filename, $data);
 	}
 
