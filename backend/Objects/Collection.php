@@ -152,6 +152,30 @@ class Collection {
 	}
 
 	/**
+	 * Get related Collection or Object for this Collection
+	 * @param $alias
+	 * @return Collection
+	 */
+	public function getRelated($alias)
+	{
+		$relatedCollection = [];
+
+		foreach ($this->_objects as $o) {
+			$related = $o->getRelated($alias);
+
+			if (is_a($related, get_class($this))) {
+				foreach ($related->getCollection() as $relatedObject) {
+					$relatedCollection[] = $relatedObject;
+				}
+			} else {
+				$relatedCollection[] = $related;
+			}
+		}
+
+		return new Collection($relatedCollection);
+	}
+
+	/**
 	 * Returns collection steam
 	 * @return Stream
 	 */
