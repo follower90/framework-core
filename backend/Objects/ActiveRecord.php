@@ -32,6 +32,7 @@ trait ActiveRecord
 	public function save()
 	{
 		Orm::save($this);
+		return $this;
 	}
 
 	/**
@@ -42,7 +43,6 @@ trait ActiveRecord
 	{
 		Orm::delete($this);
 	}
-
 
 	/**
 	 * ActiveRecord-like syntax sugar
