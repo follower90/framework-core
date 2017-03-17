@@ -31,6 +31,7 @@ class Controller
 	public function run($method, $args)
 	{
 		try {
+			$this->beforeRun($method, $args);
 			return call_user_func([$this, $method], $args);
 		} catch (\Exception $e) {
 			return 'Catchable error detected: ' . $e->getCode() . ' - ' . $e->getMessage();
@@ -76,4 +77,6 @@ class Controller
 			throw new \Core\Exception\Exception('Error');
 		}
 	}
+
+	public function beforeRun($method, $args) {}
 }
