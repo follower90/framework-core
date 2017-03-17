@@ -202,6 +202,17 @@ abstract class Object
 	}
 
 	/**
+	 * Set multiple values and save
+	 * @param $data
+	 * @return $this
+	 */
+	public function updateAttributes($data)
+	{
+		$this->setValues($data);
+		return $this->save();
+	}
+
+	/**
 	 * Returns existing language fields
 	 * @return array
 	 */
