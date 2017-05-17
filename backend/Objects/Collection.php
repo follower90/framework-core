@@ -165,10 +165,10 @@ class Collection {
 
 			if (is_a($related, get_class($this))) {
 				foreach ($related->getCollection() as $relatedObject) {
-					$relatedCollection[] = $relatedObject;
+					$relatedCollection[$relatedObject->getId()] = $relatedObject;
 				}
 			} else {
-				$relatedCollection[] = $related;
+				$relatedCollection[$related->getId()] = $related;
 			}
 		}
 
