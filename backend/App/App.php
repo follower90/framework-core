@@ -56,7 +56,6 @@ class App
 	 */
 	public function __construct(EntryPoint $entryPoint)
 	{
-		declare(ticks=1);
 		$this->_entryPoint = $entryPoint;
 		$this->_appPath = \getcwd();
 
@@ -103,7 +102,6 @@ class App
 	 * Core application run method
 	 * Setups debugger, file including and error handling
 	 * Requests route and calls API/Controller
-	 *
 	 * @throws \Exception
 	 */
 	public function run()
@@ -113,10 +111,6 @@ class App
 		$this->_registerClassAliases();
 
 		$action = Router::getAction($this->_entryPoint->getLib());
-
-		if (Cookie::get('debug') || isset($action['args']['debug'])) {
-			$this->_setBackTraceHandler();
-		}
 
 		date_default_timezone_set('Europe/Kiev');
 
@@ -142,32 +136,7 @@ class App
 	}
 
 	/**
-	 * Register function calls for backtrace
-	 */
-	private function _setBackTraceHandler()
-	{
-		register_tick_function(function() {
-			$backtrace = debug_backtrace();
-			if (count($backtrace) <= 1) return;
-
-			$call = $backtrace[1];
-			unset($backtrace);
-
-			if (isset($call['class'], $call['function'], $call['file'], $call['line'])) {
-				$debug = Debug::getInstance();
-				$debug->logTrace([
-					'function' => $call['function'],
-					'class' => $call['class'],
-					'file' => $call['file'],
-					'line' => $call['line'],
-				]);
-			}
-		}, true);
-	}
-
-	/**
 	 * Sets authorized user globally
-	 *
 	 * @param \Core\Object $user
 	 */
 	public static function setUser($user)
@@ -249,7 +218,6 @@ class App
 			$data['dumps'] = $debug->getDumps();
 			$data['queries'] = $debug->getQueriesLog();
 			$data['resources'] = $debug->getResourcesLog();
-			$data['trace'] = $debug->getTrace();
 			$data['memory_usage'] = $debug->getMemoryUsage();
 			$data['page_load'] = $debug->getPageLoadTime();
 

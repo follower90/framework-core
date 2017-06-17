@@ -171,6 +171,7 @@ trait OrmCore
 			if ($firstChar == '~') {
 				$param = substr($param, 1);
 				$action = 'LIKE';
+				$condition = '%' . $condition . '%';
 			}
 
 			$queryBuilder->where($alias . '.' . $param, $condition, $action);

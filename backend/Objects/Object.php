@@ -83,6 +83,16 @@ abstract class Object
 	}
 
 	/**
+	 * Returns flag if object has language fields
+	 * @return Boolean
+	 */
+	public function hasTranslation()
+	{
+		$fields = $this->getConfigData('fields');
+		return isset($fields['languageTable']);
+	}
+
+	/**
 	 * Returns object relations
 	 * @return array
 	 */
@@ -293,6 +303,16 @@ abstract class Object
 	}
 
 	/**
+	 * Detect if object has relation by alias
+	 * @param string $alias relation alias
+	 * @return Boolean
+	 */
+	public static function hasRelation($alias)
+	{
+		return isset(static::$_objectRelations[$alias]);
+	}
+
+	/**
 	 * Returns key -> value array with simple values
 	 * Used in ORM
 	 * @return array
@@ -327,5 +347,17 @@ abstract class Object
 		}
 
 		return $langData;
+	}
+
+	/**
+	 * Returns duplicate of current object
+	 * @return \Core\Object
+	 */
+	public function duplicate()
+	{
+		$duplicate = Orm::create(static::getClassName());
+		$duplicate->setValues($this->getValues());
+		$duplicate->save();
+		return $duplicate;
 	}
 }

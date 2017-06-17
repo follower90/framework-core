@@ -84,12 +84,7 @@ class Orm
 		$query = self::_makeSimpleQuery($class, $filters, $values, $params);
 		$rows = PDO::getInstance()->rows($query);
 
-		if ($rows) {
-			$fields = static::$_object->getConfigData('fields');
-			if (!isset($fields['languageTable'])) {
-				return self::fillCollection($class, $rows, $cacheParams);
-			}
-
+		if (static::$_object->hasTranslation()) {
 			static::_appendLanguageData($class, $rows);
 		}
 
@@ -104,9 +99,10 @@ class Orm
 	 */
 	private static function _appendLanguageData($class, &$rows)
 	{
+		if (empty($rows)) return;
 		$query = self::_makeLanguageQuery($class, array_column($rows, 'id'));
-		$langRows = PDO::getInstance()->rows($query);
 
+		$langRows = PDO::getInstance()->rows($query);
 		$langRowsResult = [];
 
 		foreach ($langRows as $row) {
@@ -114,16 +110,14 @@ class Orm
 		}
 
 		foreach ($rows as $key => $row) {
-			if (isset($langRowsResult[$row['id']])) {
-				$langRows = $langRowsResult[$row['id']];
-
+			$langRows = $langRowsResult[$row['id']];
+			if (isset($langRows)) {
 				foreach ($langRows as $langRow) {
 					$rows[$key]['languageTable'][$langRow['field']] = $langRow['value'];
 				}
 			}
 		}
 	}
-
 
 	/**
 	 * Request objects with custom SQL query
@@ -241,6 +235,7 @@ class Orm
 	public static function registerRelation($relationProperties, $targetObjectProperties, $relatedObjectProperties)
 	{
 		$targetObject = self::detectClass($targetObjectProperties['class']);
+		if ($targetObject::hasRelation($relationProperties['alias'])) return;
 
 		if (!$targetObject) {
 			throw new OrmException('Relation registering error. Could not detect target object');

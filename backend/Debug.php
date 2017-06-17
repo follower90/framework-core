@@ -10,7 +10,6 @@ class Debug
 	private $_resources;
 	private $_php_errors;
 	private $_dumps;
-	private $_trace;
 	private $_memory_usage;
 	private $_page_load;
 
@@ -97,16 +96,6 @@ class Debug
 	public function logResource($type, $path)
 	{
 		$this->_resources[$type][] = $path;
-	}
-
-	/**
-	 * Logs back trace
-	 * @param $param
-	 */
-	public function logTrace($param)
-	{
-		if ($this->_trace[count($this->_trace) - 1] != $param )
-		$this->_trace[] = $param;
 	}
 
 	/**
@@ -205,18 +194,6 @@ class Debug
 		];
 	}
 
-	/**
-	 * Returns logged variable dumps and its count
-	 * @return array
-	 */
-	public function getTrace()
-	{
-		return [
-			'count' => count($this->_trace),
-			'data' => $this->_trace,
-		];
-	}
-	
 	private function _processQueryParam($param)
 	{
 		if (!is_numeric($param)) {
