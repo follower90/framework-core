@@ -2,8 +2,8 @@
 
 <?php
 
-require_once('vendor/autoload.php');
-require_once('config.php');
+require_once __DIR__ . '/../../../../vendor/autoload.php';
+require_once __DIR__ . '/../../../../config.php';
 
 class ProjectBuilder
 {
@@ -17,13 +17,14 @@ class ProjectBuilder
 
 	public function applyToAllRepo($cmd, $params = '')
 	{
+		$projects = [];
 		$path = 'vendor/follower/';
 		exec('cd ' . $path . ' && ls', $projects);
 
 		array_unshift($projects, '');
 
 		foreach ($projects as $project) {
-			if ($cmd == 'add') {
+			if ($cmd === 'add') {
 				$this->runCmd($cmd, $path . $project, $params);
 			} else {
 				echo $this->formatString() . PHP_EOL;
@@ -62,7 +63,7 @@ class ProjectBuilder
 				break;
 
 			case 'commit' :
-				if (isset($this->args[2])) {
+				if (array_key_exists(2, $this->args)) {
 					$this->applyToAllRepo('add', '.');
 					$this->applyToAllRepo('commit -am \'' . $this->args[2] . '\'');
 				} else {
@@ -72,21 +73,22 @@ class ProjectBuilder
 
 			case 'schema:update':
 				$paths = ['vendor/follower/core/backend'];
-				if (isset($this->args[2])) {
+				if (array_key_exists(2, $this->args)) {
 					$paths[] = $this->args[2];
 				}
 				\Core\Database\Schema::createObjects($paths);
 				break;
 
 			case 'schema:create':
-				if (!isset($this->args[2])) {
+				if (!array_key_exists(2, $this->args)) {
 					return false;
 				}
 				\Core\Database\Schema::createObject($this->args[2], ['clearDb' => true]);
 				break;
 
 			case 'schema:migrate':
-				if (isset($this->args[2])) {
+				$path = null;
+				if (array_key_exists(2, $this->args)) {
 					$path = $this->args[2];
 				}
 				if ($path) {
@@ -159,7 +161,7 @@ class ProjectBuilder
 
 	private function runCmd($command, $path = false, $params = '')
 	{
-		$cd = ($path) ? 'cd ' . $path . ' && ' : '';
+		$cd = $path ? 'cd ' . $path . ' && ' : '';
 		exec($cd . 'git ' . $command . ' ' . $params, $result);
 		return implode("\n", $result);
 	}

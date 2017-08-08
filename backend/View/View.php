@@ -17,6 +17,8 @@ class View {
 	private $_noticeObject = '\Core\View\Notice';
 	private $_notices = [];
 
+	public $paging = null;
+
 	/**
 	 * Template params setter
 	 * @param $data

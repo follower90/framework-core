@@ -19,7 +19,7 @@ class Config {
 	/**
 	 * Get config param by key, or get whole config array
 	 * @param $item
-	 * @return array
+	 * @return mixed
 	 */
 	public static function get($item)
 	{

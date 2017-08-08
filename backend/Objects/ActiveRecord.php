@@ -57,7 +57,7 @@ trait ActiveRecord
 	/**
 	 * ActiveRecord-like syntax sugar
 	 * @param $params
-	 * @return bool|Collection
+	 * @return \Core\Object
 	 */
 	public static function findBy($params)
 	{
@@ -68,7 +68,7 @@ trait ActiveRecord
 	/**
 	 * ActiveRecord-like syntax sugar
 	 * @param $params
-	 * @return bool|Collection
+	 * @return \Core\Collection
 	 */
 	public static function where($params)
 	{
