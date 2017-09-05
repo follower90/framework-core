@@ -2,12 +2,12 @@
 namespace Core;
 
 use Core\Library\File;
-use MongoDB\BSON\Javascript;
 
 class View {
 
 	use Traits\View\Html;
-	
+	use Traits\View\Image;
+
 	private $_templateOptions = [];
 	private $_defaultPath = false;
 
