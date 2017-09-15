@@ -13,7 +13,7 @@ class MySQL implements Database
 	 */
 	public static function update($table, array $params = [], array $conditions = [])
 	{
-		if (!$table || empty($params) || empty($conditions)) {
+		if (!$table || count($params) === 0 || count($conditions) === 0) {
 			throw new \Core\Exception\Exception('Incorrect update query');
 		}
 
@@ -22,7 +22,7 @@ class MySQL implements Database
 
 		foreach ($params as $field => $value) {
 			$value = is_null($value) ? 'null' : '\'' . $value . '\'';
-			$set[] = '`' . $field . '`=' . $value;
+			$set[] = '`' . $field . '`=' . htmlspecialchars($value);
 		}
 
 		foreach ($conditions as $field => $value) {
@@ -55,10 +55,10 @@ class MySQL implements Database
 			} else {
 				$value = '\'' . $value . '\'';
 			}
-			$set[] = '`' . $field . '`=' . $value;
+			$set[] = '`' . $field . '`=' . htmlspecialchars($value);
 		}
 
-		if (empty($params)) {
+		if (count($params) === 0) {
 			$query = 'INSERT INTO `' . $table . '` VALUES()';
 		} else {
 			$query = 'INSERT INTO `' . $table . '` SET ' . implode(', ', $set);
@@ -76,7 +76,7 @@ class MySQL implements Database
 	 */
 	public static function delete($table, array $conditions = [])
 	{
-		if (!$table || empty($conditions)) {
+		if (!$table || count($conditions) === 0) {
 			throw new \Core\Exception\Exception('Incorrect delete query');
 		}
 

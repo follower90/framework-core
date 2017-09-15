@@ -270,6 +270,7 @@ abstract class Object
 	 */
 	public function getId()
 	{
+
 		return $this->getValue('id');
 	}
 
