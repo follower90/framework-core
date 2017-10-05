@@ -110,8 +110,8 @@ class Orm
 		}
 
 		foreach ($rows as $key => $row) {
-			$langRows = $langRowsResult[$row['id']];
-			if (isset($langRows)) {
+			$langRows = array_key_exists($row['id'], $langRowsResult) ? $langRowsResult[$row['id']] : [];
+			if ($langRows) {
 				foreach ($langRows as $langRow) {
 					$rows[$key]['languageTable'][$langRow['field']] = $langRow['value'];
 				}
