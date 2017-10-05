@@ -15,6 +15,7 @@ class PDO Extends \PDO
 	private $_result;
 	private $_start;
 	private $_sth;
+	private $_dbh;
 
 	/**
 	 * Constructs new Mysql connection with PDO
@@ -24,14 +25,12 @@ class PDO Extends \PDO
 	{
 		self::$_debugger = Debug::getInstance();
 
-		$db_setts = $settings;
-
-		$db_setts['host'] = 'mysql:host=' . $db_setts['host'] . ';dbname=' . $db_setts['name'];
+		$host = 'mysql:host=' . $settings['host'] . ';dbname=' . $settings['name'];
 		$db_setts = [
-			$db_setts['host'],
-			$db_setts['user'],
-			$db_setts['password'],
-			[\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '" . $db_setts['charset'] . "'"]
+			$host,
+			$settings['user'],
+			$settings['password'],
+			[\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES '" . $settings['charset'] . "'", PDO::ATTR_PERSISTENT => true]
 		];
 
 		if (($num_args = func_num_args()) > 0) {
@@ -44,11 +43,10 @@ class PDO Extends \PDO
 		}
 
 		try {
-			$dbh = call_user_func_array(['PDO', '__construct'], $db_setts);
+			$this->_dbh = call_user_func_array(['PDO', '__construct'], $db_setts);
 			$this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-			return $dbh;
 		} catch (\Exception $e) {
-			throw new \Core\Exception\Exception('Cannot connect to database!');
+			throw new \Core\Exception\Exception('Cannot connect to database: ' .$e->getMessage());
 		}
 	}
 

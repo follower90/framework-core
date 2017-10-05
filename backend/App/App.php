@@ -1,6 +1,7 @@
 <?php
 
 namespace Core;
+use Core\Database\PDO;
 
 /**
  * Class App
@@ -209,7 +210,7 @@ class App
 	 */
 	public function showDebugConsole($debug = 'on')
 	{
-		if ($debug == 'on' || Cookie::get('debug') && $debug != 'off') {
+		if ($debug === 'on' || (Cookie::get('debug') && $debug !== 'off')) {
 			/*if (Router::get('remote_addr') != '127.0.0.1') return; */
 			$debug = Debug::getInstance();
 			$data = [];
@@ -244,7 +245,7 @@ class App
 
 		register_shutdown_function(function() {
 			$error = error_get_last();
-			if (in_array($error['type'], [E_ERROR, E_PARSE])) {
+			if (in_array($error['type'], [E_ERROR, E_PARSE], true)) {
 				$debug = Debug::getInstance();
 				$debug->logPhpError([
 					'num' => $error['type'],
@@ -267,13 +268,13 @@ class App
 	{
 		spl_autoload_register(function($class) {
 			$prefix = substr($class, 0, 4);
-			if ($prefix == '_lib') {
+			if ($prefix === '_lib') {
 				$name = str_replace($prefix, '', $class);
 				class_alias('\\Core\\Library\\' . $name, '_lib' . $name);
 			}
 
 			$prefix = substr($class, 0, 2);
-			if ($prefix == '_c') {
+			if ($prefix === '_c') {
 				$name = str_replace($prefix, '', $class);
 				class_alias('\\Core\\' . $name, '_c' . $name);
 			}
